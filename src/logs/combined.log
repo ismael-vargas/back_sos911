@@ -1,0 +1,625 @@
+[2025-06-15T00:19:41.441Z] INFO: ::1 - - [15/Jun/2025:00:19:41 +0000] "GET / HTTP/1.1" 200 52 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:19:41.521Z] INFO: ::1 - - [15/Jun/2025:00:19:41 +0000] "POST /Register HTTP/1.1" 200 45 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:19:46.964Z] INFO: ::1 - - [15/Jun/2025:00:19:46 +0000] "GET / HTTP/1.1" 200 52 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:19:47.031Z] INFO: ::1 - - [15/Jun/2025:00:19:47 +0000] "POST /login HTTP/1.1" 400 38 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:19:50.682Z] INFO: ::1 - - [15/Jun/2025:00:19:50 +0000] "GET / HTTP/1.1" 200 52 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:19:50.748Z] INFO: ::1 - - [15/Jun/2025:00:19:50 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:20:08.586Z] INFO: ::1 - - [15/Jun/2025:00:20:08 +0000] "GET /error-prueba HTTP/1.1" 500 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:26:28.846Z] INFO: ::1 - - [15/Jun/2025:00:26:28 +0000] "GET /error-prueba HTTP/1.1" 500 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:28:00.584Z] INFO: ::1 - - [15/Jun/2025:00:28:00 +0000] "GET / HTTP/1.1" 200 52 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:28:00.665Z] INFO: ::1 - - [15/Jun/2025:00:28:00 +0000] "POST /Register HTTP/1.1" 200 45 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:28:07.164Z] INFO: ::1 - - [15/Jun/2025:00:28:07 +0000] "GET / HTTP/1.1" 200 52 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:28:07.232Z] INFO: ::1 - - [15/Jun/2025:00:28:07 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:28:32.964Z] INFO: ::1 - - [15/Jun/2025:00:28:32 +0000] "GET /error-prueba HTTP/1.1" 500 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:28:33.742Z] INFO: ::1 - - [15/Jun/2025:00:28:33 +0000] "GET /error-prueba HTTP/1.1" 500 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:28:51.245Z] INFO: ::1 - - [15/Jun/2025:00:28:51 +0000] "GET /error-prueba HTTP/1.1" 500 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:32:09.852Z] INFO: ::1 - - [15/Jun/2025:00:32:09 +0000] "GET /error-prueba HTTP/1.1" 500 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:32:51.310Z] INFO: ::1 - - [15/Jun/2025:00:32:51 +0000] "GET /error-prueba HTTP/1.1" 500 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:36:30.367Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:126:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:114:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-15T00:36:30.743Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:126:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:114:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-15T00:36:30.812Z] INFO: ::1 - - [15/Jun/2025:00:36:30 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:9000/error-prueba" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:37:56.502Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:126:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:114:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-15T00:39:17.946Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:126:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:114:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-15T00:42:58.866Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T00:43:48.335Z] INFO: ::1 - - [15/Jun/2025:00:43:48 +0000] "GET / HTTP/1.1" 200 52 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:43:48.354Z] INFO: ::1 - - [15/Jun/2025:00:43:48 +0000] "POST /Register HTTP/1.1" 400 34 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:49:00.510Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T00:49:05.065Z] INFO: ::1 - - [15/Jun/2025:00:49:05 +0000] "GET / HTTP/1.1" 200 52 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T00:49:05.082Z] INFO: ::1 - - [15/Jun/2025:00:49:05 +0000] "POST /Register HTTP/1.1" 400 34 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T01:10:03.820Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:126:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:114:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-15T01:10:04.842Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:126:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:114:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-15T01:21:47.725Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T01:23:19.224Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T01:25:18.247Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T01:39:46.643Z] INFO: ::1 - - [15/Jun/2025:01:39:46 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T01:40:16.406Z] INFO: ::1 - - [15/Jun/2025:01:40:16 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T01:46:21.622Z] INFO: ::1 - - [15/Jun/2025:01:46:21 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T01:46:26.613Z] INFO: ::1 - - [15/Jun/2025:01:46:26 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T01:48:10.088Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T01:48:14.659Z] INFO: ::1 - - [15/Jun/2025:01:48:14 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T01:51:37.624Z] INFO: ::1 - - [15/Jun/2025:01:51:37 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T01:51:47.625Z] INFO: ::1 - - [15/Jun/2025:01:51:47 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T01:51:53.099Z] INFO: ::1 - - [15/Jun/2025:01:51:53 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T01:52:01.872Z] INFO: ::1 - - [15/Jun/2025:01:52:01 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T01:52:59.845Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T01:53:04.548Z] INFO: ::1 - - [15/Jun/2025:01:53:04 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-15T01:53:37.723Z] INFO: ::1 - - [15/Jun/2025:01:53:37 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T01:56:27.505Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T01:56:43.945Z] INFO: ::1 - - [15/Jun/2025:01:56:43 +0000] "GET /csrf-token HTTP/1.1" 404 149 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T02:02:29.474Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T02:20:09.955Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T02:20:39.759Z] INFO: ::1 - - [15/Jun/2025:02:20:39 +0000] "POST /registro HTTP/1.1" 500 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:25:05.737Z] INFO: ::1 - - [15/Jun/2025:02:25:05 +0000] "POST /registro HTTP/1.1" 500 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:29:00.464Z] INFO: ::1 - - [15/Jun/2025:02:29:00 +0000] "POST /registro HTTP/1.1" 500 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:29:02.054Z] INFO: ::1 - - [15/Jun/2025:02:29:02 +0000] "POST /registro HTTP/1.1" 500 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:35:27.716Z] INFO: ::1 - - [15/Jun/2025:02:35:27 +0000] "POST /registro HTTP/1.1" 201 252 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:35:33.043Z] INFO: ::1 - - [15/Jun/2025:02:35:33 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:36:40.225Z] INFO: ::1 - - [15/Jun/2025:02:36:40 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:26.652Z] INFO: ::1 - - [15/Jun/2025:02:45:26 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:28.158Z] INFO: ::1 - - [15/Jun/2025:02:45:28 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:28.320Z] INFO: ::1 - - [15/Jun/2025:02:45:28 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:28.487Z] INFO: ::1 - - [15/Jun/2025:02:45:28 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:28.640Z] INFO: ::1 - - [15/Jun/2025:02:45:28 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:28.800Z] INFO: ::1 - - [15/Jun/2025:02:45:28 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:28.968Z] INFO: ::1 - - [15/Jun/2025:02:45:28 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:29.120Z] INFO: ::1 - - [15/Jun/2025:02:45:29 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:29.262Z] INFO: ::1 - - [15/Jun/2025:02:45:29 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:29.407Z] INFO: ::1 - - [15/Jun/2025:02:45:29 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:29.561Z] INFO: ::1 - - [15/Jun/2025:02:45:29 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:29.712Z] INFO: ::1 - - [15/Jun/2025:02:45:29 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:45:29.880Z] INFO: ::1 - - [15/Jun/2025:02:45:29 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:47:38.102Z] INFO: ::1 - - [15/Jun/2025:02:47:38 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:48:21.447Z] INFO: ::1 - - [15/Jun/2025:02:48:21 +0000] "POST /registro HTTP/1.1" 500 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:53:18.790Z] INFO: ::1 - - [15/Jun/2025:02:53:18 +0000] "POST /registro HTTP/1.1" 201 252 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:53:20.376Z] INFO: ::1 - - [15/Jun/2025:02:53:20 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:53:22.081Z] INFO: ::1 - - [15/Jun/2025:02:53:22 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:54:08.870Z] INFO: ::1 - - [15/Jun/2025:02:54:08 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:54:39.168Z] INFO: ::1 - - [15/Jun/2025:02:54:39 +0000] "POST /registro HTTP/1.1" 201 256 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:54:43.098Z] INFO: ::1 - - [15/Jun/2025:02:54:43 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:55:22.054Z] INFO: ::1 - - [15/Jun/2025:02:55:22 +0000] "POST /registro HTTP/1.1" 500 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:55:33.765Z] INFO: ::1 - - [15/Jun/2025:02:55:33 +0000] "POST /registro HTTP/1.1" 500 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T02:56:29.228Z] INFO: ::1 - - [15/Jun/2025:02:56:29 +0000] "POST /registro HTTP/1.1" 201 259 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T02:59:35.830Z] INFO: ::1 - - [15/Jun/2025:02:59:35 +0000] "POST /registro HTTP/1.1" 201 253 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-15T03:02:30.164Z] INFO: ::1 - - [15/Jun/2025:03:02:30 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:04:30.917Z] INFO: ::1 - - [15/Jun/2025:03:04:30 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:04:43.596Z] INFO: ::1 - - [15/Jun/2025:03:04:43 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:05:17.173Z] INFO: ::1 - - [15/Jun/2025:03:05:17 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:06:32.038Z] INFO: ::1 - - [15/Jun/2025:03:06:32 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:06:43.779Z] INFO: ::1 - - [15/Jun/2025:03:06:43 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:07:52.412Z] INFO: ::1 - - [15/Jun/2025:03:07:52 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:09:00.837Z] INFO: ::1 - - [15/Jun/2025:03:09:00 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:09:11.526Z] INFO: ::1 - - [15/Jun/2025:03:09:11 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:09:31.839Z] INFO: ::1 - - [15/Jun/2025:03:09:31 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:10:16.314Z] INFO: ::1 - - [15/Jun/2025:03:10:16 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:10:30.663Z] INFO: ::1 - - [15/Jun/2025:03:10:30 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:10:43.518Z] INFO: ::1 - - [15/Jun/2025:03:10:43 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:11:43.278Z] INFO: ::1 - - [15/Jun/2025:03:11:43 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:16:47.939Z] INFO: ::1 - - [15/Jun/2025:03:16:47 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:16:59.149Z] INFO: ::1 - - [15/Jun/2025:03:16:59 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:18:20.468Z] INFO: ::1 - - [15/Jun/2025:03:18:20 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:18:40.640Z] INFO: ::1 - - [15/Jun/2025:03:18:40 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:18:56.249Z] INFO: ::1 - - [15/Jun/2025:03:18:56 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:19:09.557Z] INFO: ::1 - - [15/Jun/2025:03:19:09 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:19:28.126Z] INFO: ::1 - - [15/Jun/2025:03:19:28 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:19:42.572Z] INFO: ::1 - - [15/Jun/2025:03:19:42 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:19:58.676Z] INFO: ::1 - - [15/Jun/2025:03:19:58 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:20:41.838Z] INFO: ::1 - - [15/Jun/2025:03:20:41 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:21:15.498Z] INFO: ::1 - - [15/Jun/2025:03:21:15 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:21:38.431Z] INFO: ::1 - - [15/Jun/2025:03:21:38 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:25:04.326Z] INFO: ::1 - - [15/Jun/2025:03:25:04 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:25:36.573Z] INFO: ::1 - - [15/Jun/2025:03:25:36 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:25:53.845Z] INFO: ::1 - - [15/Jun/2025:03:25:53 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:26:06.998Z] INFO: ::1 - - [15/Jun/2025:03:26:06 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:26:20.724Z] INFO: ::1 - - [15/Jun/2025:03:26:20 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:26:33.879Z] INFO: ::1 - - [15/Jun/2025:03:26:33 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:26:49.088Z] INFO: ::1 - - [15/Jun/2025:03:26:49 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:27:07.231Z] INFO: ::1 - - [15/Jun/2025:03:27:07 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:27:22.261Z] INFO: ::1 - - [15/Jun/2025:03:27:22 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:28:30.577Z] INFO: ::1 - - [15/Jun/2025:03:28:30 +0000] "POST /registro HTTP/1.1" 201 263 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:28:58.381Z] INFO: ::1 - - [15/Jun/2025:03:28:58 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:29:29.668Z] INFO: ::1 - - [15/Jun/2025:03:29:29 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:31:18.884Z] INFO: ::1 - - [15/Jun/2025:03:31:18 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T03:31:33.749Z] INFO: ::1 - - [15/Jun/2025:03:31:33 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:26:26.610Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T15:26:52.208Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T15:27:42.861Z] INFO: ::1 - - [15/Jun/2025:15:27:42 +0000] "POST /login HTTP/1.1" 400 38 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:27:46.561Z] INFO: ::1 - - [15/Jun/2025:15:27:46 +0000] "POST /login HTTP/1.1" 400 38 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:27:57.784Z] INFO: ::1 - - [15/Jun/2025:15:27:57 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:34:25.073Z] INFO: ::1 - - [15/Jun/2025:15:34:25 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:34:30.375Z] INFO: ::1 - - [15/Jun/2025:15:34:30 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:35:21.248Z] INFO: ::1 - - [15/Jun/2025:15:35:21 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:38:00.031Z] INFO: ::1 - - [15/Jun/2025:15:38:00 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:39:15.023Z] INFO: ::1 - - [15/Jun/2025:15:39:15 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:45:30.899Z] INFO: ::1 - - [15/Jun/2025:15:45:30 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:46:27.031Z] INFO: ::1 - - [15/Jun/2025:15:46:27 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T15:47:20.238Z] INFO: ::1 - - [15/Jun/2025:15:47:20 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T15:50:42.985Z] INFO: ::1 - - [15/Jun/2025:15:50:42 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T15:50:55.884Z] INFO: ::1 - - [15/Jun/2025:15:50:55 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T15:52:49.578Z] INFO: ::1 - - [15/Jun/2025:15:52:49 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T15:56:40.073Z] INFO: ::1 - - [15/Jun/2025:15:56:40 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T15:57:50.131Z] INFO: ::1 - - [15/Jun/2025:15:57:50 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T15:58:04.032Z] INFO: ::1 - - [15/Jun/2025:15:58:04 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:01:26.672Z] INFO: ::1 - - [15/Jun/2025:16:01:26 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:01:35.673Z] INFO: ::1 - - [15/Jun/2025:16:01:35 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:02:05.090Z] INFO: ::1 - - [15/Jun/2025:16:02:05 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:05:04.550Z] INFO: ::1 - - [15/Jun/2025:16:05:04 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:07:27.792Z] INFO: ::1 - - [15/Jun/2025:16:07:27 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:07:42.509Z] INFO: ::1 - - [15/Jun/2025:16:07:42 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:11:21.776Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T16:11:25.164Z] INFO: ::1 - - [15/Jun/2025:16:11:25 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:11:48.611Z] INFO: ::1 - - [15/Jun/2025:16:11:48 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:12:06.094Z] INFO: ::1 - - [15/Jun/2025:16:12:06 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:16:11.361Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T16:16:26.541Z] INFO: ::1 - - [15/Jun/2025:16:16:26 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-15T16:16:32.676Z] INFO: ::1 - - [15/Jun/2025:16:16:32 +0000] "PUT /usuarios/1 HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-15T16:16:52.411Z] INFO: ::1 - - [15/Jun/2025:16:16:52 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:16:58.611Z] INFO: ::1 - - [15/Jun/2025:16:16:58 +0000] "PUT /usuarios/3 HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:17:09.974Z] INFO: ::1 - - [15/Jun/2025:16:17:09 +0000] "PUT /usuarios/3 HTTP/1.1" 200 214 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:17:15.400Z] INFO: ::1 - - [15/Jun/2025:16:17:15 +0000] "PUT /usuarios/3 HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:18:00.794Z] INFO: ::1 - - [15/Jun/2025:16:18:00 +0000] "GET /usuarios HTTP/1.1" 200 884 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:18:11.458Z] INFO: ::1 - - [15/Jun/2025:16:18:11 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:18:30.928Z] INFO: ::1 - - [15/Jun/2025:16:18:30 +0000] "PUT /usuarios/9 HTTP/1.1" 200 228 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:18:35.176Z] INFO: ::1 - - [15/Jun/2025:16:18:35 +0000] "GET /usuarios HTTP/1.1" 200 658 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:20:25.465Z] INFO: ::1 - - [15/Jun/2025:16:20:25 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:20:39.465Z] INFO: ::1 - - [15/Jun/2025:16:20:39 +0000] "GET /usuarios HTTP/1.1" 200 873 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:21:16.497Z] INFO: ::1 - - [15/Jun/2025:16:21:16 +0000] "PUT /usuarios/1 HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:21:19.657Z] INFO: ::1 - - [15/Jun/2025:16:21:19 +0000] "GET /usuarios HTTP/1.1" 200 658 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:23:50.201Z] INFO: ::1 - - [15/Jun/2025:16:23:50 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:23:55.167Z] INFO: ::1 - - [15/Jun/2025:16:23:55 +0000] "PUT /usuarios/4 HTTP/1.1" 200 221 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:24:00.620Z] INFO: ::1 - - [15/Jun/2025:16:24:00 +0000] "GET /usuarios HTTP/1.1" 200 439 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:24:26.865Z] INFO: ::1 - - [15/Jun/2025:16:24:26 +0000] "PUT /usuarios/7 HTTP/1.1" 200 224 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:27:58.431Z] INFO: ::1 - - [15/Jun/2025:16:27:58 +0000] "GET /usuarios HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:28:27.532Z] INFO: ::1 - - [15/Jun/2025:16:28:27 +0000] "GET /usuarios HTTP/1.1" 200 866 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:28:31.716Z] INFO: ::1 - - [15/Jun/2025:16:28:31 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:28:32.382Z] INFO: ::1 - - [15/Jun/2025:16:28:32 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:28:39.207Z] INFO: ::1 - - [15/Jun/2025:16:28:39 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:28:44.096Z] INFO: ::1 - - [15/Jun/2025:16:28:44 +0000] "PUT /usuarios/1 HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:28:50.118Z] INFO: ::1 - - [15/Jun/2025:16:28:50 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:29:23.969Z] INFO: ::1 - - [15/Jun/2025:16:29:23 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:29:52.041Z] INFO: ::1 - - [15/Jun/2025:16:29:52 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:29:57.855Z] INFO: ::1 - - [15/Jun/2025:16:29:57 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:30:49.943Z] INFO: ::1 - - [15/Jun/2025:16:30:49 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:32:01.543Z] INFO: ::1 - - [15/Jun/2025:16:32:01 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:32:03.881Z] INFO: ::1 - - [15/Jun/2025:16:32:03 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:32:04.484Z] INFO: ::1 - - [15/Jun/2025:16:32:04 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:32:14.414Z] INFO: ::1 - - [15/Jun/2025:16:32:14 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:32:28.198Z] INFO: ::1 - - [15/Jun/2025:16:32:28 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:36:34.894Z] INFO: ::1 - - [15/Jun/2025:16:36:34 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:40:20.509Z] INFO: ::1 - - [15/Jun/2025:16:40:20 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:40:25.668Z] INFO: ::1 - - [15/Jun/2025:16:40:25 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:40:41.505Z] INFO: ::1 - - [15/Jun/2025:16:40:41 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:40:56.964Z] INFO: ::1 - - [15/Jun/2025:16:40:56 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:41:17.528Z] INFO: ::1 - - [15/Jun/2025:16:41:17 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:41:20.344Z] INFO: ::1 - - [15/Jun/2025:16:41:20 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:41:32.504Z] INFO: ::1 - - [15/Jun/2025:16:41:32 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:41:38.614Z] INFO: ::1 - - [15/Jun/2025:16:41:38 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:41:50.773Z] INFO: ::1 - - [15/Jun/2025:16:41:50 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:41:51.771Z] INFO: ::1 - - [15/Jun/2025:16:41:51 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:48:18.480Z] INFO: ::1 - - [15/Jun/2025:16:48:18 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:49:02.999Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T16:50:26.947Z] INFO: ::1 - - [15/Jun/2025:16:50:26 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:50:30.732Z] INFO: ::1 - - [15/Jun/2025:16:50:30 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T16:53:54.015Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T16:55:23.353Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T16:55:37.866Z] INFO: ::1 - - [15/Jun/2025:16:55:37 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:58:50.229Z] INFO: ::1 - - [15/Jun/2025:16:58:50 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:59:02.080Z] INFO: ::1 - - [15/Jun/2025:16:59:02 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:59:03.990Z] INFO: ::1 - - [15/Jun/2025:16:59:03 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T16:59:50.607Z] INFO: ::1 - - [15/Jun/2025:16:59:50 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:00:58.472Z] INFO: ::1 - - [15/Jun/2025:17:00:58 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:02:49.476Z] INFO: ::1 - - [15/Jun/2025:17:02:49 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:9000/csrf-token" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:03:54.409Z] INFO: ::1 - - [15/Jun/2025:17:03:54 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:03:59.434Z] INFO: ::1 - - [15/Jun/2025:17:03:59 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:04:03.265Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T17:04:21.375Z] INFO: ::1 - - [15/Jun/2025:17:04:21 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:04:53.234Z] INFO: ::1 - - [15/Jun/2025:17:04:53 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:04:56.757Z] INFO: ::1 - - [15/Jun/2025:17:04:56 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:05:03.850Z] INFO: ::1 - - [15/Jun/2025:17:05:03 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:05:13.319Z] INFO: ::1 - - [15/Jun/2025:17:05:13 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:05:24.797Z] INFO: ::1 - - [15/Jun/2025:17:05:24 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:05:39.583Z] INFO: ::1 - - [15/Jun/2025:17:05:39 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:05:53.156Z] INFO: ::1 - - [15/Jun/2025:17:05:53 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:06:52.713Z] INFO: ::1 - - [15/Jun/2025:17:06:52 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:07:21.495Z] INFO: ::1 - - [15/Jun/2025:17:07:21 +0000] "POST /login HTTP/1.1" 400 38 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:07:28.610Z] INFO: ::1 - - [15/Jun/2025:17:07:28 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:07:32.529Z] INFO: ::1 - - [15/Jun/2025:17:07:32 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:07:48.596Z] INFO: ::1 - - [15/Jun/2025:17:07:48 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:09:40.388Z] INFO: ::1 - - [15/Jun/2025:17:09:40 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:12:07.985Z] INFO: ::1 - - [15/Jun/2025:17:12:07 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:15:04.517Z] INFO: ::1 - - [15/Jun/2025:17:15:04 +0000] "GET /usuarios HTTP/1.1" 200 651 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:15:12.479Z] INFO: ::1 - - [15/Jun/2025:17:15:12 +0000] "PUT /usuarios/3 HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:15:16.836Z] INFO: ::1 - - [15/Jun/2025:17:15:16 +0000] "GET /usuarios HTTP/1.1" 200 436 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:16:20.322Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T17:16:24.469Z] INFO: ::1 - - [15/Jun/2025:17:16:24 +0000] "GET /usuarios HTTP/1.1" 200 436 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:16:29.634Z] INFO: ::1 - - [15/Jun/2025:17:16:29 +0000] "PUT /usuarios/4 HTTP/1.1" 200 221 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:16:33.839Z] INFO: ::1 - - [15/Jun/2025:17:16:33 +0000] "GET /usuarios HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:23:40.151Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T17:25:02.050Z] INFO: ::1 - - [15/Jun/2025:17:25:02 +0000] "GET /usuarios HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:25:05.457Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+[2025-06-15T17:25:08.437Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+[2025-06-15T17:25:14.347Z] INFO: ::1 - - [15/Jun/2025:17:25:14 +0000] "GET /usuarios HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:25:25.672Z] INFO: ::1 - - [15/Jun/2025:17:25:25 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:26:06.023Z] INFO: ::1 - - [15/Jun/2025:17:26:06 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:26:12.436Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+[2025-06-15T17:27:52.131Z] INFO: ::1 - - [15/Jun/2025:17:27:52 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:28:39.039Z] INFO: ::1 - - [15/Jun/2025:17:28:39 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:29:03.810Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+[2025-06-15T17:30:05.715Z] INFO: ::1 - - [15/Jun/2025:17:30:05 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:30:34.600Z] INFO: ::1 - - [15/Jun/2025:17:30:34 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:31:26.523Z] INFO: ::1 - - [15/Jun/2025:17:31:26 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:31:55.467Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+[2025-06-15T17:32:39.962Z] INFO: ::1 - - [15/Jun/2025:17:32:39 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:32:49.178Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+[2025-06-15T17:33:16.532Z] INFO: ::1 - - [15/Jun/2025:17:33:16 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:33:18.698Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+[2025-06-15T17:33:28.870Z] INFO: ::1 - - [15/Jun/2025:17:33:28 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:33:30.249Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+[2025-06-15T17:37:11.975Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T17:37:40.004Z] INFO: ::1 - - [15/Jun/2025:17:37:40 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:37:41.190Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:37:45.759Z] INFO: ::1 - - [15/Jun/2025:17:37:45 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:38:59.342Z] INFO: ::1 - - [15/Jun/2025:17:38:59 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:39:51.337Z] INFO: ::1 - - [15/Jun/2025:17:39:51 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:40:22.633Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T17:41:15.014Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:41:22.231Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:41:51.062Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:41:52.280Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:41:52.552Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:41:52.728Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:41:52.906Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:41:53.072Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:41:56.091Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:41:56.323Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:41:56.683Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\csurf\index.js:112:19)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:144:3
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sos\sos911\back_end\src\app.js:115:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sos\sos911\back_end\node_modules\express\lib\router\index.js:328:13)
+[2025-06-15T17:42:47.329Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T17:42:58.677Z] INFO: ::1 - - [15/Jun/2025:17:42:58 +0000] "POST /login HTTP/1.1" 400 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:43:02.433Z] INFO: ::1 - - [15/Jun/2025:17:43:02 +0000] "POST /login HTTP/1.1" 400 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:43:28.083Z] INFO: ::1 - - [15/Jun/2025:17:43:28 +0000] "POST /login HTTP/1.1" 400 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:43:48.362Z] INFO: ::1 - - [15/Jun/2025:17:43:48 +0000] "POST /login HTTP/1.1" 400 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:44:03.404Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T17:44:15.458Z] INFO: ::1 - - [15/Jun/2025:17:44:15 +0000] "POST /login HTTP/1.1" 400 38 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:45:19.400Z] INFO: ::1 - - [15/Jun/2025:17:45:19 +0000] "POST /registro HTTP/1.1" 400 57 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:45:37.644Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T17:46:31.536Z] INFO: ::1 - - [15/Jun/2025:17:46:31 +0000] "POST /registro HTTP/1.1" 201 250 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:46:47.457Z] INFO: ::1 - - [15/Jun/2025:17:46:47 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+[2025-06-15T17:47:08.062Z] INFO: ::1 - - [15/Jun/2025:17:47:08 +0000] "GET /usuarios HTTP/1.1" 200 645 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:47:12.245Z] INFO: ::1 - - [15/Jun/2025:17:47:12 +0000] "PUT /usuarios/1 HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:47:16.043Z] INFO: ::1 - - [15/Jun/2025:17:47:16 +0000] "GET /usuarios HTTP/1.1" 200 430 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:47:23.848Z] INFO: ::1 - - [15/Jun/2025:17:47:23 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:47:32.937Z] INFO: ::1 - - [15/Jun/2025:17:47:32 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:49:56.905Z] INFO: ::1 - - [15/Jun/2025:17:49:56 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:51:54.317Z] INFO: ::1 - - [15/Jun/2025:17:51:54 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:51:58.628Z] INFO: ::1 - - [15/Jun/2025:17:51:58 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:52:05.883Z] INFO: ::1 - - [15/Jun/2025:17:52:05 +0000] "PUT /usuarios/10 HTTP/1.1" 200 215 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:52:10.179Z] INFO: ::1 - - [15/Jun/2025:17:52:10 +0000] "GET /usuarios HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T17:59:43.649Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T17:59:59.165Z] INFO: ::1 - - [15/Jun/2025:17:59:59 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T18:00:03.902Z] INFO: ::1 - - [15/Jun/2025:18:00:03 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T18:00:29.682Z] INFO: ::1 - - [15/Jun/2025:18:00:29 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T18:02:45.410Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T18:03:35.799Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T18:04:45.446Z] INFO: ::1 - - [15/Jun/2025:18:04:45 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T18:05:02.188Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T18:06:05.164Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T18:06:27.160Z] INFO: ::1 - - [15/Jun/2025:18:06:27 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-15T18:08:31.152Z] INFO: ::1 - - [15/Jun/2025:18:08:31 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T18:08:35.121Z] INFO: ::1 - - [15/Jun/2025:18:08:35 +0000] "GET /usuarios HTTP/1.1" 200 647 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T18:08:42.361Z] INFO: ::1 - - [15/Jun/2025:18:08:42 +0000] "PUT /usuarios/1 HTTP/1.1" 200 217 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T18:08:46.133Z] INFO: ::1 - - [15/Jun/2025:18:08:46 +0000] "GET /usuarios HTTP/1.1" 200 432 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T18:08:51.061Z] INFO: ::1 - - [15/Jun/2025:18:08:51 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-15T18:12:06.250Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T18:12:34.324Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T18:12:57.596Z] INFO: ::1 - - [15/Jun/2025:18:12:57 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
