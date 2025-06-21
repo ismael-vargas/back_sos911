@@ -1,3 +1,4 @@
+// Definición del modelo "ubicaciones_clientes" para Sequelize (ORM)
 const { DataTypes } = require('sequelize'); // Importa DataTypes directamente desde Sequelize
 
 const ubicacion_clientes = (sequelize) => {

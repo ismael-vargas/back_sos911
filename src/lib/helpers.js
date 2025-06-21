@@ -1,7 +1,11 @@
+//Sirve para cifrar y verificar contraseñas de forma segura con bcrypt.
+
+// Importa la librería bcrypt para cifrar y comparar contraseñas
 const bcrypt = require('bcrypt');
 
 const helpers = {};
 
+// Función para cifrar una contraseña de forma segura
 helpers.hashPassword = async (password) => {
     try {
         const saltRounds = 12;
@@ -11,6 +15,7 @@ helpers.hashPassword = async (password) => {
         throw new Error('Error al cifrar la contraseña');
     }
 };
+// Función para comparar una contraseña ingresada con su versión cifrada
 
 helpers.comparePassword = async (password, hashedPassword) => {
     try {
@@ -21,4 +26,5 @@ helpers.comparePassword = async (password, hashedPassword) => {
     }
 };
 
+// Exporta el objeto helpers para que estas funciones puedan usarse en otros archivos
 module.exports = helpers;

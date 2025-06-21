@@ -1,3 +1,4 @@
+// Definición del modelo "contactos_emergencias" para Sequelize (ORM)
 const contactosEmergencias = (sequelize, type) => { 
     return sequelize.define('contactos_emergencias', {
         id: {

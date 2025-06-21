@@ -1,5 +1,6 @@
+// Definición del modelo "usuarios" para Sequelize (ORM)
 const usuario = (sequelize, type) => {
-    return sequelize.define('usuarios', {
+    return sequelize.define('usuarios', { // Define una tabla llamada 'usuarios'
         id: {
             type: type.INTEGER,
             autoIncrement: true,

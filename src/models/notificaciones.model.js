@@ -1,3 +1,4 @@
+// Definición del modelo "notificaciones" para Sequelize (ORM)
 const notificaciones = (sequelize, type) => {
     return sequelize.define('notificaciones', {
         id: {

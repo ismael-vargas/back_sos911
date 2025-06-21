@@ -1,3 +1,4 @@
+// Definición del modelo "clientes_numeros" para Sequelize (ORM)
 const clienteNumero = (sequelize, type) => {
     return sequelize.define('clientes_numeros', {
         id: {
@@ -15,9 +16,19 @@ const clienteNumero = (sequelize, type) => {
             },
             comment: 'ID del cliente relacionado'
         },
+        nombre: {
+            type: type.STRING(100),
+            allowNull: false,
+            comment: 'Nombre asociado al número del cliente'
+        },
         numero: {
             type: type.STRING(20),
             comment: 'Número asociado al cliente'
+        },
+        descripcion: {
+            type: type.STRING(255),
+            allowNull: true,
+            comment: 'Descripción del número del cliente'
         },
         estado: {
             type: type.ENUM('activo', 'eliminado'),
@@ -28,6 +39,6 @@ const clienteNumero = (sequelize, type) => {
         timestamps: false,
         comment: 'Tabla de números de clientes'
     });
-  };
-  
-  module.exports = clienteNumero;
+};
+
+module.exports = clienteNumero;

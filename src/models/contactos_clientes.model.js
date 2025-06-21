@@ -1,3 +1,4 @@
+// Definición del modelo "contactos clientes" para Sequelize (ORM)
 const contactosClientes = (sequelize, type) => {
     return sequelize.define('contactos_clientes', {
         id: {

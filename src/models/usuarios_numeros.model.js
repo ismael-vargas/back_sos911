@@ -1,5 +1,6 @@
+// Definición del modelo "usuarios_numeros" para Sequelize (ORM)
 const usuario_numero = (sequelize, type) => {
-    return sequelize.define('usuarios_numeros', {
+    const UsuarioNumero = sequelize.define('usuarios_numeros', {
         id: {
             type: type.INTEGER,
             autoIncrement: true,
@@ -15,9 +16,15 @@ const usuario_numero = (sequelize, type) => {
             },
             comment: 'ID del usuario relacionado'
         },
+        nombre: {
+            type: type.STRING,
+            allowNull: false,
+            comment: 'Nombre del contacto'
+        },
         numero: {
             type: type.STRING,
-            comment: 'Número del usuario'
+            allowNull: false,
+            comment: 'Número del contacto'
         },
         estado: {
             type: type.ENUM('activo', 'eliminado'),
@@ -29,6 +36,8 @@ const usuario_numero = (sequelize, type) => {
         timestamps: false,
         comment: 'Tabla de números de usuarios'
     });
+
+    return UsuarioNumero;
 };
 
 module.exports = usuario_numero;

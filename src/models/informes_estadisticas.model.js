@@ -1,3 +1,4 @@
+// Definición del modelo "informes_estadisticas" para Sequelize (ORM)
 const informesEstadisticas = (sequelize, type) => {
     return sequelize.define('informes_estadisticas', {
         id: {

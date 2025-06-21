@@ -1,25 +1,24 @@
 const { usuario_numero, usuario } = require('../Database/dataBase.orm'); // Asegúrate de que también importes el modelo de usuario
 const usuarioNumeroCtl = {};
 
-// Crear un nuevo usuarioNumero
+// Crear un nuevo usuarioNumero con nombre del usuario
 usuarioNumeroCtl.crearUsuarioNumero = async (req, res, next) => {
-    const { numero, usuario_id } = req.body;
+    const { nombre, numero, usuario_id } = req.body;
+
+    console.log("Datos recibidos en el backend:", req.body); // Depuración
+
+    // Validar que los campos obligatorios estén presentes
+    if (!nombre || !numero || !usuario_id) {
+        return res.status(400).json({ message: 'Faltan campos obligatorios: nombre, numero y usuario_id.' });
+    }
+
     try {
-        const existingUsuarioNumero = await usuario_numero.findOne({ where: { numero, usuario_id } });
-        if (existingUsuarioNumero) {
-            return res.status(400).json({ message: 'El número ya está registrado para este usuario.' });
-        }
-
-        // Verificar si el usuario_id existe en la tabla de usuarios
-        const existingUsuario = await usuario.findByPk(usuario_id);
-        if (!existingUsuario) {
-            return res.status(400).json({ message: 'El usuario no existe.' });
-        }
-
         const nuevoUsuarioNumero = await usuario_numero.create({
+            nombre,
             numero,
             usuario_id
         });
+
         res.status(201).json({ message: 'Registro exitoso', usuarioNumero: nuevoUsuarioNumero });
     } catch (error) {
         console.error('Error al crear el usuarioNumero:', error.message);
@@ -27,10 +26,13 @@ usuarioNumeroCtl.crearUsuarioNumero = async (req, res, next) => {
     }
 };
 
-// Obtener todos los usuarioNumero activos
+// Obtener todos los usuarioNumero activos con el nombre del usuario relacionado
 usuarioNumeroCtl.getUsuarioNumero = async (req, res) => {
     try {
-        const usuariosNumeros = await usuario_numero.findAll({ where: { estado: 'activo' } });
+        const usuariosNumeros = await usuario_numero.findAll({
+            where: { estado: 'activo' },
+            attributes: ['id', 'nombre', 'numero', 'estado', 'usuario_id']
+        });
         res.status(200).json(usuariosNumeros);
     } catch (error) {
         console.error('Error al obtener los usuariosNumeros:', error.message);
@@ -38,10 +40,12 @@ usuarioNumeroCtl.getUsuarioNumero = async (req, res) => {
     }
 };
 
-// Obtener un usuarioNumero por ID
+// Obtener un usuarioNumero por ID con el nombre del usuario relacionado
 usuarioNumeroCtl.getUsuarioNumeroById = async (req, res) => {
     try {
-        const usuarioNumero = await usuario_numero.findByPk(req.params.id);
+        const usuarioNumero = await usuario_numero.findByPk(req.params.id, {
+            attributes: ['id', 'nombre', 'numero', 'estado', 'usuario_id']
+        });
         if (usuarioNumero && usuarioNumero.estado === 'activo') {
             res.status(200).json(usuarioNumero);
         } else {

@@ -1,4 +1,5 @@
-    const presionesBotonPanico = (sequelize, type) => {
+// Definición del modelo "presiones_boton_panico" para Sequelize (ORM)
+const presionesBotonPanico = (sequelize, type) => {
         return sequelize.define('presiones_boton_panicos', {
             id: {
                 type: type.INTEGER,

@@ -1,3 +1,4 @@
+// Definición del modelo "clientes" para Sequelize (ORM)
 const cliente = (sequelize, type) => {
     return sequelize.define('clientes', {
         id: {
@@ -58,7 +59,6 @@ const cliente = (sequelize, type) => {
           }
       ]
     });
-  };
-  
-  module.exports = cliente;
-  
+};
+
+module.exports = cliente;

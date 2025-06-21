@@ -1,3 +1,4 @@
+// Definición del modelo "roles" para Sequelize (ORM)
 const rol = (sequelize, type) => {
     return sequelize.define('roles', {
         id: {

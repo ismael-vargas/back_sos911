@@ -38,8 +38,6 @@ sequelize.authenticate()
         console.error("Error al sincronizar las tablas:", err.message);
     }); */
 
-    
-
 //extracionModelos
 
 const dispositivosModel = require('../models/dispositivos.model');
@@ -54,12 +52,11 @@ const cliente_gruposModel =require('../models/clientes_grupos');
 const cliente_numeroModel =require('../models/clientes_numeros');
 const contactosClientesModel =require('../models/contactos_clientes.model');
 const contactosEmergenciaModel =require('../models/contactos_emergencias.model');
-
+const mensajesGrupoModel = require('../models/mensajes_grupo.model');
 const informesEstadisticasModel = require ('../models/informes_estadisticas.model');
 const notificacionesModel = require ('../models/notificaciones.model');
 const presionesBotonPanicosModel = require('../models/presiones_boton_panico.model');
 const usuariosRolesModel = require('../models/usuarios_roles.model');
-
 
 
 //Sincronia tablas
@@ -75,7 +72,7 @@ const clientes_grupos = cliente_gruposModel(sequelize,Sequelize);
 const clientes_numeros = cliente_numeroModel(sequelize,Sequelize);
 const contactos_clientes = contactosClientesModel(sequelize,Sequelize);
 const contactos_emergencia = contactosEmergenciaModel(sequelize,Sequelize);
-
+const mensajes_grupo = mensajesGrupoModel(sequelize, Sequelize);
 const informes_estadisticas = informesEstadisticasModel(sequelize, Sequelize);
 const notificaciones = notificacionesModel(sequelize, Sequelize);
 const presiones_boton_panico = presionesBotonPanicosModel(sequelize, Sequelize);
@@ -140,6 +137,15 @@ contactos_clientes.belongsTo(notificaciones, { foreignKey: 'notificacion_id' });
 
 
 
+// Relacionar mensajes con grupos y clientes
+mensajes_grupo.belongsTo(grupos, { foreignKey: 'grupo_id' });
+grupos.hasMany(mensajes_grupo, { foreignKey: 'grupo_id' });
+
+mensajes_grupo.belongsTo(cliente, { foreignKey: 'cliente_id' });
+cliente.hasMany(mensajes_grupo, { foreignKey: 'cliente_id' });
+
+
+
 sequelize.sync({ alter: false }) // alter will update the database schema to match the model
     .then(() => {
         console.log('Database synchronized');
@@ -148,10 +154,6 @@ sequelize.sync({ alter: false }) // alter will update the database schema to mat
         console.error('Error synchronizing the database:', error);
     });
  
-    
-
-
-
 // Exportar el objeto sequelize
 module.exports = {
     rol,
@@ -166,7 +168,7 @@ module.exports = {
     clientes_numeros,
     contactos_clientes,
     contactos_emergencia,
- 
+    mensajes_grupo,
     informes_estadisticas,
     notificaciones,
     presiones_boton_panico,

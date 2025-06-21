@@ -1,3 +1,4 @@
+// Definición del modelo "evaluaciones_situaciones" para Sequelize (ORM)
 const evaluacionesSituaciones = (sequelize, type) => {
     return sequelize.define('evaluaciones_situaciones', {
         id: {

@@ -1,3 +1,4 @@
+// Definición del modelo "dispositivos" para Sequelize (ORM)
 const dispositivos = (sequelize, type) => {
     return sequelize.define('dispositivos', {
         id: {

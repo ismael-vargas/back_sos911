@@ -1,3 +1,4 @@
+// Definición del modelo "grupos" para Sequelize (ORM)
 const grupos = (sequelize, type) => {
     return sequelize.define('grupos', {
         id: {
@@ -19,6 +20,11 @@ const grupos = (sequelize, type) => {
             type: type.STRING,
             allowNull: false,
             comment: 'Nombre de grupo'
+        },
+        descripcion: {
+            type: type.STRING,
+            allowNull: true,
+            comment: 'Descripción del grupo'
         },
         estado: {
             type: type.ENUM('activo', 'eliminado'),

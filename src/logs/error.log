@@ -367,3 +367,193 @@ ForbiddenError: invalid csrf token
 [2025-06-15T18:06:05.164Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
 [2025-06-15T18:12:06.250Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
 [2025-06-15T18:12:34.324Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T18:35:11.291Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T19:08:28.278Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T19:31:55.227Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T19:34:35.415Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T19:39:46.937Z] ERROR: ER_NO_SUCH_TABLE: Table 's.o.s..sessions' doesn't exist
+STACK:
+Error: ER_NO_SUCH_TABLE: Table 's.o.s..sessions' doesn't exist
+    at Sequence._packetToError (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\mysql\lib\protocol\sequences\Sequence.js:47:14)
+    at Query.ErrorPacket (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\mysql\lib\protocol\sequences\Query.js:79:18)
+    at Protocol._parsePacket (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\mysql\lib\protocol\Protocol.js:291:23)
+    at Parser._parsePacket (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\mysql\lib\protocol\Parser.js:433:10)
+    at Parser.write (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\mysql\lib\protocol\Parser.js:43:10)
+    at Protocol.write (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\mysql\lib\protocol\Protocol.js:38:16)
+    at Socket.<anonymous> (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\mysql\lib\Connection.js:88:28)
+    at Socket.<anonymous> (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:519:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    --------------------
+    at Pool.query (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\mysql\lib\Pool.js:199:23)
+    at MySQLStore.query (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express-mysql-session\index.js:439:33)
+    at MySQLStore.get (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express-mysql-session\index.js:162:8)
+    at session (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express-session\index.js:493:11)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at internalNext (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\helmet\index.cjs:521:6)
+[2025-06-15T19:39:52.455Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T19:47:10.313Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T19:50:50.795Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T19:56:48.621Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T19:57:11.991Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T20:04:55.264Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T20:05:18.662Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T20:08:30.055Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T21:48:20.371Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-15T23:08:04.838Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T00:58:24.242Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T01:11:04.929Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T01:39:10.604Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T01:40:58.893Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T03:11:20.998Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T03:12:00.090Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T03:12:22.113Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T14:38:59.553Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T14:39:21.370Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T14:59:55.671Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T15:23:19.812Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T17:30:35.824Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T17:34:00.079Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T17:34:11.039Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T17:52:40.532Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T18:17:31.695Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T18:18:05.629Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T18:23:17.722Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T18:24:37.831Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T20:16:12.860Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T20:17:22.282Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T22:04:28.485Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T22:45:06.114Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T22:59:36.774Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T23:17:01.713Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T23:30:43.767Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-16T23:37:47.177Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T00:03:01.406Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T00:12:32.924Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T00:23:00.990Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T00:28:40.041Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T00:37:42.268Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T00:56:32.408Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T01:13:29.009Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T01:19:04.771Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T01:35:49.945Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T01:40:49.638Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T02:11:16.316Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T02:13:08.145Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T02:28:09.177Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T02:29:39.005Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T02:36:38.543Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T02:39:46.954Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T02:40:34.495Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T02:46:12.574Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T15:13:05.637Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T16:06:30.441Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T17:17:33.067Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T17:19:07.797Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T17:26:23.401Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T17:27:33.552Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T17:41:47.878Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T18:32:10.482Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T18:32:21.129Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T18:34:31.570Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T18:51:40.593Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T18:58:18.770Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T21:25:16.770Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T21:51:29.112Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-17T21:54:29.694Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T01:59:11.079Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T02:35:58.374Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T15:13:41.598Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T15:19:12.532Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T15:39:14.434Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T19:24:15.163Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T19:34:12.779Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T19:50:26.018Z] ERROR: Unexpected non-whitespace character after JSON at position 145
+STACK:
+SyntaxError: Unexpected non-whitespace character after JSON at position 145
+    at JSON.parse (<anonymous>)
+    at parse (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\body-parser\lib\types\json.js:92:19)
+    at C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at invokeCallback (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\raw-body\index.js:238:16)
+    at done (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:519:28)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+[2025-06-18T19:50:39.559Z] ERROR: Unexpected non-whitespace character after JSON at position 145
+STACK:
+SyntaxError: Unexpected non-whitespace character after JSON at position 145
+    at JSON.parse (<anonymous>)
+    at parse (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\body-parser\lib\types\json.js:92:19)
+    at C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at invokeCallback (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\raw-body\index.js:238:16)
+    at done (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:519:28)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+[2025-06-18T21:39:27.994Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T21:50:57.627Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T23:20:34.527Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T23:33:32.646Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T23:34:15.440Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T23:40:57.781Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-18T23:51:59.634Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T01:01:27.858Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T01:27:04.780Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T15:13:22.470Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T15:14:00.087Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T15:18:03.224Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T15:18:48.708Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T16:20:48.609Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T16:22:13.268Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T18:44:43.594Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T18:48:02.987Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T21:03:35.927Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T21:23:29.016Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-19T22:10:58.384Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-20T00:34:27.866Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-20T00:39:23.689Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-20T00:40:45.334Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-20T15:49:31.050Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-20T15:50:00.335Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-20T17:34:42.469Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sosv3\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-20T17:34:42.470Z] WARN: Error de validación CSRF
+[2025-06-20T19:52:24.413Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-20T19:52:30.210Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-20T22:49:25.779Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-20T23:29:30.115Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\sosv3\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\sosv3\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-20T23:29:30.116Z] WARN: Error de validación CSRF
+[2025-06-20T23:36:53.612Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-21T00:40:30.032Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-21T00:43:04.458Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente

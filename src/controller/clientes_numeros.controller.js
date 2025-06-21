@@ -3,23 +3,33 @@ const { clientes_numeros } = require('../Database/dataBase.orm'); // Asegúrate 
 const clientesNumerosCtl = {};
 
 // Crear un nuevo número de cliente
-clientesNumerosCtl.crearClientesNumero = async (req, res, next) => {
-    const { cliente_id, numero } = req.body;
+clientesNumerosCtl.crearClientesNumero = async (req, res) => {
+    const { cliente_id, nombre, numero, descripcion } = req.body;
+
+    // Validar campos requeridos
+    if (!cliente_id || !nombre || !numero) {
+        return res.status(400).json({ message: 'Faltan campos requeridos: cliente_id, nombre y numero.' });
+    }
+
     try {
-        // Verificar si el número de cliente ya existe para el cliente especificado
-        const existingClienteNumero = await clientes_numeros.findOne({ where: { cliente_id, numero } });
-        if (existingClienteNumero) {
+        // Verificar si ya existe el mismo número para el mismo cliente
+        const existente = await clientes_numeros.findOne({ where: { cliente_id, numero } });
+        if (existente) {
             return res.status(400).json({ message: 'El número de cliente ya está registrado para este cliente.' });
         }
 
-        // Crear un nuevo número de cliente
-        const newClienteNumero = await clientes_numeros.create({
+        // Crear registro
+        const nuevoRegistro = await clientes_numeros.create({
             cliente_id,
-            numero
+            nombre,
+            numero,
+            descripcion
         });
 
-        // Responder con el nuevo número de cliente
-        res.status(201).json({ message: 'Registro exitoso', clienteNumero: newClienteNumero });
+        res.status(201).json({
+            message: 'Registro exitoso',
+            clienteNumero: nuevoRegistro
+        });
 
     } catch (error) {
         console.error('Error en el registro del número de cliente:', error.message);
@@ -27,11 +37,14 @@ clientesNumerosCtl.crearClientesNumero = async (req, res, next) => {
     }
 };
 
-// Obtener todos los números de clientes
+// Obtener todos los números de clientes activos
 clientesNumerosCtl.getClientesNumeros = async (req, res) => {
     try {
-        const clientesNumeros = await clientes_numeros.findAll({ where: { estado: 'activo' } });
-        res.status(200).json(clientesNumeros);
+        const registros = await clientes_numeros.findAll({
+            where: { estado: 'activo' },
+            order: [['id', 'ASC']]
+        });
+        res.status(200).json(registros);
     } catch (error) {
         console.error('Error al obtener los números de clientes:', error.message);
         res.status(500).json({ error: 'Error al obtener los números de clientes' });
@@ -41,9 +54,9 @@ clientesNumerosCtl.getClientesNumeros = async (req, res) => {
 // Obtener un número de cliente por ID
 clientesNumerosCtl.getClientesNumeroById = async (req, res) => {
     try {
-        const clienteNumero = await clientes_numeros.findByPk(req.params.id);
-        if (clienteNumero && clienteNumero.estado === 'activo') {
-            res.status(200).json(clienteNumero);
+        const registro = await clientes_numeros.findByPk(req.params.id);
+        if (registro && registro.estado === 'activo') {
+            res.status(200).json(registro);
         } else {
             res.status(404).json({ error: 'Número de cliente no encontrado' });
         }
@@ -55,11 +68,20 @@ clientesNumerosCtl.getClientesNumeroById = async (req, res) => {
 
 // Actualizar un número de cliente por ID
 clientesNumerosCtl.updateClientesNumero = async (req, res) => {
+    const { nombre, numero, descripcion } = req.body;
+
+    if (!nombre || !numero) {
+        return res.status(400).json({ message: 'Los campos nombre y numero son requeridos.' });
+    }
+
     try {
-        const clienteNumero = await clientes_numeros.findByPk(req.params.id);
-        if (clienteNumero) {
-            await clienteNumero.update(req.body);
-            res.status(200).json(clienteNumero);
+        const registro = await clientes_numeros.findByPk(req.params.id);
+        if (registro && registro.estado === 'activo') {
+            await registro.update({ nombre, numero, descripcion });
+            res.status(200).json({
+                message: 'Registro actualizado correctamente',
+                clienteNumero: registro
+            });
         } else {
             res.status(404).json({ error: 'Número de cliente no encontrado' });
         }
@@ -69,13 +91,13 @@ clientesNumerosCtl.updateClientesNumero = async (req, res) => {
     }
 };
 
-// "Eliminar" un número de cliente por ID (cambio de estado a "inactivo")
+// Eliminar (lógicamente) un número de cliente por ID
 clientesNumerosCtl.deleteClientesNumero = async (req, res) => {
     try {
-        const clienteNumero = await clientes_numeros.findByPk(req.params.id);
-        if (clienteNumero && clienteNumero.estado === 'activo') {
-            await clienteNumero.update({ estado: 'eliminado' });
-            res.status(204).send();
+        const registro = await clientes_numeros.findByPk(req.params.id);
+        if (registro && registro.estado === 'activo') {
+            await registro.update({ estado: 'eliminado' });
+            res.status(200).json({ message: 'Número de cliente eliminado correctamente' });
         } else {
             res.status(404).json({ error: 'Número de cliente no encontrado' });
         }

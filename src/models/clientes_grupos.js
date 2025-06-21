@@ -1,3 +1,4 @@
+// Definición del modelo "clientes_grupos" para Sequelize (ORM)
 const clienteGrupo = (sequelize, type) => {
     return sequelize.define('clientes_grupos', {
         id: {

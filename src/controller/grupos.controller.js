@@ -5,13 +5,13 @@ const gruposCtl = {};
 
 // Crear un nuevo grupo
 gruposCtl.crearGrupo = async (req, res) => {
-    const { cliente_id, nombre } = req.body;
+    const { cliente_id, nombre, descripcion } = req.body;
 
     // Validaciones adicionales
     if (!cliente_id || !nombre) {
         return res.status(400).json({ message: 'Faltan campos requeridos: cliente_id y nombre.' });
     }
-    
+
     try {
         // Verificar si el grupo ya existe
         const existingGroup = await grupos.findOne({ where: { nombre } });
@@ -23,7 +23,8 @@ gruposCtl.crearGrupo = async (req, res) => {
         const newGroup = await grupos.create({
             cliente_id,
             nombre,
-            estado: 'activo'  // Establecer estado por defecto
+            descripcion, // ✅ se incluye descripción
+            estado: 'activo'
         });
 
         // Responder con el nuevo grupo
@@ -63,7 +64,7 @@ gruposCtl.getGrupoById = async (req, res) => {
 
 // Actualizar un grupo por ID
 gruposCtl.updateGrupo = async (req, res) => {
-    const { cliente_id, nombre } = req.body;
+    const { cliente_id, nombre, descripcion } = req.body;
 
     // Validaciones adicionales
     if (!cliente_id || !nombre) {
@@ -73,7 +74,7 @@ gruposCtl.updateGrupo = async (req, res) => {
     try {
         const grupo = await grupos.findByPk(req.params.id);
         if (grupo) {
-            await grupo.update({ cliente_id, nombre });
+            await grupo.update({ cliente_id, nombre, descripcion }); // ✅ actualización incluye descripción
             res.status(200).json({ message: 'Grupo actualizado correctamente', grupo });
         } else {
             res.status(404).json({ error: 'Grupo no encontrado' });
@@ -84,12 +85,12 @@ gruposCtl.updateGrupo = async (req, res) => {
     }
 };
 
-// Borrar un grupo por ID
+// Borrar un grupo por ID (eliminación lógica)
 gruposCtl.deleteGrupo = async (req, res) => {
     try {
         const grupo = await grupos.findByPk(req.params.id);
         if (grupo) {
-            await grupo.update({ estado: 'eliminado' }); // Marcar como eliminado en lugar de eliminar físicamente
+            await grupo.update({ estado: 'eliminado' });
             res.status(200).json({ message: 'Grupo eliminado correctamente' });
         } else {
             res.status(404).json({ error: 'Grupo no encontrado' });

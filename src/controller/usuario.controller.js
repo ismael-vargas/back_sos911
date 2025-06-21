@@ -1,4 +1,5 @@
-const { usuario } = require('../Database/dataBase.orm'); // Asegúrate de que la ruta sea correcta
+const { usuario } = require('../Database/dataBase.orm'); // Modelo relacional
+const Preferencias = require('../models/preferencias.model'); // Modelo no relacional
 const bcrypt = require('bcryptjs');
 
 // Controlador de usuarios
@@ -43,13 +44,11 @@ usersCtl.crearUsuario = async (req, res, next) => {
     }
 };
 
-// Obtener todos los usuarios
+// Obtener todos los usuarios, incluidos los eliminados
 usersCtl.getUsuarios = async (req, res) => {
     try {
-        // Filtrar para obtener solo los usuarios que no están eliminados
-        const usuarios = await usuario.findAll({
-            where: { estado: 'activo' }
-        });
+        // Obtener todos los usuarios sin filtrar por estado
+        const usuarios = await usuario.findAll(); // Esto incluye tanto 'activo' como 'eliminado'
         res.status(200).json(usuarios);
     } catch (error) {
         console.error('Error al obtener los usuarios:', error.message);
@@ -83,6 +82,14 @@ usersCtl.updateUsuario = async (req, res) => {
             if (req.body.estado !== undefined && !validStates.includes(req.body.estado)) {
                 return res.status(400).json({ message: `El estado debe ser uno de los siguientes valores: ${validStates.join(', ')}.` });
             }
+
+            // Si se envía una nueva contraseña, hashearla antes de actualizar
+            if (req.body.contrasena) {
+                const hashedPassword = await bcrypt.hash(req.body.contrasena, 10);
+                req.body.contrasena_hash = hashedPassword;
+                delete req.body.contrasena; // Eliminar la contraseña en texto plano
+            }
+
             await user.update(req.body);
             res.status(200).json(user);
         } else {
@@ -113,4 +120,145 @@ usersCtl.deleteUsuario = async (req, res) => {
     }
 };
 
+
+// Registrar preferencias para un usuario ya existente
+usersCtl.registrarPreferencias = async (req, res) => {
+    const { id } = req.params;
+    const { tema, colores, fuente, botonPrincipal, barraSuperior } = req.body;
+
+
+    try {
+        // Verificar que el usuario exista en MySQL
+        const existeUsuario = await usuario.findByPk(id);
+        if (!existeUsuario) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        // Validar si ya existen preferencias para ese usuario
+        const yaTienePreferencias = await Preferencias.findOne({ usuarioId: id });
+        if (yaTienePreferencias) {
+            return res.status(400).json({ message: 'El usuario ya tiene preferencias registradas.' });
+        }
+
+        // Guardar las preferencias en Mongo
+        const preferencias = await Preferencias.create({
+            usuarioId: id,
+            origen: 'usuario',
+            tema,
+            colores: {
+                fondo: colores.fondo,
+                texto: colores.texto,
+                botones: colores.botones,
+                sidebar: colores.sidebar,
+                inicio: colores.inicio,
+                botonPrincipal,
+                barraSuperior
+            },
+            fuente,
+        });
+
+
+        res.status(201).json({
+            message: 'Preferencias guardadas exitosamente.',
+            preferencias,
+        });
+    } catch (error) {
+        console.error('Error al registrar preferencias:', error.message);
+        res.status(500).json({ message: 'Error interno del servidor.' });
+    }
+};
+
+
+// Obtener un usuario y sus preferencias
+usersCtl.getUsuarioConPreferencias = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Paso 1: Obtiene el usuario desde la base relacional (MySQL)
+        const usuarioData = await usuario.findByPk(id);
+
+        if (!usuarioData) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        // Paso 2: Obtiene las preferencias desde la base no relacional (MongoDB)
+        const preferenciasData = await Preferencias.findOne({ usuarioId: id });
+
+        res.status(200).json({
+            usuario: usuarioData,    //  Información del usuario desde MySQL
+            preferencias: preferenciasData, // Información de preferencias desde MongoDB
+        });
+    } catch (error) {
+        console.error('Error al obtener usuario y preferencias:', error.message);
+        res.status(500).json({ message: 'Error interno del servidor.' });
+    }
+};
+
+
+// Actualizar preferencias de un usuario existente
+usersCtl.actualizarPreferencias = async (req, res) => {
+    const { id } = req.params;
+    const { tema, colores, fuente, botonPrincipal, barraSuperior, estado } = req.body;
+
+    const estadosValidos = ['activo', 'eliminado'];
+
+    try {
+        // Verificar que existan preferencias
+        const preferencias = await Preferencias.findOne({ usuarioId: id });
+        if (!preferencias) {
+            return res.status(404).json({ message: 'Preferencias no encontradas para este usuario.' });
+        }
+
+        // Actualizar los campos si se proporcionan
+        if (colores !== undefined) {
+            const camposColor = ['fondo', 'texto', 'botones', 'sidebar', 'inicio', 'botonPrincipal', 'barraSuperior'];
+            camposColor.forEach(campo => {
+                if (colores[campo] !== undefined) {
+                    preferencias.colores[campo] = colores[campo];
+                }
+            });
+        }
+        if (fuente !== undefined) preferencias.fuente = fuente;
+        if (estado !== undefined) {
+            if (!estadosValidos.includes(estado)) {
+                return res.status(400).json({ message: 'Estado inválido. Debe ser "activo" o "eliminado".' });
+            }
+            preferencias.estado = estado;
+        }
+
+        await preferencias.save();
+
+        res.status(200).json({ message: 'Preferencias actualizadas correctamente.', preferencias });
+    } catch (error) {
+        console.error('Error al actualizar preferencias:', error.message);
+        res.status(500).json({ message: 'Error interno del servidor.' });
+    }
+};
+
+// Eliminar (lógicamente) las preferencias del usuario
+usersCtl.eliminarPreferencias = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const preferencias = await Preferencias.findOne({ usuarioId: id });
+
+        if (!preferencias) {
+            return res.status(404).json({ message: 'Preferencias no encontradas para este usuario.' });
+        }
+
+        if (preferencias.estado === 'eliminado') {
+            return res.status(400).json({ message: 'Las preferencias ya están eliminadas.' });
+        }
+
+        preferencias.estado = 'eliminado';
+        await preferencias.save();
+
+        res.status(200).json({ message: 'Preferencias eliminadas correctamente.' });
+    } catch (error) {
+        console.error('Error al eliminar preferencias:', error.message);
+        res.status(500).json({ message: 'Error interno del servidor.' });
+    }
+};
+
+// Exportar el controlador
 module.exports = usersCtl;

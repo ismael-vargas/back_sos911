@@ -1,3 +1,4 @@
+//Configura Passport.js para autenticar usuarios y gestionar sesiones con estrategia local.(passport.js)
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
@@ -9,9 +10,9 @@ passport.use(
     'local.signin',
     new LocalStrategy(
         {
-            usernameField: 'correo_electronico',
-            passwordField: 'contrasena',
-            passReqToCallback: true,
+            usernameField: 'correo_electronico', // Campo que usará como "username"
+            passwordField: 'contrasena', // Campo que usará como "password"
+            passReqToCallback: true, // Pasa el `req` al callback
         },
         async (req, correo_electronico, contrasena, done) => {
             try {
@@ -34,7 +35,7 @@ passport.use(
 );
 
 passport.use(
-    'local.signup',
+    'local.signup', // Nombre de la estrategia
     new LocalStrategy(
         {
             usernameField: 'correo_electronico',
@@ -43,6 +44,7 @@ passport.use(
         },
         async (req, correo_electronico, contrasena, done) => {
             try {
+                // Verifica si ya existe un usuario con ese correo
                 const existingUsuario = await Usuario.findOne({ where: { correo_electronico } });
                 if (existingUsuario) {
                     return done(null, false, req.flash('message', 'El correo electrónico ya está registrado.'));
@@ -57,10 +59,10 @@ passport.use(
                     cedula_identidad,
                     direccion,
                     contrasena_hash: hashedPassword,
-                    estado: 'activo',
+                    estado: 'activo', // Estado inicial del usuario
                 });
 
-                return done(null, nuevoUsuario);
+                return done(null, nuevoUsuario); // Autentica al nuevo usuario
             } catch (error) {
                 return done(error);
             }
@@ -68,10 +70,12 @@ passport.use(
     )
 );
 
+// Guarda solo el ID del usuario en la sesión (serialización)
 passport.serializeUser((usuario, done) => {
     done(null, usuario.id);
 });
 
+// Recupera los datos del usuario desde la base de datos usando el ID (deserialización)
 passport.deserializeUser(async (id, done) => {
     try {
         const usuario = await Usuario.findByPk(id);
@@ -81,4 +85,6 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
+// Exporta la configuración de passport para usarla en tu app principal
 module.exports = passport;
+
