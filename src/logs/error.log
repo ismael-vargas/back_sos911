@@ -557,3 +557,401 @@ ForbiddenError: invalid csrf token
 [2025-06-20T23:36:53.612Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
 [2025-06-21T00:40:30.032Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
 [2025-06-21T00:43:04.458Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-21T23:54:49.189Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-22T00:02:26.614Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-22T00:25:06.516Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-22T00:29:35.457Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-22T00:34:39.561Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-22T00:39:33.826Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-22T00:48:49.853Z] WARN: 🟡 [DEMO] Usuario intentó registrarse con un correo existente
+[2025-06-22T01:08:26.058Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:137:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-22T01:08:26.060Z] ERROR: Error interno del servidor
+[2025-06-22T01:08:26.495Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:137:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-22T01:08:26.496Z] ERROR: Error interno del servidor
+[2025-06-22T01:08:40.848Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:137:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-22T01:08:40.848Z] ERROR: Error interno del servidor
+[2025-06-22T01:08:41.293Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:137:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-22T01:08:41.296Z] ERROR: Error interno del servidor
+[2025-06-22T21:42:54.412Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:42:54.413Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:39.669Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:39.670Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:41.236Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:41.237Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:41.380Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:41.380Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:41.548Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:41.549Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:41.676Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:41.677Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:41.819Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:41.820Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:41.972Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:41.972Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:42.284Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:42.285Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:42.436Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:42.437Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:42.595Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:42.595Z] WARN: Error de validación CSRF
+[2025-06-22T21:43:42.770Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T21:43:42.771Z] WARN: Error de validación CSRF
+[2025-06-22T22:06:55.910Z] ERROR: Expected ',' or '}' after property value in JSON at position 97
+STACK:
+SyntaxError: Expected ',' or '}' after property value in JSON at position 97
+    at JSON.parse (<anonymous>)
+    at parse (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\body-parser\lib\types\json.js:92:19)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at invokeCallback (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\raw-body\index.js:238:16)
+    at done (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:519:28)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+[2025-06-22T22:06:55.910Z] ERROR: Error interno del servidor
+[2025-06-22T22:44:29.679Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-22T22:44:29.679Z] WARN: Error de validación CSRF
+[2025-06-23T00:09:03.526Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T00:09:03.527Z] WARN: Error de validación CSRF
+[2025-06-23T01:15:41.167Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T01:15:41.169Z] WARN: Error de validación CSRF
+[2025-06-23T01:20:14.026Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T01:20:14.027Z] WARN: Error de validación CSRF
+[2025-06-23T01:21:31.171Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T01:21:31.171Z] WARN: Error de validación CSRF
+[2025-06-23T01:21:39.947Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T01:21:39.949Z] WARN: Error de validación CSRF
+[2025-06-23T15:43:15.100Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:735:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:649:5
+[2025-06-23T15:43:15.102Z] WARN: Error de validación CSRF
+[2025-06-23T16:49:43.137Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T16:49:43.139Z] WARN: Error de validación CSRF
+[2025-06-23T22:54:39.122Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T22:54:39.123Z] WARN: Error de validación CSRF
+[2025-06-23T22:59:49.784Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T22:59:49.785Z] WARN: Error de validación CSRF
+[2025-06-23T23:05:04.064Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T23:05:04.065Z] WARN: Error de validación CSRF

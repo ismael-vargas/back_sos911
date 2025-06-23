@@ -1,17 +1,22 @@
+//contactos_emergencias.router.js
 const express = require('express');
 const router = express.Router();
 const {
-    createContactoEmergencia,
-    getContactosEmergencias,
-    getContactoEmergenciaById,
-    updateContactoEmergencia,
-    deleteContactoEmergencia
+  createContactoEmergencia,
+  getContactosEmergencias,
+  getContactoEmergenciaById,
+  updateContactoEmergencia,
+  deleteContactoEmergencia
 } = require('../controller/contactos_emergencias.controller');
 
-router.post('/contactos-emergencias', createContactoEmergencia);
-router.get('/contactos-emergencias', getContactosEmergencias);
-router.get('/contactos-emergencias/:id', getContactoEmergenciaById);
-router.put('/contactos-emergencias/:id', updateContactoEmergencia);
-router.delete('/contactos-emergencias/:id', deleteContactoEmergencia);
+// Rutas agrupadas para contactos de emergencias
+router.route('/')
+  .post(createContactoEmergencia)
+  .get(getContactosEmergencias);
+
+router.route('/:id')
+  .get(getContactoEmergenciaById)
+  .put(updateContactoEmergencia)
+  .delete(deleteContactoEmergencia);
 
 module.exports = router;

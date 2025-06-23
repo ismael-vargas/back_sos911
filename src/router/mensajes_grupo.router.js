@@ -1,9 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const { crearMensaje, getMensajesPorGrupo, deleteMensaje } = require('../controller/mensajes_grupo.controller');
+const {
+  crearMensaje,
+  getMensajesPorGrupo,
+  deleteMensaje,
+  editarMensaje
+} = require('../controller/mensajes_grupo.controller');
 
-router.post('/mensajes-grupo', crearMensaje); // Crear un nuevo mensaje
-router.get('/mensajes-grupo/:grupo_id', getMensajesPorGrupo); // Obtener mensajes por grupo
-router.delete('/mensajes-grupo/:id', deleteMensaje); // Eliminar un mensaje
+// Crear un nuevo mensaje
+router.post('/', crearMensaje);
+
+// Obtener todos los mensajes de un grupo (explícito)
+router.get('/grupo/:grupo_id', getMensajesPorGrupo);
+
+// Eliminar un mensaje por ID
+router.delete('/:id', deleteMensaje);
+
+// Editar un mensaje existente por ID
+router.put('/:id', editarMensaje);
 
 module.exports = router;

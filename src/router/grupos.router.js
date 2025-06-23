@@ -1,18 +1,22 @@
+//grupos.router.js
 const express = require('express');
 const router = express.Router();
-const { 
-    crearGrupo, 
-    getGrupos, 
-    getGrupoById, 
-    updateGrupo, 
-    deleteGrupo 
-} = require('../controller/grupos.controller'); // Asegúrate de que la ruta sea correcta
+const {
+  crearGrupo,
+  getGrupos,
+  getGrupoById,
+  updateGrupo,
+  deleteGrupo
+} = require('../controller/grupos.controller');
 
-// Rutas para grupos
-router.post('/grupos', crearGrupo);
-router.get('/grupos', getGrupos);
-router.get('/grupos/:id', getGrupoById);
-router.put('/grupos/:id', updateGrupo);
-router.delete('/grupos/:id', deleteGrupo);
+// Rutas agrupadas para grupos
+router.route('/')
+  .post(crearGrupo)
+  .get(getGrupos);
+
+router.route('/:id')
+  .get(getGrupoById)
+  .put(updateGrupo)
+  .delete(deleteGrupo);
 
 module.exports = router;

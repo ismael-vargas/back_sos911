@@ -1,12 +1,22 @@
+//evaluaciones_situaciones.router.js
 const express = require('express');
 const router = express.Router();
-const { createEvaluacionSituacion, getEvaluacionesSituaciones, getEvaluacionSituacionById, updateEvaluacionSituacion, deleteEvaluacionSituacion } = require('../controller/evaluaciones_situaciones.controller'); // Ajusta la ruta según tu estructura de carpetas
+const {
+  createEvaluacionSituacion,
+  getEvaluacionesSituaciones,
+  getEvaluacionSituacionById,
+  updateEvaluacionSituacion,
+  deleteEvaluacionSituacion
+} = require('../controller/evaluaciones_situaciones.controller');
 
-// Rutas para evaluaciones_situaciones
-router.post('/evaluaciones-situaciones', createEvaluacionSituacion);
-router.get('/evaluaciones-situaciones', getEvaluacionesSituaciones);
-router.get('/evaluaciones-situaciones/:id', getEvaluacionSituacionById);
-router.put('/evaluaciones-situaciones/:id', updateEvaluacionSituacion);
-router.delete('/evaluaciones-situaciones/:id', deleteEvaluacionSituacion);
+// Rutas agrupadas para evaluaciones_situaciones
+router.route('/')
+  .post(createEvaluacionSituacion)
+  .get(getEvaluacionesSituaciones);
+
+router.route('/:id')
+  .get(getEvaluacionSituacionById)
+  .put(updateEvaluacionSituacion)
+  .delete(deleteEvaluacionSituacion);
 
 module.exports = router;

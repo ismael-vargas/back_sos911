@@ -1,20 +1,16 @@
 // Importamos mongoose
 const mongoose = require('mongoose');
-// Importamos la URI de conexión a MongoDB desde el archivo central de configuración (keys.js)
+// Importamos la variable MONGO_URI desde keys.js
 const { MONGO_URI } = require('../keys'); 
-// Definimos una función asíncrona para establecer la conexión con MongoDB
+
 const connectMongoDB = async () => {
-    try {  // Intentamos conectarnos a MongoDB usando la URI y algunas opciones recomendadas
-        await mongoose.connect(MONGO_URI, {
-            useNewUrlParser: true,  // Usa el nuevo parser de URLs de MongoDB 
-            useUnifiedTopology: true,   // Usa el nuevo motor de gestión de conexiones de MongoDB
-        });
+    try {
+        await mongoose.connect(MONGO_URI);
          // Si la conexión es exitosa, mostramos un mensaje en consola
-        console.log('Conexión exitosa a MongoDB Atlas');
+        console.log('Conexión exitosa a MongoDB');
     } catch (error) {
-         // Si ocurre un error durante la conexión, mostramos el mensaje de error
-        console.error('Error al conectar a MongoDB Atlas:', error.message);
-         // Terminamos la ejecución de la app con un código de error (1)
+         // Si ocurre un error al intentar conectarse, lo capturamos y mostramos el mensaje
+        console.error('Error al conectar a MongoDB:', error.message);
         process.exit(1);
     }
 };

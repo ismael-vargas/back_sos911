@@ -1,11 +1,22 @@
+//ubicaciones_clientes.router.js
 const express = require('express');
 const router = express.Router();
-const {crearUbicacionCliente,getUbicacionesCliente, getUbicacionClienteById, updateUbicacionCliente, deleteUbicacionCliente} = require('../controller/ubicaciones_clientes.controller'); // Ajusta la ruta según tu estructura de carpetas
+const {
+  crearUbicacionCliente,
+  getUbicacionesCliente,
+  getUbicacionClienteById,
+  updateUbicacionCliente,
+  deleteUbicacionCliente
+} = require('../controller/ubicaciones_clientes.controller');
 
-router.post('/ubicaciones-clientes', crearUbicacionCliente);
-router.get('/ubicaciones-clientes', getUbicacionesCliente);
-router.get('/ubicaciones-cliente/:id', getUbicacionClienteById);
-router.put('/ubicaciones-cliente/:id', updateUbicacionCliente);
-router.delete('/ubicaciones-cliente/:id', deleteUbicacionCliente);
+// Rutas agrupadas para ubicaciones-clientes
+router.route('/')
+  .post(crearUbicacionCliente)
+  .get(getUbicacionesCliente);
+
+router.route('/:id')
+  .get(getUbicacionClienteById)
+  .put(updateUbicacionCliente)
+  .delete(deleteUbicacionCliente);
 
 module.exports = router;

@@ -1,11 +1,22 @@
+//usuarios_roles.router.js
 const express = require('express');
 const router = express.Router();
-const { crearUsuarioRoles, getUsuariosRoles, getUsuarioRolById, updateUsuarioRol, deleteUsuarioRol } = require('../controller/usuarios_roles.controller'); // Ajusta la ruta según tu estructura de carpetas
+const {
+  crearUsuarioRoles,
+  getUsuariosRoles,
+  getUsuarioRolById,
+  updateUsuarioRol,
+  deleteUsuarioRol
+} = require('../controller/usuarios_roles.controller');
 
-router.post('/usuarios-roles', crearUsuarioRoles);
-router.get('/usuarios-roles', getUsuariosRoles);
-router.get('/usuarios-roles/:id', getUsuarioRolById);
-router.put('/usuarios-roles/:id', updateUsuarioRol);
-router.delete('/usuarios-roles/:id', deleteUsuarioRol);
+// Rutas agrupadas para usuarios-roles
+router.route('/')
+  .post(crearUsuarioRoles)
+  .get(getUsuariosRoles);
+
+router.route('/:id')
+  .get(getUsuarioRolById)
+  .put(updateUsuarioRol)
+  .delete(deleteUsuarioRol);
 
 module.exports = router;

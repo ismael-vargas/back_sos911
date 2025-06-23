@@ -1,17 +1,22 @@
+//clientes_numeros.router.js
 const express = require('express');
 const router = express.Router();
 const {
-    crearClientesNumero,
-    getClientesNumeros,
-    getClientesNumeroById,
-    updateClientesNumero,
-    deleteClientesNumero
+  crearClientesNumero,
+  getClientesNumeros,
+  getClientesNumeroById,
+  updateClientesNumero,
+  deleteClientesNumero
 } = require('../controller/clientes_numeros.controller');
 
-router.post('/numeros', crearClientesNumero); // Ruta para crear un nuevo número de cliente
-router.get('/numeros', getClientesNumeros); // Ruta para obtener todos los números de clientes
-router.get('/numeros/:id', getClientesNumeroById); // Ruta para obtener un número de cliente por ID
-router.put('/numeros/:id', updateClientesNumero); // Ruta para actualizar un número de cliente por ID
-router.delete('/numeros/:id', deleteClientesNumero); // Ruta para borrar un número de cliente por ID
+// Rutas agrupadas para números de clientes
+router.route('/')
+  .post(crearClientesNumero)
+  .get(getClientesNumeros);
+
+router.route('/:id')
+  .get(getClientesNumeroById)
+  .put(updateClientesNumero)
+  .delete(deleteClientesNumero);
 
 module.exports = router;

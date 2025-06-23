@@ -1,16 +1,36 @@
+//usuarios.router.js
 const express = require('express');
 const router = express.Router();
-const {crearUsuario,getUsuarios,getUsuarioById,updateUsuario,deleteUsuario,registrarPreferencias,getUsuarioConPreferencias,actualizarPreferencias,eliminarPreferencias} = require('../controller/usuario.controller');
+const {
+  crearUsuario,
+  getUsuarios,
+  getUsuarioById,
+  updateUsuario,
+  deleteUsuario,
+  registrarPreferencias,
+  getUsuarioConPreferencias,
+  actualizarPreferencias,
+  eliminarPreferencias
+} = require('../controller/usuario.controller');
 
+// Registro de usuario
 router.post('/registro', crearUsuario);
-router.get('/usuarios', getUsuarios);
-router.get('/usuarios/:id', getUsuarioById);
-router.put('/usuarios/:id', updateUsuario);
-router.delete('/usuarios/:id', deleteUsuario);
-router.post('/usuarios/:id/preferencias', registrarPreferencias); // ✅ NUEVA RUTA
-router.put('/usuarios/:id/preferencias', actualizarPreferencias);
-router.put('/usuarios/:id/preferencias/eliminar', eliminarPreferencias);
-router.get('/usuarios/:id/preferencias', getUsuarioConPreferencias); // 👈 AGREGAR ESTA LÍNEA
 
+// Rutas agrupadas para usuarios
+router.route('/')
+  .get(getUsuarios); // GET /usuarios/
+
+router.route('/:id')
+  .get(getUsuarioById)    // GET /usuarios/:id
+  .put(updateUsuario)     // PUT /usuarios/:id
+  .delete(deleteUsuario); // DELETE /usuarios/:id
+
+// Rutas agrupadas para preferencias del usuario
+router.route('/:id/preferencias')
+  .post(registrarPreferencias)      // POST /usuarios/:id/preferencias
+  .put(actualizarPreferencias)      // PUT /usuarios/:id/preferencias
+  .get(getUsuarioConPreferencias);  // GET /usuarios/:id/preferencias
+
+router.put('/:id/preferencias/eliminar', eliminarPreferencias); // PUT /usuarios/:id/preferencias/eliminar
 
 module.exports = router;

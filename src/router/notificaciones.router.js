@@ -1,11 +1,16 @@
+//notificaciones.router.js
 const express = require('express');
 const router = express.Router();
 const notificacionesController = require('../controller/notificaciones.controller');
 
-router.get('/notificaciones', notificacionesController.getNotificaciones);
-router.post('/notificaciones', notificacionesController.crearNotificacion);
-router.get('/notificaciones/:id', notificacionesController.getNotificacionById);
-router.put('/notificaciones/:id', notificacionesController.updateNotificacion);
-router.delete('/notificaciones/:id', notificacionesController.deleteNotificacion);
+// Rutas agrupadas para notificaciones
+router.route('/')
+  .get(notificacionesController.getNotificaciones)
+  .post(notificacionesController.crearNotificacion);
+
+router.route('/:id')
+  .get(notificacionesController.getNotificacionById)
+  .put(notificacionesController.updateNotificacion)
+  .delete(notificacionesController.deleteNotificacion);
 
 module.exports = router;

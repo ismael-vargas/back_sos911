@@ -226,7 +226,7 @@ const getClienteConPreferencias = async (req, res) => {
 // Actualizar preferencias de un cliente existente
 const actualizarPreferenciasCliente = async (req, res) => {
   const { id } = req.params;
-  const { tema, colores, fuente, botonPrincipal, barraSuperior } = req.body;
+  const { tema, colores, fuente, botonPrincipal, barraSuperior, estado } = req.body;
 
   try {
     const clienteExistente = await cliente.findByPk(id);
@@ -240,10 +240,15 @@ const actualizarPreferenciasCliente = async (req, res) => {
     }
 
     // Actualizar campos uno por uno
-    if (tema) preferencias.tema = tema;
-    if (fuente) preferencias.fuente = fuente;
-
-    if (colores) {
+    if (tema !== undefined) preferencias.tema = tema;
+    if (fuente !== undefined) preferencias.fuente = fuente;
+    if (estado !== undefined) {
+      if (!['activo', 'eliminado'].includes(estado)) {
+        return res.status(400).json({ message: 'El estado debe ser "activo" o "eliminado".' });
+      }
+      preferencias.estado = estado;
+    }
+    if (colores !== undefined) {
       const camposColor = ['fondo', 'texto', 'botones', 'sidebar', 'inicio', 'botonPrincipal', 'barraSuperior'];
       camposColor.forEach(campo => {
         if (colores[campo] !== undefined) {
@@ -251,6 +256,9 @@ const actualizarPreferenciasCliente = async (req, res) => {
         }
       });
     }
+    // Si se envían directamente botonPrincipal o barraSuperior en el body raíz
+    if (botonPrincipal !== undefined) preferencias.colores.botonPrincipal = botonPrincipal;
+    if (barraSuperior !== undefined) preferencias.colores.barraSuperior = barraSuperior;
 
     await preferencias.save();
 

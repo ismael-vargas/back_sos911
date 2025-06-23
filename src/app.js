@@ -16,8 +16,8 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const { minify } = require('html-minifier-terser');
 const winston = require('winston');
+const fs = require('fs');
 const cors = require('cors');
-const logger = require('./logs/logger'); // Logger centralizado
 const { Loader } = require('@googlemaps/js-api-loader')
 
 // Importar módulos locales
@@ -162,23 +162,23 @@ app.use(morgan('combined', { stream: { write: message => logger.info(message.tri
 // Rutas principales de la aplicación
 app.use(require('./router/index.router'));
 app.use(require('./router/envio.router'));
-app.use(require('./router/usuarios.router'));
-app.use(require('./router/contactos_clientes.router'));
-app.use(require('./router/clientes.router'));
-app.use(require('./router/clientes_numeros.router'));
-app.use(require('./router/clientes_grupos.router'));
-app.use(require('./router/usuarios_roles.router'));
-app.use(require('./router/usuarios_numeros.router'));
-app.use(require('./router/roles.router'));
-app.use(require('./router/ubicaciones_clientes.router'));
-app.use(require('./router/contactos_emergencias.router'));
-app.use(require('./router/dispositivos.router'));
-app.use(require('./router/evaluaciones_situaciones.router'));
-app.use(require('./router/notificaciones.router'));
-app.use(require('./router/grupos.router'));
-app.use(require('./router/informes_estadisticas.router'));
-app.use(require('./router/presion_boton_panico.router'));
-app.use('/api', require('./router/mensajes_grupo.router'));
+app.use('/usuarios', require('./router/usuarios.router'));
+app.use('/contactos_clientes', require('./router/contactos_clientes.router'));
+app.use('/contactos_emergencias', require('./router/contactos_emergencias.router'));
+app.use('/dispositivos', require('./router/dispositivos.router'));
+app.use('/evaluaciones_situaciones', require('./router/evaluaciones_situaciones.router'));
+app.use('/grupos', require('./router/grupos.router'));
+app.use('/informes_estadisticas', require('./router/informes_estadisticas.router'));
+app.use('/mensajes_grupo', require('./router/mensajes_grupo.router'));
+app.use('/notificaciones', require('./router/notificaciones.router'));
+app.use('/presion_boton_panico', require('./router/presion_boton_panico.router'));
+app.use('/roles', require('./router/roles.router'));
+app.use('/ubicaciones_clientes', require('./router/ubicaciones_clientes.router'));
+app.use('/usuarios_numeros', require('./router/usuarios_numeros.router'));
+app.use('/usuarios_roles', require('./router/usuarios_roles.router'));
+app.use('/clientes', require('./router/clientes.router'));
+app.use('/clientes_numeros', require('./router/clientes_numeros.router'));
+app.use('/clientes_grupos', require('./router/clientes_grupos.router'));
 
 // Variables globales para vistas (si usas plantillas)
 app.use((req, res, next) => {
@@ -219,3 +219,31 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+
+// Asegura que la carpeta "logs" exista
+const logsDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true });
+}
+
+// Configuración de Winston
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message, stack }) => {
+      return `[${timestamp}] ${level.toUpperCase()}: ${message}${stack ? '\nSTACK:\n' + stack : ''}`;
+    })
+  ),
+  transports: [
+    new winston.transports.File({ filename: path.join(logsDir, 'error.log'), level: 'warn' }),
+    new winston.transports.File({ filename: path.join(logsDir, 'combined.log') })
+  ]
+});
+
+// En desarrollo, también muestra los logs en consola
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(new winston.transports.Console({
+    format: winston.format.simple()
+  }));
+}

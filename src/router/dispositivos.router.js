@@ -1,17 +1,22 @@
+//dispositivos.router.js
 const express = require('express');
 const router = express.Router();
 const {
-    createDispositivo,
-    getDispositivos,
-    getDispositivoById,
-    updateDispositivo,
-    deleteDispositivo
+  createDispositivo,
+  getDispositivos,
+  getDispositivoById,
+  updateDispositivo,
+  deleteDispositivo
 } = require('../controller/dispositivos.controller');
 
-router.post('/dispositivos', createDispositivo);
-router.get('/dispositivos', getDispositivos);
-router.get('/dispositivos/:id', getDispositivoById);
-router.put('/dispositivos/:id', updateDispositivo);
-router.delete('/dispositivos/:id', deleteDispositivo);
+// Rutas agrupadas para dispositivos
+router.route('/')
+  .post(createDispositivo)
+  .get(getDispositivos);
+
+router.route('/:id')
+  .get(getDispositivoById)
+  .put(updateDispositivo)
+  .delete(deleteDispositivo);
 
 module.exports = router;

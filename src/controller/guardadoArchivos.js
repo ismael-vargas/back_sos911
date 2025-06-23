@@ -5,9 +5,10 @@ const app = express();
 app.use(cookieParser());
 app.use(csrf({ cookie: true }));
 
-const guardadoImgenCtl = {}
+const guardadoImgenCtl = {};
 
-guardadoImgenCtl.sendTeacher = (req, res) => {
+// SendUsuario
+guardadoImgenCtl.sendUsuario = (req, res) => {
     // Verificar que se recibió un archivo
     if (!req.files || !req.files.image) {
         return res.status(400).send('No se recibió ningún archivo');
@@ -29,8 +30,9 @@ guardadoImgenCtl.sendTeacher = (req, res) => {
         // Enviar una respuesta satisfactoria al servidor A
         res.send('Imagen guardada exitosamente!');
     });
-}
+};
 
+// sendArchivos 
 guardadoImgenCtl.sendArchivos = (req, res) => {
     // Verificar que se recibió un archivo
     if (!req.files || !req.files.image) {
@@ -41,7 +43,7 @@ guardadoImgenCtl.sendArchivos = (req, res) => {
     const imageFile = req.files.image;
 
     // Crear el filePath donde se guardará la imagen
-    const filePath = __dirname + '/../public/archivos/teacher/' + imageFile.name;
+    const filePath = __dirname + '/../public/archivos/usuario/' + imageFile.name;
 
     // Guardar la imagen en el filePath
     imageFile.mv(filePath, (err) => {
@@ -53,9 +55,10 @@ guardadoImgenCtl.sendArchivos = (req, res) => {
         // Enviar una respuesta satisfactoria al servidor A
         res.send('Imagen guardada exitosamente!');
     });
-}
+};
 
-guardadoImgenCtl.sendEstudent = (req, res) => {
+// sendCliente
+guardadoImgenCtl.sendCliente = (req, res) => {
     // Verificar que se recibió un archivo
     if (!req.files || !req.files.image) {
         return res.status(400).send('No se recibió ningún archivo');
@@ -65,7 +68,7 @@ guardadoImgenCtl.sendEstudent = (req, res) => {
     const imageFile = req.files.image;
 
     // Crear el filePath donde se guardará la imagen
-    const filePath = __dirname + '/../public/img/usuario/' + imageFile.name;
+    const filePath = __dirname + '/../public/img/cliente/' + imageFile.name;
 
     // Guardar la imagen en el filePath
     imageFile.mv(filePath, (err) => {
@@ -77,6 +80,6 @@ guardadoImgenCtl.sendEstudent = (req, res) => {
         // Enviar una respuesta satisfactoria al servidor A
         res.send('Imagen guardada exitosamente!');
     });
-}
+};
 
-module.exports = guardadoImgenCtl
+module.exports = guardadoImgenCtl;

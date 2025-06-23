@@ -210,6 +210,14 @@ usersCtl.actualizarPreferencias = async (req, res) => {
         }
 
         // Actualizar los campos si se proporcionan
+        if (tema !== undefined) preferencias.tema = tema;
+        if (fuente !== undefined) preferencias.fuente = fuente;
+        if (estado !== undefined) {
+            if (!estadosValidos.includes(estado)) {
+                return res.status(400).json({ message: 'Estado inválido. Debe ser "activo" o "eliminado".' });
+            }
+            preferencias.estado = estado;
+        }
         if (colores !== undefined) {
             const camposColor = ['fondo', 'texto', 'botones', 'sidebar', 'inicio', 'botonPrincipal', 'barraSuperior'];
             camposColor.forEach(campo => {
@@ -218,13 +226,9 @@ usersCtl.actualizarPreferencias = async (req, res) => {
                 }
             });
         }
-        if (fuente !== undefined) preferencias.fuente = fuente;
-        if (estado !== undefined) {
-            if (!estadosValidos.includes(estado)) {
-                return res.status(400).json({ message: 'Estado inválido. Debe ser "activo" o "eliminado".' });
-            }
-            preferencias.estado = estado;
-        }
+        // Si se envían directamente botonPrincipal o barraSuperior en el body raíz
+        if (botonPrincipal !== undefined) preferencias.colores.botonPrincipal = botonPrincipal;
+        if (barraSuperior !== undefined) preferencias.colores.barraSuperior = barraSuperior;
 
         await preferencias.save();
 
