@@ -3159,3 +3159,1078 @@ ForbiddenError: invalid csrf token
 [2025-06-23T23:17:24.243Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:17:24 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
 [2025-06-23T23:18:16.131Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:18:16 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
 [2025-06-23T23:18:34.548Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:18:34 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:38:14.146Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:38:14 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:38:20.194Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:38:20 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:38:28.843Z] INFO: ::1 - - [23/Jun/2025:23:38:28 +0000] "GET /roles HTTP/1.1" 200 189 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:38:29.728Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:38:29 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:39:37.024Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T23:39:37.025Z] WARN: Error de validación CSRF
+[2025-06-23T23:42:28.940Z] INFO: ::1 - - [23/Jun/2025:23:42:28 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:42:35.180Z] INFO: ::1 - - [23/Jun/2025:23:42:35 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:42:36.440Z] INFO: ::1 - - [23/Jun/2025:23:42:36 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:42:36.930Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:42:36 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:44:30.489Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:44:30 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:44:56.132Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:44:56 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:45:28.137Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:45:28 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:49:20.344Z] INFO: ::1 - - [23/Jun/2025:23:49:20 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:49:30.728Z] INFO: ::1 - - [23/Jun/2025:23:49:30 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:49:38.415Z] INFO: ::1 - - [23/Jun/2025:23:49:38 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:49:39.485Z] INFO: ::1 - - [23/Jun/2025:23:49:39 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:49:40.776Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:49:40 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:50:48.143Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:50:48 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:51:52.015Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:51:52 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:52:19.138Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:52:19 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:52:25.138Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:52:25 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:52:28.604Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:52:28 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:53:13.134Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:53:13 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:53:14.141Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:53:14 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:53:31.140Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:53:31 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:53:37.136Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:53:37 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:55:07.032Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:55:07 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:56:18.098Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-23T23:56:18.100Z] WARN: Error de validación CSRF
+[2025-06-23T23:56:23.449Z] INFO: ::1 - - [23/Jun/2025:23:56:23 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:56:23.766Z] INFO: ::1 - - [23/Jun/2025:23:56:23 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:56:28.274Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:56:28 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:57:01.609Z] INFO: ::1 - - [23/Jun/2025:23:57:01 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:57:07.528Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:57:07 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-23T23:57:09.464Z] INFO: ::ffff:192.168.1.31 - - [23/Jun/2025:23:57:09 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:00:56.020Z] INFO: ::1 - - [24/Jun/2025:00:00:56 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:00:59.935Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:00:59 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:02:26.832Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:02:26 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:03:04.747Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:03:04 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:07:51.454Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:07:51 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:08:26.970Z] INFO: ::1 - - [24/Jun/2025:00:08:26 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:08:45.472Z] INFO: ::1 - - [24/Jun/2025:00:08:45 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:09:03.107Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:09:03 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:10:18.522Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:10:18 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:14:59.347Z] INFO: ::1 - - [24/Jun/2025:00:14:59 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:14:59.751Z] INFO: ::1 - - [24/Jun/2025:00:14:59 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:15:03.750Z] INFO: ::1 - - [24/Jun/2025:00:15:03 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:15:05.067Z] INFO: ::1 - - [24/Jun/2025:00:15:05 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:15:05.664Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:15:05 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:16:24.040Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:16:24 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:16:48.887Z] INFO: ::1 - - [24/Jun/2025:00:16:48 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:16:52.251Z] INFO: ::1 - - [24/Jun/2025:00:16:52 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:16:52.584Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:16:52 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:18:10.736Z] INFO: ::1 - - [24/Jun/2025:00:18:10 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:18:13.334Z] INFO: ::1 - - [24/Jun/2025:00:18:13 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:18:14.475Z] INFO: ::1 - - [24/Jun/2025:00:18:14 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:18:15.448Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:18:15 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:21:17.955Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:21:17 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:21:58.345Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:21:58 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:23:29.353Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:23:29 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:25:08.204Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:25:08 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:29:04.454Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:29:04 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:30:03.626Z] INFO: ::1 - - [24/Jun/2025:00:30:03 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:30:06.874Z] INFO: ::1 - - [24/Jun/2025:00:30:06 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:30:07.948Z] INFO: ::1 - - [24/Jun/2025:00:30:07 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:30:09.229Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:30:09 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:30:19.499Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T00:30:19.500Z] WARN: Error de validación CSRF
+[2025-06-24T00:30:30.709Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:30:30 +0000] "GET /clientes HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-24T00:32:58.141Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:32:58 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:33:11.131Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:33:11 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:33:25.125Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:33:25 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:33:26.436Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:33:26 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:33:28.604Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:33:28 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:34:16.149Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:34:16 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:34:20.198Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:34:20 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:37:11.361Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T00:37:11.363Z] WARN: Error de validación CSRF
+[2025-06-24T00:44:23.584Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:44:23 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:44:23.619Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:44:23 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:44:28.035Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:44:28 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:44:41.744Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:44:41 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:45:46.142Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:45:46 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:45:49.143Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:45:49 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:45:51.821Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:45:51 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:45:56.789Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:45:56 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:45:57.688Z] INFO: ::1 - - [24/Jun/2025:00:45:57 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:45:58.292Z] INFO: ::1 - - [24/Jun/2025:00:45:58 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:45:58.813Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:45:58 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:46:15.981Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:46:15 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:47:30.143Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:47:30 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:47:33.138Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:47:33 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:47:39.566Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:47:39 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:47:49.137Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:47:49 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:48:06.141Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:48:06 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:48:06.935Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:48:06 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:48:18.127Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:48:18 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:48:19.138Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:48:19 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:48:27.130Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:48:27 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:48:32.157Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:48:32 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:48:36.152Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:48:36 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:48:42.986Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:48:42 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:48:52.527Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:48:52 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:49:05.139Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:49:05 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:49:57.137Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:49:57 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:50:14.192Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:50:14 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:50:17.512Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:50:17 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:50:19.837Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:50:19 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:50:20.203Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:50:20 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:51:01.141Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:51:01 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:52:00.138Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:52:00 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:52:06.443Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:52:06 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:53:50.912Z] INFO: ::1 - - [24/Jun/2025:00:53:50 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:53:54.331Z] INFO: ::1 - - [24/Jun/2025:00:53:54 +0000] "PUT /usuarios/1 HTTP/1.1" 200 228 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:53:54.337Z] INFO: ::1 - - [24/Jun/2025:00:53:54 +0000] "PUT /usuarios/2 HTTP/1.1" 200 223 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:53:57.364Z] INFO: ::1 - - [24/Jun/2025:00:53:57 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:54:04.604Z] INFO: ::1 - - [24/Jun/2025:00:54:04 +0000] "PUT /usuarios/1 HTTP/1.1" 200 225 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:54:10.619Z] INFO: ::1 - - [24/Jun/2025:00:54:10 +0000] "PUT /usuarios/2 HTTP/1.1" 200 220 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:54:14.507Z] INFO: ::1 - - [24/Jun/2025:00:54:14 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:54:15.178Z] INFO: ::1 - - [24/Jun/2025:00:54:15 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:54:15.883Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:54:15 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:54:34.137Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:54:34 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:54:36.679Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:54:36 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:54:47.303Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:54:47 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:54:51.436Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:54:51 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:54:55.145Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:54:55 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T00:56:15.726Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:00:56:15 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:02:20.697Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:02:20 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:04:53.141Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:04:53 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:05:11.928Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:05:11 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:05:15.943Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:05:15 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:05:59.256Z] INFO: ::1 - - [24/Jun/2025:01:05:59 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:06:03.231Z] INFO: ::1 - - [24/Jun/2025:01:06:03 +0000] "GET /usuarios HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:06:06.299Z] INFO: ::1 - - [24/Jun/2025:01:06:06 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:06:07.136Z] INFO: ::1 - - [24/Jun/2025:01:06:07 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:06:07.486Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:06:07 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:09:52.129Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:09:52 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:09:54.810Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:09:54 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:09:55.508Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:09:55 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:10:20.130Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:10:20 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:13:03.590Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:13:03 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:13:07.582Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:13:07 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:13:18.139Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:13:18 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:15:47.715Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:15:47 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:30:33.445Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:30:33 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:30:39.981Z] INFO: ::1 - - [24/Jun/2025:01:30:39 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:30:41.777Z] INFO: ::1 - - [24/Jun/2025:01:30:41 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:30:43.907Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:30:43 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:32:11.097Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:32:11 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:38:35.981Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:38:35 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:43:03.137Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:43:03 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:43:18.124Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:43:18 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:43:22.181Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:43:22 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:43:24.426Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:43:24 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:46:05.793Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T01:46:05.794Z] WARN: Error de validación CSRF
+[2025-06-24T01:55:57.900Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T01:55:57.902Z] WARN: Error de validación CSRF
+[2025-06-24T01:57:16.510Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:57:16 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:59:24.139Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:59:24 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T01:59:58.139Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:01:59:58 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:00:10.427Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:00:10 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:00:20.375Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:00:20 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:00:37.135Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:00:37 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:01:01.826Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:01:01 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:01:04.596Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:01:04 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:01:08.694Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:01:08 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:01:15.094Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:01:15.095Z] WARN: Error de validación CSRF
+[2025-06-24T02:01:42.325Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:01:42 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:01:52.884Z] INFO: ::1 - - [24/Jun/2025:02:01:52 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:01:56.602Z] INFO: ::1 - - [24/Jun/2025:02:01:56 +0000] "DELETE /roles/3 HTTP/1.1" 204 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:01:59.502Z] INFO: ::1 - - [24/Jun/2025:02:01:59 +0000] "GET /roles HTTP/1.1" 200 128 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:02:20.524Z] INFO: ::1 - - [24/Jun/2025:02:02:20 +0000] "GET /roles HTTP/1.1" 200 189 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:02:21.537Z] INFO: ::1 - - [24/Jun/2025:02:02:21 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:02:24.063Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:02:24 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:03:00.790Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:03:00 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:03:14.134Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:03:14 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:03:15.132Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:03:15 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:03:28.070Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:03:28 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:03:37.063Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:03:37.065Z] WARN: Error de validación CSRF
+[2025-06-24T02:03:45.217Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:03:45.218Z] WARN: Error de validación CSRF
+[2025-06-24T02:03:47.866Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:03:47.867Z] WARN: Error de validación CSRF
+[2025-06-24T02:03:55.437Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:03:55 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:04:01.159Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:04:01.161Z] WARN: Error de validación CSRF
+[2025-06-24T02:06:55.142Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:06:55 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:07:03.587Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:07:03 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:07:10.245Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:07:10.247Z] WARN: Error de validación CSRF
+[2025-06-24T02:07:20.166Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:07:20 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:07:25.271Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:07:25.273Z] WARN: Error de validación CSRF
+[2025-06-24T02:07:35.663Z] INFO: ::1 - - [24/Jun/2025:02:07:35 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:07:39.134Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:07:39 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:07:44.469Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:07:44.470Z] WARN: Error de validación CSRF
+[2025-06-24T02:07:53.409Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:07:53 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:08:01.135Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:08:01.135Z] WARN: Error de validación CSRF
+[2025-06-24T02:08:22.984Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:08:22.985Z] WARN: Error de validación CSRF
+[2025-06-24T02:08:22.988Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:08:22.989Z] WARN: Error de validación CSRF
+[2025-06-24T02:08:48.772Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:08:48 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:08:49.293Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:08:49 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:08:49.432Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:08:49 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:08:49.585Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:08:49 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:08:49.731Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:08:49 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:08:49.871Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:08:49 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:08:50.018Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:08:50 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:08:50.171Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:08:50 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:08:50.330Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:08:50 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:09:31.565Z] INFO: ::1 - - [24/Jun/2025:02:09:31 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:09:34.867Z] INFO: ::1 - - [24/Jun/2025:02:09:34 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:09:40.497Z] INFO: ::1 - - [24/Jun/2025:02:09:40 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:09:42.184Z] INFO: ::1 - - [24/Jun/2025:02:09:42 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:09:42.882Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:09:42 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:09:47.385Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:09:47.386Z] WARN: Error de validación CSRF
+[2025-06-24T02:10:41.774Z] INFO: ::1 - - [24/Jun/2025:02:10:41 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:10:43.484Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:10:43 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:10:59.972Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:10:59.973Z] WARN: Error de validación CSRF
+[2025-06-24T02:11:54.236Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:11:54 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:11:58.565Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:11:58.567Z] WARN: Error de validación CSRF
+[2025-06-24T02:12:20.888Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:12:20.889Z] WARN: Error de validación CSRF
+[2025-06-24T02:12:20.893Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:12:20.895Z] WARN: Error de validación CSRF
+[2025-06-24T02:13:24.219Z] INFO: ::1 - - [24/Jun/2025:02:13:24 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:13:28.537Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:13:28 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:13:32.424Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:13:32.425Z] WARN: Error de validación CSRF
+[2025-06-24T02:13:43.176Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:13:43.177Z] WARN: Error de validación CSRF
+[2025-06-24T02:13:43.183Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:13:43.184Z] WARN: Error de validación CSRF
+[2025-06-24T02:14:38.547Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:14:38.548Z] WARN: Error de validación CSRF
+[2025-06-24T02:14:44.635Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:14:44.636Z] WARN: Error de validación CSRF
+[2025-06-24T02:14:44.639Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:14:44.640Z] WARN: Error de validación CSRF
+[2025-06-24T02:14:47.252Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:14:47 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:15:14.016Z] INFO: ::1 - - [24/Jun/2025:02:15:14 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+[2025-06-24T02:15:29.767Z] INFO: ::1 - - [24/Jun/2025:02:15:29 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:16:29.561Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:735:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:649:5
+[2025-06-24T02:16:29.564Z] WARN: Error de validación CSRF
+[2025-06-24T02:16:34.049Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:735:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:649:5
+[2025-06-24T02:16:34.050Z] WARN: Error de validación CSRF
+[2025-06-24T02:17:03.587Z] INFO: ::1 - - [24/Jun/2025:02:17:03 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:17:07.291Z] INFO: ::1 - - [24/Jun/2025:02:17:07 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:17:08.535Z] INFO: ::1 - - [24/Jun/2025:02:17:08 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:17:09.735Z] INFO: ::1 - - [24/Jun/2025:02:17:09 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:17:10.105Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:17:10 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:17:20.281Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:17:20.283Z] WARN: Error de validación CSRF
+[2025-06-24T02:17:20.287Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:17:20.288Z] WARN: Error de validación CSRF
+[2025-06-24T02:18:51.992Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:18:51 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:19:06.458Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:19:06.461Z] WARN: Error de validación CSRF
+[2025-06-24T02:20:52.056Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:20:52 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:21:06.086Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:21:06 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:21:39.087Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:21:39.088Z] WARN: Error de validación CSRF
+[2025-06-24T02:22:59.457Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:22:59 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:26:34.870Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:26:34 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:26:38.074Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:26:38 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:26:43.254Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:26:43.255Z] WARN: Error de validación CSRF
+[2025-06-24T02:27:10.141Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:27:10 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:28:11.824Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:735:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:649:5
+[2025-06-24T02:28:11.825Z] WARN: Error de validación CSRF
+[2025-06-24T02:28:17.332Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:735:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:649:5
+[2025-06-24T02:28:17.333Z] WARN: Error de validación CSRF
+[2025-06-24T02:28:19.136Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:735:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:649:5
+[2025-06-24T02:28:19.138Z] WARN: Error de validación CSRF
+[2025-06-24T02:28:22.920Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:735:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:649:5
+[2025-06-24T02:28:22.921Z] WARN: Error de validación CSRF
+[2025-06-24T02:28:24.351Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:735:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express-rate-limit\dist\index.cjs:649:5
+[2025-06-24T02:28:24.352Z] WARN: Error de validación CSRF
+[2025-06-24T02:29:36.012Z] INFO: ::1 - - [24/Jun/2025:02:29:36 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:29:39.093Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:29:39 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:29:48.895Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:29:48.897Z] WARN: Error de validación CSRF
+[2025-06-24T02:30:35.409Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:30:35 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:30:44.490Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:30:44.492Z] WARN: Error de validación CSRF
+[2025-06-24T02:31:11.248Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:31:11 +0000] "GET /clientes HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:31:52.182Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:31:52 +0000] "GET /clientes HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:31:59.797Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:31:59.799Z] WARN: Error de validación CSRF
+[2025-06-24T02:32:31.496Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:32:31 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:32:36.153Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:32:36.154Z] WARN: Error de validación CSRF
+[2025-06-24T02:34:14.139Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:34:14 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:34:25.766Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:34:25 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:34:29.752Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:34:29.753Z] WARN: Error de validación CSRF
+[2025-06-24T02:34:36.960Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:34:36 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:34:43.871Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:34:43.872Z] WARN: Error de validación CSRF
+[2025-06-24T02:41:26.135Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:41:26 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:41:29.529Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:41:29 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:41:33.159Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:41:33.160Z] WARN: Error de validación CSRF
+[2025-06-24T02:41:49.869Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:41:49 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:41:54.352Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:41:54.353Z] WARN: Error de validación CSRF
+[2025-06-24T02:45:01.277Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:45:01 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:45:09.771Z] INFO: ::1 - - [24/Jun/2025:02:45:09 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:45:22.094Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:45:22 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:45:26.365Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:45:26.370Z] WARN: Error de validación CSRF
+[2025-06-24T02:45:34.209Z] INFO: ::1 - - [24/Jun/2025:02:45:34 +0000] "POST /login HTTP/1.1" 200 63 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:45:38.047Z] INFO: ::1 - - [24/Jun/2025:02:45:38 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:45:39.258Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:45:39 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:45:43.589Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:45:43.590Z] WARN: Error de validación CSRF
+[2025-06-24T02:48:12.700Z] INFO: ::1 - - [24/Jun/2025:02:48:12 +0000] "GET /clientes HTTP/1.1" 200 - "-" "PostmanRuntime/7.44.1"
+[2025-06-24T02:48:24.257Z] INFO: ::1 - - [24/Jun/2025:02:48:24 +0000] "GET /clientes/1 HTTP/1.1" 200 276 "-" "PostmanRuntime/7.44.1"
+[2025-06-24T02:48:28.844Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:48:28.845Z] WARN: Error de validación CSRF
+[2025-06-24T02:48:39.142Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:48:39.143Z] WARN: Error de validación CSRF
+[2025-06-24T02:48:43.691Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:48:43.692Z] WARN: Error de validación CSRF
+[2025-06-24T02:48:48.946Z] INFO: ::1 - - [24/Jun/2025:02:48:48 +0000] "GET /clientes HTTP/1.1" 200 - "-" "PostmanRuntime/7.44.1"
+[2025-06-24T02:48:53.915Z] INFO: ::1 - - [24/Jun/2025:02:48:53 +0000] "GET /clientes/5 HTTP/1.1" 200 265 "-" "PostmanRuntime/7.44.1"
+[2025-06-24T02:50:00.379Z] INFO: ::1 - - [24/Jun/2025:02:50:00 +0000] "DELETE /clientes/1 HTTP/1.1" 204 - "-" "PostmanRuntime/7.44.1"
+[2025-06-24T02:53:25.145Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:53:25 +0000] "GET /clientes HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:53:29.505Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:53:29 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:53:33.364Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:53:33.366Z] WARN: Error de validación CSRF
+[2025-06-24T02:53:54.127Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:53:54 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:54:56.637Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:54:56 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:55:10.143Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:55:10 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:55:52.142Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:55:52 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:56:00.138Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:56:00 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:56:04.284Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:56:04 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:56:10.445Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:56:10.446Z] WARN: Error de validación CSRF
+[2025-06-24T02:57:50.573Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:02:57:50 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T02:57:54.279Z] ERROR: invalid csrf token
+STACK:
+ForbiddenError: invalid csrf token
+    at csrf (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\csurf\index.js:112:19)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:286:9
+[2025-06-24T02:57:54.280Z] WARN: Error de validación CSRF
+[2025-06-24T03:04:55.911Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:03:04:55 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:04:58.246Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:03:04:58 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:05:02.854Z] INFO: ::1 - - [24/Jun/2025:03:05:02 +0000] "PUT /clientes/2/estado HTTP/1.1" 404 156 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:05:19.807Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:03:05:19 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:05:26.051Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:03:05:26 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:05:29.884Z] INFO: ::1 - - [24/Jun/2025:03:05:29 +0000] "PUT /clientes/2/estado HTTP/1.1" 404 156 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:07:14.134Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:03:07:14 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:07:16.141Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:03:07:16 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:07:18.023Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:03:07:18 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:07:22.064Z] INFO: ::1 - - [24/Jun/2025:03:07:22 +0000] "PUT /clientes/2 HTTP/1.1" 200 277 "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:08:33.530Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:03:08:33 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:08:49.859Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:03:08:49 +0000] "GET /clientes HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:09:38.952Z] INFO: ::1 - - [24/Jun/2025:03:09:38 +0000] "PUT /clientes/12 HTTP/1.1" 200 272 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:10:14.831Z] INFO: ::1 - - [24/Jun/2025:03:10:14 +0000] "GET /usuarios/1 HTTP/1.1" 200 225 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:10:58.791Z] INFO: ::ffff:192.168.1.31 - - [24/Jun/2025:03:10:58 +0000] "GET /clientes HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:11:40.252Z] INFO: ::1 - - [24/Jun/2025:03:11:40 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:11:41.998Z] INFO: ::1 - - [24/Jun/2025:03:11:41 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:11:49.241Z] INFO: ::1 - - [24/Jun/2025:03:11:49 +0000] "GET /usuarios_numeros HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:11:50.172Z] INFO: ::1 - - [24/Jun/2025:03:11:50 +0000] "GET /roles HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:11:54.331Z] INFO: ::1 - - [24/Jun/2025:03:11:54 +0000] "PUT /roles/1 HTTP/1.1" 200 66 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:11:54.332Z] INFO: ::1 - - [24/Jun/2025:03:11:54 +0000] "PUT /roles/1 HTTP/1.1" 200 66 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:11:54.342Z] INFO: ::1 - - [24/Jun/2025:03:11:54 +0000] "GET /roles/1 HTTP/1.1" 200 66 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:12:05.199Z] INFO: ::1 - - [24/Jun/2025:03:12:05 +0000] "PUT /roles/2 HTTP/1.1" 200 59 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:12:05.200Z] INFO: ::1 - - [24/Jun/2025:03:12:05 +0000] "PUT /roles/2 HTTP/1.1" 200 59 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:12:05.210Z] INFO: ::1 - - [24/Jun/2025:03:12:05 +0000] "GET /roles/2 HTTP/1.1" 200 59 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:12:19.646Z] INFO: ::1 - - [24/Jun/2025:03:12:19 +0000] "PUT /roles/3 HTTP/1.1" 200 71 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:12:19.647Z] INFO: ::1 - - [24/Jun/2025:03:12:19 +0000] "PUT /roles/3 HTTP/1.1" 200 71 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:12:19.658Z] INFO: ::1 - - [24/Jun/2025:03:12:19 +0000] "GET /roles/3 HTTP/1.1" 200 71 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T03:12:41.315Z] INFO: ::1 - - [24/Jun/2025:03:12:41 +0000] "GET /usuarios HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+[2025-06-24T14:49:09.696Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:137:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-24T14:49:09.699Z] ERROR: Error interno del servidor
+[2025-06-24T14:49:10.596Z] ERROR: Este es un error de prueba para verificar el log.
+STACK:
+Error: Este es un error de prueba para verificar el log.
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:137:9
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\src\app.js:124:5
+    at Layer.handle [as handle_request] (C:\Users\USUARIO\Desktop\nuevo_sos\back_sos911\node_modules\express\lib\router\layer.js:95:5)
+[2025-06-24T14:49:10.597Z] ERROR: Error interno del servidor
+[2025-06-24T14:49:10.678Z] INFO: ::1 - - [24/Jun/2025:14:49:10 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:9000/error-prueba" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"

@@ -1,7 +1,7 @@
 const MYSQLHOST = 'localhost';
 const MYSQLUSER = 'root';
 const MYSQLPASSWORD = '';
-const MYSQLDATABASE = 's.o.s.';
+const MYSQLDATABASE = 'sos911';
 const MYSQLPORT = '3306'; // Puerto de la base de datos
 const MYSQL_URI = process.env.MYSQL_URI ?? ''; // URI de conexión a la base de datos MySQL
 
