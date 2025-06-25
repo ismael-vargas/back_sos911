@@ -1,6 +1,6 @@
 // Definición del modelo "usuarios" para Sequelize (ORM)
 const usuario = (sequelize, type) => {
-    return sequelize.define('usuarios', { // Define una tabla llamada 'usuarios'
+    return sequelize.define('usuarios', {
         id: {
             type: type.INTEGER,
             autoIncrement: true,
@@ -13,10 +13,10 @@ const usuario = (sequelize, type) => {
             comment: 'Nombre del usuario'
         },
         correo_electronico: {
-            type: type.STRING,
+             type: type.TEXT, // Cambia DataTypes.TEXT por type.TEXT
             allowNull: false,
             unique: true,
-            comment: 'Correo de usuario'
+            comment: 'Correo de usuario cifrado'
         },
         cedula_identidad: {
             type: type.STRING,
@@ -38,9 +38,22 @@ const usuario = (sequelize, type) => {
             defaultValue: 'activo',
             comment: 'Estado del usuario, puede ser activo o eliminado'
         },
+        fecha_creacion: {
+            type: type.DATE,
+            allowNull: false,
+            defaultValue: type.literal('CURRENT_TIMESTAMP'),
+            comment: 'Fecha de creación del registro'
+        },
+        fecha_modificacion: {
+            type: type.DATE,
+            allowNull: false,
+            defaultValue: type.literal('CURRENT_TIMESTAMP'),
+            comment: 'Fecha de última modificación del registro'
+        }
     }, {
-        timestamps: false,
-        comment: 'Tabla de usuarios',
+        timestamps: true,  // Habilita timestamps automáticos
+        createdAt: 'fecha_creacion',  // Mapea createdAt a fecha_creacion
+        updatedAt: 'fecha_modificacion',  // Mapea updatedAt a fecha_modificacion
         indexes: [
             {
                 unique: true,

@@ -17,7 +17,8 @@ if (MYSQL_URI) {
             min: 2,
             acquire: 30000,
             idle: 10000
-        }
+        },
+        logging: false
     });
 }
 
@@ -146,7 +147,7 @@ cliente.hasMany(mensajes_grupo, { foreignKey: 'cliente_id' });
 
 
 
-sequelize.sync({ alter: false }) // alter will update the database schema to match the model
+sequelize.sync({ alter: false }) // alter actualizará el esquema de la base de datos para que coincida con el modelo
     .then(() => {
         console.log('Database synchronized');
     })

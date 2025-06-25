@@ -20,6 +20,8 @@ const fs = require('fs');
 const cors = require('cors');
 const { Loader } = require('@googlemaps/js-api-loader')
 
+
+
 // Importar módulos locales
 const { MYSQLHOST, MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE, MYSQLPORT } = require('./keys');
 require('./lib/passport');
@@ -65,6 +67,10 @@ const mysqlOptions = {
 };
 const sessionStore = new MySQLStore(mysqlOptions);
 
+
+// Middleware para parsear cookies (debe ir antes de CSRF y sesiones)
+app.use(cookieParser());
+
 app.use(session({
     store: sessionStore,
     secret: process.env.SESSION_SECRET || "SESSION_SECRET", // ✅ Usa variable de entorno si existe
@@ -78,9 +84,6 @@ app.use(session({
 }));
 
 app.set('port', process.env.PORT || 9000);
-
-// Middleware para parsear cookies (debe ir antes de CSRF y sesiones)
-app.use(cookieParser());
 
 // Middleware para subir archivos
 app.use(fileUpload({ createParentPath: true }));
@@ -132,10 +135,6 @@ const loginLimiter = rateLimit({
 });
 app.use('/login', loginLimiter); // ✅ Aplica solo a la ruta real de login
 
-// Ruta de prueba de errores (para verificar logs)
-app.get('/error-prueba', (req, res) => {
-  throw new Error('Este es un error de prueba para verificar el log.');
-});
 
 // Middleware de protección CSRF (debe ir después de cookieParser y sesión)
 const csrfMiddleware = csrf({ cookie: true });
@@ -151,13 +150,6 @@ app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     next();
 });
-
-// Configurar archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/src/public', express.static(path.join(__dirname, 'src/public')));
-
-// Logger para todas las peticiones HTTP en combined.log
-app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 
 // Rutas principales de la aplicación
 app.use(require('./router/index.router'));
@@ -179,6 +171,55 @@ app.use('/usuarios_roles', require('./router/usuarios_roles.router'));
 app.use('/clientes', require('./router/clientes.router'));
 app.use('/clientes_numeros', require('./router/clientes_numeros.router'));
 app.use('/clientes_grupos', require('./router/clientes_grupos.router'));
+
+// Asegura que la carpeta "logs" exista
+const logsDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true });
+}
+
+// CONFIGURACIÓN DE LOGGING (MEJORADA)
+const logger = winston.createLogger({
+  level: 'debug',
+  format: winston.format.combine(
+    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.errors({ stack: true }),
+    winston.format.splat(),
+    winston.format.printf(info =>
+      `[${info.timestamp}] [${info.level.toUpperCase()}] ${info.message}${info.stack ? '\nSTACK:\n' + info.stack : ''}`
+    )
+  ),
+  transports: [
+    new winston.transports.File({
+      filename: path.join(logsDir, 'combined.log'),
+      level: 'debug',
+      maxsize: 5242880 * 5, // 25MB
+      maxFiles: 3,
+      tailable: true
+    }),
+    // Solo en desarrollo, también loguea en consola
+    ...(process.env.NODE_ENV !== 'production'
+      ? [new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.simple()
+          )
+        })]
+      : [])
+  ]
+});
+
+// Redefinir console.log y console.error para que usen winston
+console.log = (...args) => logger.info(args.join(' '));
+console.error = (...args) => logger.error(args.join(' '));
+console.warn = (...args) => logger.warn(args.join(' '));
+
+// Configura Morgan para logging HTTP 
+app.use(morgan(
+  ':method :url :status :res[content-length] - :response-time ms - IP: :remote-addr',
+  { stream: { write: message => logger.http(message.trim()) } }
+));
+
 
 // Variables globales para vistas (si usas plantillas)
 app.use((req, res, next) => {
@@ -220,30 +261,4 @@ app.use((err, req, res, next) => {
 
 module.exports = app;
 
-// Asegura que la carpeta "logs" exista
-const logsDir = path.join(__dirname, 'logs');
-if (!fs.existsSync(logsDir)) {
-  fs.mkdirSync(logsDir, { recursive: true });
-}
 
-// Configuración de Winston
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf(({ timestamp, level, message, stack }) => {
-      return `[${timestamp}] ${level.toUpperCase()}: ${message}${stack ? '\nSTACK:\n' + stack : ''}`;
-    })
-  ),
-  transports: [
-    new winston.transports.File({ filename: path.join(logsDir, 'error.log'), level: 'warn' }),
-    new winston.transports.File({ filename: path.join(logsDir, 'combined.log') })
-  ]
-});
-
-// En desarrollo, también muestra los logs en consola
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.simple()
-  }));
-}
