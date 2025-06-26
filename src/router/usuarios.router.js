@@ -10,11 +10,15 @@ const {
   registrarPreferencias,
   getUsuarioConPreferencias,
   actualizarPreferencias,
-  eliminarPreferencias
+  eliminarPreferencias,
+  loginUsuario
 } = require('../controller/usuario.controller');
 
 // Registro de usuario
 router.post('/registro', crearUsuario);
+
+// Login de usuario
+router.post('/login', loginUsuario);
 
 // Rutas agrupadas para usuarios
 router.route('/')

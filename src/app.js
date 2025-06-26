@@ -73,7 +73,7 @@ app.use(cookieParser());
 
 app.use(session({
     store: sessionStore,
-    secret: process.env.SESSION_SECRET || "SESSION_SECRET", // ✅ Usa variable de entorno si existe
+    secret: process.env.CLAVE_SECRETA || "una_clave_secreta_fuerte_y_unica", // ✅ Usa variable de entorno si existe
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -180,6 +180,15 @@ if (!fs.existsSync(logsDir)) {
 
 // CONFIGURACIÓN DE LOGGING (MEJORADA)
 const logger = winston.createLogger({
+  levels: {
+    error: 0,
+    warn: 1,
+    info: 2,
+    http: 3,
+    verbose: 4,
+    debug: 5,
+    silly: 6
+  },
   level: 'debug',
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
@@ -192,7 +201,7 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.File({
       filename: path.join(logsDir, 'combined.log'),
-      level: 'debug',
+      level: 'http', // Cambia a 'http' para registrar todo lo de Morgan y más
       maxsize: 5242880 * 5, // 25MB
       maxFiles: 3,
       tailable: true

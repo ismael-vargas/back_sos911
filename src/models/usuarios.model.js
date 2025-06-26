@@ -18,8 +18,14 @@ const usuario = (sequelize, type) => {
             unique: true,
             comment: 'Correo de usuario cifrado'
         },
+        correo_hash: {
+            type: type.STRING(64),
+            allowNull: false,
+            unique: true,
+            comment: 'Hash SHA256 del correo para búsquedas seguras'
+        },
         cedula_identidad: {
-            type: type.STRING,
+           type: type.STRING(255), 
             unique: true,
             comment: 'Cédula de identidad del usuario'
         },

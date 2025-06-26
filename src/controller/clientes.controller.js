@@ -1,36 +1,61 @@
 const bcrypt = require('bcrypt');
 const { cliente } = require('../Database/dataBase.orm');
 const Preferencias = require('../models/preferencias.model'); // modelo de Mongo
+const { cifrarDato, descifrarDato } = require('../lib/encrypDates');
+const CryptoJS = require('crypto-js');
 
+function hashCorreo(correo) {
+  return CryptoJS.SHA256(correo).toString(CryptoJS.enc.Hex);
+}
 
 // Crear un nuevo cliente
 const crearCliente = async (req, res) => {
-  const { nombre, correo_electronico, cedula_identidad, direccion, estado = 'activo', contrasena_hash, estado_eliminado = 'activo', numero_ayudas = 0 } = req.body;
+  let { nombre, correo_electronico, cedula_identidad, direccion, contrasena_hash, estado_eliminado = 'activo', numero_ayudas = 0 } = req.body;
 
   try {
-    if (!nombre || !correo_electronico || !cedula_identidad || !direccion || !estado || !contrasena_hash) {
+    if (!nombre || !correo_electronico || !cedula_identidad || !direccion || !contrasena_hash) {
       return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
     }
 
-    const validStates = ['activo', 'inactivo'];
-    if (!validStates.includes(estado)) {
-      return res.status(400).json({ message: 'El estado debe ser activo o inactivo.' });
+    // Cifrar los campos sensibles
+    const nombreCif = cifrarDato(nombre);
+    const correoCif = cifrarDato(correo_electronico);
+    const correoHash = hashCorreo(correo_electronico);
+    const cedulaCif = cifrarDato(cedula_identidad);
+    const direccionCif = cifrarDato(direccion);
+
+    // Verificar si el cliente ya existe (busca por hash)
+    const existingCliente = await cliente.findOne({ where: { correo_hash: correoHash } });
+    if (existingCliente) {
+      return res.status(400).json({ message: 'El correo electrónico ya está registrado.' });
     }
 
+    // Hashear la contraseña
     const hashedPassword = await bcrypt.hash(contrasena_hash, 10);
 
+    // Crear un nuevo cliente
     const nuevoCliente = await cliente.create({
-      nombre,
-      correo_electronico,
-      cedula_identidad,
-      direccion,
-      estado,
+      nombre: nombreCif,
+      correo_electronico: correoCif,
+      correo_hash: correoHash,
+      cedula_identidad: cedulaCif,
+      direccion: direccionCif,
       contrasena_hash: hashedPassword,
       estado_eliminado,
       numero_ayudas,
     });
 
-    res.status(201).json({ message: 'Cliente creado exitosamente.', cliente: nuevoCliente });
+    // Responder con los datos descifrados
+    res.status(201).json({
+      message: 'Cliente creado exitosamente.',
+      cliente: {
+        ...nuevoCliente.toJSON(),
+        nombre: descifrarDato(nuevoCliente.nombre),
+        correo_electronico: descifrarDato(nuevoCliente.correo_electronico),
+        cedula_identidad: descifrarDato(nuevoCliente.cedula_identidad),
+        direccion: descifrarDato(nuevoCliente.direccion)
+      }
+    });
   } catch (error) {
     console.error('Error al crear cliente:', error.message);
     res.status(500).json({ message: 'Error interno del servidor.' });
@@ -40,8 +65,15 @@ const crearCliente = async (req, res) => {
 // Obtener todos los clientes
 const getClientes = async (req, res) => {
   try {
-    const clientes = await cliente.findAll({ where: { estado_eliminado: 'activo' } });
-    res.status(200).json(clientes);
+    const clientesList = await cliente.findAll({ where: { estado_eliminado: 'activo' } });
+    const clientesDescifrados = clientesList.map(c => ({
+      ...c.toJSON(),
+      nombre: descifrarDato(c.nombre),
+      correo_electronico: descifrarDato(c.correo_electronico),
+      cedula_identidad: descifrarDato(c.cedula_identidad),
+      direccion: descifrarDato(c.direccion)
+    }));
+    res.status(200).json(clientesDescifrados);
   } catch (error) {
     console.error('Error al obtener los clientes:', error.message);
     res.status(500).json({ error: 'Error al obtener los clientes' });
@@ -51,9 +83,15 @@ const getClientes = async (req, res) => {
 // Obtener un cliente por ID
 const getClienteById = async (req, res) => {
   try {
-    const clientes = await cliente.findByPk(req.params.id);
-    if (clientes && clientes.estado_eliminado === 'activo') {
-      res.status(200).json(clientes);
+    const c = await cliente.findByPk(req.params.id);
+    if (c && c.estado_eliminado === 'activo') {
+      res.status(200).json({
+        ...c.toJSON(),
+        nombre: descifrarDato(c.nombre),
+        correo_electronico: descifrarDato(c.correo_electronico),
+        cedula_identidad: descifrarDato(c.cedula_identidad),
+        direccion: descifrarDato(c.direccion)
+      });
     } else {
       res.status(404).json({ error: 'Cliente no encontrado' });
     }
@@ -65,16 +103,38 @@ const getClienteById = async (req, res) => {
 
 // Actualizar un cliente por ID
 const updateCliente = async (req, res) => {
-  const validStates = ['activo', 'inactivo'];
-
   try {
-    const clientes = await cliente.findByPk(req.params.id);
-    if (clientes && clientes.estado_eliminado === 'activo') {
-      if (req.body.estado !== undefined && !validStates.includes(req.body.estado)) {
-        return res.status(400).json({ message: `El estado debe ser uno de los siguientes valores: ${validStates.join(', ')}.` });
+    const c = await cliente.findByPk(req.params.id);
+    if (c && c.estado_eliminado === 'activo') {
+      // Cifrar campos sensibles si se actualizan
+      if (req.body.nombre !== undefined) {
+        req.body.nombre = cifrarDato(req.body.nombre);
       }
-      await clientes.update(req.body);
-      res.status(200).json(clientes);
+      if (req.body.cedula_identidad !== undefined) {
+        req.body.cedula_identidad = cifrarDato(req.body.cedula_identidad);
+      }
+      if (req.body.direccion !== undefined) {
+        req.body.direccion = cifrarDato(req.body.direccion);
+      }
+      if (req.body.correo_electronico !== undefined) {
+        let correoPlano = req.body.correo_electronico;
+        try {
+          correoPlano = descifrarDato(correoPlano);
+        } catch (e) {}
+        req.body.correo_electronico = cifrarDato(correoPlano);
+        req.body.correo_hash = hashCorreo(correoPlano);
+      }
+      if (req.body.contrasena_hash) {
+        req.body.contrasena_hash = await bcrypt.hash(req.body.contrasena_hash, 10);
+      }
+      await c.update(req.body);
+      res.status(200).json({
+        ...c.toJSON(),
+        nombre: descifrarDato(c.nombre),
+        correo_electronico: descifrarDato(c.correo_electronico),
+        cedula_identidad: descifrarDato(c.cedula_identidad),
+        direccion: descifrarDato(c.direccion)
+      });
     } else {
       res.status(404).json({ error: 'Cliente no encontrado' });
     }
@@ -111,10 +171,11 @@ const loginCliente = async (req, res) => {
       });
     }
 
-    // Buscar usuario
+    // Buscar usuario por hash del correo (como en usuarios)
+    const correoHash = hashCorreo(correo_electronico);
     const user = await cliente.findOne({
       where: {
-        correo_electronico,
+        correo_hash: correoHash,
         estado_eliminado: 'activo'
       }
     });
@@ -126,7 +187,7 @@ const loginCliente = async (req, res) => {
       });
     }
 
-    // Comparar contraseñas (usa bcrypt.compareSync si prefieres sincrónico)
+    // Comparar contraseñas
     const isMatch = await bcrypt.compare(contrasena_hash, user.contrasena_hash);
 
     if (!isMatch) {
@@ -142,8 +203,8 @@ const loginCliente = async (req, res) => {
       message: 'Inicio de sesión exitoso',
       user: {
         id: user.id,
-        nombre: user.nombre,
-        email: user.correo_electronico
+        nombre: descifrarDato(user.nombre),
+        email: descifrarDato(user.correo_electronico)
       }
     });
 

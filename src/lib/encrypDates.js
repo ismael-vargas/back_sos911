@@ -10,38 +10,28 @@ dotenv.config();
 // Si no existe en las variables de entorno, usa una clave por defecto
 const claveSecreta = process.env.CLAVE_SECRETA || 'una_clave_secreta_fuerte_y_unica';
 
-// Función para cifrar datos
-function cifrarDatos(datos) {
+// Cifra un string
+function cifrarDato(texto) {
     try {
-         // Convierte los datos en cadena JSON y los cifra usando AES y la clave secreta
-        const cifrado = CryptoJS.AES.encrypt(JSON.stringify(datos), claveSecreta).toString();
-         // Retorna la cadena cifrada
-        return cifrado;
+        return CryptoJS.AES.encrypt(texto, claveSecreta).toString();
     } catch (error) {
-         // Si hay un error durante el cifrado, lo muestra en consola y lo lanza
-        console.error('Error al cifrar datos:', error.message);
+        console.error('Error al cifrar dato:', error.message);
         throw error;
     }
 }
 
-// Función para descifrar datos
-function descifrarDatos(cifrado) {
-    // Desencripta el texto cifrado usando la clave secreta
+// Descifra un string
+function descifrarDato(cifrado) {
     try {
         const bytes = CryptoJS.AES.decrypt(cifrado, claveSecreta);
-          // Convierte los bytes desencriptados a texto UTF-8 y luego a objeto JSON
-        const datos = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-        // Retorna los datos originales
-        return datos;
+        return bytes.toString(CryptoJS.enc.Utf8);
     } catch (error) {
-         // Si hay un error durante el descifrado, lo muestra en consola y lo lanza
-        console.error('Error al descifrar datos:', error.message);
+        console.error('Error al descifrar dato:', error.message);
         throw error;
     }
 }
 
-// Exporta las funciones para que puedan ser usadas en otros archivos
 module.exports = {
-    cifrarDatos,
-    descifrarDatos
-}
+    cifrarDato,
+    descifrarDato
+};

@@ -1,17 +1,30 @@
 const { usuario } = require('../Database/dataBase.orm'); // Modelo relacional
 const Preferencias = require('../models/preferencias.model'); // Modelo no relacional
+const { cifrarDato, descifrarDato } = require('../lib/encrypDates');
 const bcrypt = require('bcryptjs');
+const CryptoJS = require('crypto-js'); // <-- Para hash SHA256
+
+function hashCorreo(correo) {
+    return CryptoJS.SHA256(correo).toString(CryptoJS.enc.Hex);
+}
 
 // Controlador de usuarios
 const usersCtl = {};
 
 // Crear un nuevo usuario
 usersCtl.crearUsuario = async (req, res, next) => {
-    const { nombre, correo_electronico, cedula_identidad, direccion, estado, contrasena } = req.body;
+    let { nombre, correo_electronico, cedula_identidad, direccion, estado, contrasena } = req.body;
 
     try {
-        // Verificar si el usuario ya existe
-        const existingUser = await usuario.findOne({ where: { correo_electronico } });
+        // Cifrar los campos sensibles
+        const nombreCif = cifrarDato(nombre);
+        const correoCif = cifrarDato(correo_electronico);
+        const correoHash = hashCorreo(correo_electronico); // <-- Hash para búsqueda
+        const cedulaCif = cifrarDato(cedula_identidad);
+        const direccionCif = cifrarDato(direccion);
+
+        // Verificar si el usuario ya existe (busca por hash)
+        const existingUser = await usuario.findOne({ where: { correo_hash: correoHash } });
         if (existingUser) {
             return res.status(400).json({ message: 'El correo electrónico ya está registrado.' });
         }
@@ -27,16 +40,26 @@ usersCtl.crearUsuario = async (req, res, next) => {
 
         // Crear un nuevo usuario
         const newUser = await usuario.create({
-            nombre,
-            correo_electronico,
-            cedula_identidad,
-            direccion,
-            estado, // El estado ahora debe ser 'activo' o 'eliminado'
+            nombre: nombreCif,
+            correo_electronico: correoCif,
+            correo_hash: correoHash, // <-- Guarda el hash
+            cedula_identidad: cedulaCif,
+            direccion: direccionCif,
+            estado, // No se cifra
             contrasena_hash: hashedPassword
         });
 
-        // Responder con el nuevo usuario
-        res.status(201).json({ message: 'Registro exitoso', user: newUser });
+        // Responder con los datos descifrados
+        res.status(201).json({
+            message: 'Registro exitoso',
+            user: {
+                ...newUser.toJSON(),
+                nombre: descifrarDato(newUser.nombre),
+                correo_electronico: descifrarDato(newUser.correo_electronico),
+                cedula_identidad: descifrarDato(newUser.cedula_identidad),
+                direccion: descifrarDato(newUser.direccion)
+            }
+        });
 
     } catch (error) {
         console.error('Error en el registro del usuario:', error.message);
@@ -47,9 +70,16 @@ usersCtl.crearUsuario = async (req, res, next) => {
 // Obtener todos los usuarios, incluidos los eliminados
 usersCtl.getUsuarios = async (req, res) => {
     try {
-        // Obtener todos los usuarios sin filtrar por estado
-        const usuarios = await usuario.findAll(); // Esto incluye tanto 'activo' como 'eliminado'
-        res.status(200).json(usuarios);
+        const usuarios = await usuario.findAll();
+        // Descifra los campos antes de enviar
+        const usuariosDescifrados = usuarios.map(u => ({
+            ...u.toJSON(),
+            nombre: descifrarDato(u.nombre),
+            correo_electronico: descifrarDato(u.correo_electronico),
+            cedula_identidad: descifrarDato(u.cedula_identidad),
+            direccion: descifrarDato(u.direccion)
+        }));
+        res.status(200).json(usuariosDescifrados);
     } catch (error) {
         console.error('Error al obtener los usuarios:', error.message);
         res.status(500).json({ error: 'Error al obtener los usuarios' });
@@ -61,7 +91,14 @@ usersCtl.getUsuarioById = async (req, res) => {
     try {
         const user = await usuario.findByPk(req.params.id);
         if (user && user.estado === 'activo') {
-            res.status(200).json(user);
+            // Descifra los campos antes de enviar
+            res.status(200).json({
+                ...user.toJSON(),
+                nombre: descifrarDato(user.nombre),
+                correo_electronico: descifrarDato(user.correo_electronico),
+                cedula_identidad: descifrarDato(user.cedula_identidad),
+                direccion: descifrarDato(user.direccion)
+            });
         } else {
             res.status(404).json({ error: 'Usuario no encontrado' });
         }
@@ -73,14 +110,35 @@ usersCtl.getUsuarioById = async (req, res) => {
 
 // Actualizar un usuario por ID
 usersCtl.updateUsuario = async (req, res) => {
-    const validStates = ['activo', 'eliminado']; // Definir aquí el array de estados válidos
-
+    const validStates = ['activo', 'eliminado'];
     try {
         const user = await usuario.findByPk(req.params.id);
         if (user) {
             // Validar que el estado es un valor ENUM válido si está presente
             if (req.body.estado !== undefined && !validStates.includes(req.body.estado)) {
                 return res.status(400).json({ message: `El estado debe ser uno de los siguientes valores: ${validStates.join(', ')}.` });
+            }
+
+            // Cifrar campos sensibles si se actualizan
+            if (req.body.nombre !== undefined) {
+                req.body.nombre = cifrarDato(req.body.nombre);
+            }
+            if (req.body.cedula_identidad !== undefined) {
+                req.body.cedula_identidad = cifrarDato(req.body.cedula_identidad);
+            }
+            if (req.body.direccion !== undefined) {
+                req.body.direccion = cifrarDato(req.body.direccion);
+            }
+            if (req.body.correo_electronico !== undefined) {
+                // Si el correo recibido ya está cifrado, lo desciframos para calcular el hash
+                let correoPlano = req.body.correo_electronico;
+                try {
+                  correoPlano = descifrarDato(correoPlano);
+                } catch (e) {
+                  // Si no se puede descifrar, asumimos que viene en texto plano
+                }
+                req.body.correo_electronico = cifrarDato(correoPlano);
+                req.body.correo_hash = hashCorreo(correoPlano);
             }
 
             // Si se envía una nueva contraseña, hashearla antes de actualizar
@@ -91,7 +149,14 @@ usersCtl.updateUsuario = async (req, res) => {
             }
 
             await user.update(req.body);
-            res.status(200).json(user);
+            // Descifrar los campos antes de responder
+            res.status(200).json({
+                ...user.toJSON(),
+                nombre: descifrarDato(user.nombre),
+                correo_electronico: descifrarDato(user.correo_electronico),
+                cedula_identidad: descifrarDato(user.cedula_identidad),
+                direccion: descifrarDato(user.direccion)
+            });
         } else {
             res.status(404).json({ error: 'Usuario no encontrado' });
         }
@@ -260,6 +325,46 @@ usersCtl.eliminarPreferencias = async (req, res) => {
         res.status(200).json({ message: 'Preferencias eliminadas correctamente.' });
     } catch (error) {
         console.error('Error al eliminar preferencias:', error.message);
+        res.status(500).json({ message: 'Error interno del servidor.' });
+    }
+};
+
+// LOGIN DE USUARIO (para /login)
+usersCtl.loginUsuario = async (req, res) => {
+    const { correo_electronico, contrasena } = req.body;
+    try {
+        // Hash del correo recibido
+        const correoHash = hashCorreo(correo_electronico);
+        console.log('DEBUG - Correo recibido:', correo_electronico);
+        console.log('DEBUG - Hash para búsqueda:', correoHash);
+
+        // Busca el usuario por hash
+        const user = await usuario.findOne({ where: { correo_hash: correoHash } });
+        if (!user) {
+            console.log('DEBUG - Usuario NO encontrado con ese hash');
+            return res.status(400).json({ message: 'Correo o contraseña incorrectos.' });
+        } else {
+            console.log('DEBUG - Usuario encontrado:', user.id);
+        }
+
+        // Compara la contraseña
+        const passwordMatch = await bcrypt.compare(contrasena, user.contrasena_hash);
+        console.log('DEBUG - Password match:', passwordMatch);
+        if (!passwordMatch) {
+            return res.status(400).json({ message: 'Correo o contraseña incorrectos.' });
+        }
+
+        // Descifra los datos antes de responder
+        res.status(200).json({
+            usuario_id: user.id,
+            nombre: descifrarDato(user.nombre),
+            correo_electronico: descifrarDato(user.correo_electronico),
+            cedula_identidad: descifrarDato(user.cedula_identidad),
+            direccion: descifrarDato(user.direccion),
+            estado: user.estado
+        });
+    } catch (error) {
+        console.error('Error en login:', error.message);
         res.status(500).json({ message: 'Error interno del servidor.' });
     }
 };
