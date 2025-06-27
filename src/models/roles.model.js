@@ -25,6 +25,18 @@ const rol = (sequelize, type) => {
             allowNull: false,
             defaultValue: 'activo',
             comment: 'Estado del rol'
+        },
+        fecha_creacion: {
+            type: type.DATE,
+            allowNull: false,
+            defaultValue: type.literal('CURRENT_TIMESTAMP'),
+            comment: 'Fecha de creación del registro'
+        },
+        fecha_modificacion: {
+            type: type.DATE,
+            allowNull: false,
+            defaultValue: type.literal('CURRENT_TIMESTAMP'),
+            comment: 'Fecha de última modificación del registro'
         }
     }, {
         timestamps: false,

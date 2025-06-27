@@ -29,7 +29,8 @@ const ubicacion_clientes = (sequelize) => {
         marca_tiempo: {
             type: DataTypes.TIME, // Usa DataTypes para definir el tipo TIME
             comment: 'Marca tiempo'
-        }
+        },
+        
     }, {
         timestamps: false,
         comment: 'Tabla de ubicaciones del cliente'

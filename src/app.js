@@ -194,19 +194,23 @@ const logger = winston.createLogger({
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     winston.format.errors({ stack: true }),
     winston.format.splat(),
-    winston.format.printf(info =>
-      `[${info.timestamp}] [${info.level.toUpperCase()}] ${info.message}${info.stack ? '\nSTACK:\n' + info.stack : ''}`
-    )
+    winston.format.printf(info => {
+      // Si el mensaje ya viene con el formato de Morgan, no lo alteres
+      if (info.message.startsWith('[') && info.message.includes('] [INFO]: [') && info.message.includes('Agent:')) {
+        return info.message;
+      }
+      // Para logs de negocio, usa el formato con dos puntos después de [INFO]:
+      return `[${info.timestamp}] [${info.level.toUpperCase()}]: ${info.message}${info.stack ? '\nSTACK:\n' + info.stack : ''}`;
+    })
   ),
   transports: [
     new winston.transports.File({
       filename: path.join(logsDir, 'combined.log'),
-      level: 'http', // Cambia a 'http' para registrar todo lo de Morgan y más
+      level: 'http',
       maxsize: 5242880 * 5, // 25MB
       maxFiles: 3,
       tailable: true
     }),
-    // Solo en desarrollo, también loguea en consola
     ...(process.env.NODE_ENV !== 'production'
       ? [new winston.transports.Console({
           format: winston.format.combine(
@@ -224,11 +228,20 @@ console.error = (...args) => logger.error(args.join(' '));
 console.warn = (...args) => logger.warn(args.join(' '));
 
 // Configura Morgan para logging HTTP 
-app.use(morgan(
-  ':method :url :status :res[content-length] - :response-time ms - IP: :remote-addr',
-  { stream: { write: message => logger.http(message.trim()) } }
+app.use(morgan(function (tokens, req, res) {
+  const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  const method = tokens.method(req, res);
+  const url = tokens.url(req, res);
+  const status = tokens.status(req, res);
+  const responseTime = tokens["response-time"](req, res);
+  const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress || req.ip;
+  const agent = req.headers["user-agent"];
+  return `[${timestamp}] [INFO]: [${method}] ${url} ${status} ${responseTime} ms - IP: ${ip} - Agent: ${agent}`;
+}, { stream: { write: message => logger.info(message.trim()) } }
 ));
 
+// Añadir el logger a la app para acceso global en controladores
+app.set('logger', logger);
 
 // Variables globales para vistas (si usas plantillas)
 app.use((req, res, next) => {

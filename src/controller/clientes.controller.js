@@ -8,12 +8,19 @@ function hashCorreo(correo) {
   return CryptoJS.SHA256(correo).toString(CryptoJS.enc.Hex);
 }
 
+// Utilidad para obtener el logger desde req.app
+function getLogger(req) {
+  return req.app && req.app.get ? req.app.get('logger') : console;
+}
+
 // Crear un nuevo cliente
 const crearCliente = async (req, res) => {
+  const logger = getLogger(req);
   let { nombre, correo_electronico, cedula_identidad, direccion, contrasena_hash, estado_eliminado = 'activo', numero_ayudas = 0 } = req.body;
-
+  logger.info(`[CLIENTE] Intento de registro: correo=${correo_electronico}, nombre=${nombre}`);
   try {
     if (!nombre || !correo_electronico || !cedula_identidad || !direccion || !contrasena_hash) {
+      logger.warn('[CLIENTE] Registro fallido: campos obligatorios faltantes');
       return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
     }
 
@@ -27,6 +34,7 @@ const crearCliente = async (req, res) => {
     // Verificar si el cliente ya existe (busca por hash)
     const existingCliente = await cliente.findOne({ where: { correo_hash: correoHash } });
     if (existingCliente) {
+      logger.warn(`[CLIENTE] Registro fallido: correo ya registrado (${correo_electronico})`);
       return res.status(400).json({ message: 'El correo electrónico ya está registrado.' });
     }
 
@@ -44,7 +52,7 @@ const crearCliente = async (req, res) => {
       estado_eliminado,
       numero_ayudas,
     });
-
+    logger.info(`[CLIENTE] Registro exitoso: id=${nuevoCliente.id}, correo=${correo_electronico}`);
     // Responder con los datos descifrados
     res.status(201).json({
       message: 'Cliente creado exitosamente.',
@@ -57,13 +65,15 @@ const crearCliente = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error al crear cliente:', error.message);
+    logger.error(`[CLIENTE] Error al crear cliente: ${error.message}`);
     res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
 
 // Obtener todos los clientes
 const getClientes = async (req, res) => {
+  const logger = getLogger(req);
+  logger.info('[CLIENTE] Solicitud de listado de clientes');
   try {
     const clientesList = await cliente.findAll({ where: { estado_eliminado: 'activo' } });
     const clientesDescifrados = clientesList.map(c => ({
@@ -75,13 +85,15 @@ const getClientes = async (req, res) => {
     }));
     res.status(200).json(clientesDescifrados);
   } catch (error) {
-    console.error('Error al obtener los clientes:', error.message);
+    logger.error(`[CLIENTE] Error al obtener los clientes: ${error.message}`);
     res.status(500).json({ error: 'Error al obtener los clientes' });
   }
 };
 
 // Obtener un cliente por ID
 const getClienteById = async (req, res) => {
+  const logger = getLogger(req);
+  logger.info(`[CLIENTE] Solicitud de cliente por ID: ${req.params.id}`);
   try {
     const c = await cliente.findByPk(req.params.id);
     if (c && c.estado_eliminado === 'activo') {
@@ -93,16 +105,19 @@ const getClienteById = async (req, res) => {
         direccion: descifrarDato(c.direccion)
       });
     } else {
+      logger.warn(`[CLIENTE] Cliente no encontrado: id=${req.params.id}`);
       res.status(404).json({ error: 'Cliente no encontrado' });
     }
   } catch (error) {
-    console.error('Error al obtener el cliente:', error.message);
+    logger.error(`[CLIENTE] Error al obtener el cliente: ${error.message}`);
     res.status(500).json({ error: 'Error al obtener el cliente' });
   }
 };
 
 // Actualizar un cliente por ID
 const updateCliente = async (req, res) => {
+  const logger = getLogger(req);
+  logger.info(`[CLIENTE] Actualización de cliente: id=${req.params.id}`);
   try {
     const c = await cliente.findByPk(req.params.id);
     if (c && c.estado_eliminado === 'activo') {
@@ -128,6 +143,7 @@ const updateCliente = async (req, res) => {
         req.body.contrasena_hash = await bcrypt.hash(req.body.contrasena_hash, 10);
       }
       await c.update(req.body);
+      logger.info(`[CLIENTE] Cliente actualizado correctamente: id=${c.id}`);
       res.status(200).json({
         ...c.toJSON(),
         nombre: descifrarDato(c.nombre),
@@ -136,35 +152,43 @@ const updateCliente = async (req, res) => {
         direccion: descifrarDato(c.direccion)
       });
     } else {
+      logger.warn(`[CLIENTE] Cliente no encontrado para actualizar: id=${req.params.id}`);
       res.status(404).json({ error: 'Cliente no encontrado' });
     }
   } catch (error) {
-    console.error('Error al actualizar el cliente:', error.message);
+    logger.error(`[CLIENTE] Error al actualizar el cliente: ${error.message}`);
     res.status(500).json({ error: 'Error al actualizar el cliente' });
   }
 };
 
 // Borrar un cliente por ID (Marcar como eliminado)
 const deleteCliente = async (req, res) => {
+  const logger = getLogger(req);
+  logger.info(`[CLIENTE] Eliminación de cliente: id=${req.params.id}`);
   try {
     const clientes = await cliente.findByPk(req.params.id);
     if (clientes && clientes.estado_eliminado === 'activo') {
       await clientes.update({ estado_eliminado: 'eliminado' });
+      logger.info(`[CLIENTE] Cliente marcado como eliminado: id=${clientes.id}`);
       res.status(204).send();
     } else {
+      logger.warn(`[CLIENTE] Cliente no encontrado para eliminar: id=${req.params.id}`);
       res.status(404).json({ error: 'Cliente no encontrado' });
     }
   } catch (error) {
-    console.error('Error al borrar el cliente:', error.message);
+    logger.error(`[CLIENTE] Error al borrar el cliente: ${error.message}`);
     res.status(500).json({ error: 'Error al borrar el cliente' });
   }
 };
-const loginCliente = async (req, res) => {
-  const { correo_electronico, contrasena_hash } = req.body;
 
+const loginCliente = async (req, res) => {
+  const logger = getLogger(req);
+  const { correo_electronico, contrasena_hash } = req.body;
+  logger.info(`[CLIENTE] Intento de login: correo=${correo_electronico}`);
   try {
     // Validación básica
     if (!correo_electronico || !contrasena_hash) {
+      logger.warn('[CLIENTE] Login fallido: email o contraseña faltantes');
       return res.status(400).json({
         success: false,
         message: 'Email y contraseña son requeridos'
@@ -173,24 +197,28 @@ const loginCliente = async (req, res) => {
 
     // Buscar usuario por hash del correo (como en usuarios)
     const correoHash = hashCorreo(correo_electronico);
+    logger.info(`[CLIENTE] Hash para búsqueda: ${correoHash}`);
     const user = await cliente.findOne({
       where: {
         correo_hash: correoHash,
         estado_eliminado: 'activo'
       }
     });
-
     if (!user) {
+      logger.warn(`[CLIENTE] Login fallido: usuario no encontrado (${correo_electronico})`);
       return res.status(401).json({
         success: false,
         message: 'Credenciales incorrectas'
       });
+    } else {
+      logger.info(`[CLIENTE] Usuario encontrado: ${user.id}`);
     }
 
     // Comparar contraseñas
     const isMatch = await bcrypt.compare(contrasena_hash, user.contrasena_hash);
-
+    logger.info(`[CLIENTE] Password match: ${isMatch}`);
     if (!isMatch) {
+      logger.warn(`[CLIENTE] Login fallido: contraseña incorrecta para usuario id=${user.id}`);
       return res.status(401).json({
         success: false,
         message: 'Credenciales incorrectas'
@@ -209,7 +237,7 @@ const loginCliente = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error en login:', error);
+    logger.error(`[CLIENTE] Error en login: ${error.message}`);
     res.status(500).json({
       success: false,
       message: 'Error en el servidor'

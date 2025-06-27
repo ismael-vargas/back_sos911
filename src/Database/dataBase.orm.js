@@ -147,7 +147,7 @@ cliente.hasMany(mensajes_grupo, { foreignKey: 'cliente_id' });
 
 
 
-sequelize.sync({ alter: false }) // alter actualizará el esquema de la base de datos para que coincida con el modelo
+sequelize.sync({ alter: true }) // alter actualizará el esquema de la base de datos para que coincida con el modelo
     .then(() => {
         console.log('Database synchronized');
     })

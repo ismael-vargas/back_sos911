@@ -34,7 +34,20 @@ const clienteNumero = (sequelize, type) => {
             type: type.ENUM('activo', 'eliminado'),
             defaultValue: 'activo',
             comment: 'Estado del número de cliente'
+        },
+        fecha_creacion: {
+            type: type.DATE,
+            allowNull: false,
+            defaultValue: type.literal('CURRENT_TIMESTAMP'),
+            comment: 'Fecha de creación del registro'
+        },
+        fecha_modificacion: {
+            type: type.DATE,
+            allowNull: false,
+            defaultValue: type.literal('CURRENT_TIMESTAMP'),
+            comment: 'Fecha de última modificación del registro'
         }
+
     }, {
         timestamps: false,
         comment: 'Tabla de números de clientes'

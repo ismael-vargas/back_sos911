@@ -11,10 +11,16 @@ function hashCorreo(correo) {
 // Controlador de usuarios
 const usersCtl = {};
 
+// Utilidad para obtener el logger desde req.app
+function getLogger(req) {
+    return req.app.get('logger');
+}
+
 // Crear un nuevo usuario
 usersCtl.crearUsuario = async (req, res, next) => {
+    const logger = getLogger(req);
     let { nombre, correo_electronico, cedula_identidad, direccion, estado, contrasena } = req.body;
-
+    logger.info(`[USUARIO] Intento de registro: correo=${correo_electronico}, nombre=${nombre}`);
     try {
         // Cifrar los campos sensibles
         const nombreCif = cifrarDato(nombre);
@@ -26,12 +32,14 @@ usersCtl.crearUsuario = async (req, res, next) => {
         // Verificar si el usuario ya existe (busca por hash)
         const existingUser = await usuario.findOne({ where: { correo_hash: correoHash } });
         if (existingUser) {
+            logger.warn(`[USUARIO] Registro fallido: correo ya registrado (${correo_electronico})`);
             return res.status(400).json({ message: 'El correo electrónico ya está registrado.' });
         }
 
         // Validar que el estado es un valor ENUM válido
         const validStates = ['activo', 'eliminado'];
         if (!validStates.includes(estado)) {
+            logger.warn(`[USUARIO] Registro fallido: estado inválido (${estado})`);
             return res.status(400).json({ message: 'El estado debe ser uno de los siguientes valores: activo, eliminado.' });
         }
 
@@ -48,7 +56,7 @@ usersCtl.crearUsuario = async (req, res, next) => {
             estado, // No se cifra
             contrasena_hash: hashedPassword
         });
-
+        logger.info(`[USUARIO] Registro exitoso: id=${newUser.id}, correo=${correo_electronico}`);
         // Responder con los datos descifrados
         res.status(201).json({
             message: 'Registro exitoso',
@@ -62,13 +70,15 @@ usersCtl.crearUsuario = async (req, res, next) => {
         });
 
     } catch (error) {
-        console.error('Error en el registro del usuario:', error.message);
+        logger.error(`[USUARIO] Error en el registro: ${error.message}`);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
 // Obtener todos los usuarios, incluidos los eliminados
 usersCtl.getUsuarios = async (req, res) => {
+    const logger = getLogger(req);
+    logger.info('[USUARIO] Solicitud de listado de usuarios');
     try {
         const usuarios = await usuario.findAll();
         // Descifra los campos antes de enviar
@@ -81,13 +91,15 @@ usersCtl.getUsuarios = async (req, res) => {
         }));
         res.status(200).json(usuariosDescifrados);
     } catch (error) {
-        console.error('Error al obtener los usuarios:', error.message);
+        logger.error(`[USUARIO] Error al obtener los usuarios: ${error.message}`);
         res.status(500).json({ error: 'Error al obtener los usuarios' });
     }
 };
 
 // Obtener un usuario por ID
 usersCtl.getUsuarioById = async (req, res) => {
+    const logger = getLogger(req);
+    logger.info(`[USUARIO] Solicitud de usuario por ID: ${req.params.id}`);
     try {
         const user = await usuario.findByPk(req.params.id);
         if (user && user.estado === 'activo') {
@@ -100,26 +112,30 @@ usersCtl.getUsuarioById = async (req, res) => {
                 direccion: descifrarDato(user.direccion)
             });
         } else {
+            logger.warn(`[USUARIO] Usuario no encontrado: id=${req.params.id}`);
             res.status(404).json({ error: 'Usuario no encontrado' });
         }
     } catch (error) {
-        console.error('Error al obtener el usuario:', error.message);
+        logger.error(`[USUARIO] Error al obtener el usuario: ${error.message}`);
         res.status(500).json({ error: 'Error al obtener el usuario' });
     }
 };
 
 // Actualizar un usuario por ID
 usersCtl.updateUsuario = async (req, res) => {
+    const logger = getLogger(req);
+    logger.info(`[USUARIO] Actualización de usuario: id=${req.params.id}`);
     const validStates = ['activo', 'eliminado'];
     try {
         const user = await usuario.findByPk(req.params.id);
         if (user) {
             // Validar que el estado es un valor ENUM válido si está presente
             if (req.body.estado !== undefined && !validStates.includes(req.body.estado)) {
+                logger.warn(`[USUARIO] Actualización fallida: estado inválido (${req.body.estado})`);
                 return res.status(400).json({ message: `El estado debe ser uno de los siguientes valores: ${validStates.join(', ')}.` });
             }
 
-            // Cifrar campos sensibles si se actualizan
+            // Cifrar campos sensibles si se actualizan (como antes funcionaba)
             if (req.body.nombre !== undefined) {
                 req.body.nombre = cifrarDato(req.body.nombre);
             }
@@ -129,27 +145,57 @@ usersCtl.updateUsuario = async (req, res) => {
             if (req.body.direccion !== undefined) {
                 req.body.direccion = cifrarDato(req.body.direccion);
             }
-            if (req.body.correo_electronico !== undefined) {
-                // Si el correo recibido ya está cifrado, lo desciframos para calcular el hash
+
+            // SOLO procesar correo_electronico si realmente cambió
+            if (req.body.correo_electronico !== undefined && req.body.correo_electronico !== descifrarDato(user.correo_electronico)) {
                 let correoPlano = req.body.correo_electronico;
-                try {
-                  correoPlano = descifrarDato(correoPlano);
-                } catch (e) {
-                  // Si no se puede descifrar, asumimos que viene en texto plano
+                if (!correoPlano || correoPlano.trim() === '') {
+                    logger.warn(`[USUARIO] Actualización fallida: el correo electrónico no puede estar vacío.`);
+                    return res.status(400).json({ message: 'El correo electrónico no puede estar vacío.' });
                 }
+                try {
+                    correoPlano = descifrarDato(correoPlano);
+                } catch (e) {}
                 req.body.correo_electronico = cifrarDato(correoPlano);
                 req.body.correo_hash = hashCorreo(correoPlano);
+                // Verificar si el nuevo correo ya existe en otro usuario
+                const existingUserWithNewEmail = await usuario.findOne({ where: { correo_hash: req.body.correo_hash } });
+                if (existingUserWithNewEmail && existingUserWithNewEmail.id !== parseInt(req.params.id)) {
+                    logger.warn(`[USUARIO] Actualización fallida: el nuevo correo (${correoPlano}) ya está en uso.`);
+                    return res.status(400).json({ message: 'El correo electrónico ya está registrado.' });
+                }
+            } else {
+                // Si no se cambia el correo, no lo actualices ni lo incluyas en el update
+                delete req.body.correo_electronico;
+                delete req.body.correo_hash;
             }
 
-            // Si se envía una nueva contraseña, hashearla antes de actualizar
             if (req.body.contrasena) {
                 const hashedPassword = await bcrypt.hash(req.body.contrasena, 10);
                 req.body.contrasena_hash = hashedPassword;
-                delete req.body.contrasena; // Eliminar la contraseña en texto plano
+                delete req.body.contrasena;
             }
 
-            await user.update(req.body);
-            // Descifrar los campos antes de responder
+            // Solo actualiza los campos permitidos
+            const camposPermitidos = [
+                'nombre', 'correo_electronico', 'correo_hash', 'cedula_identidad', 'direccion', 'estado', 'contrasena_hash'
+            ];
+            const datosActualizar = {};
+            for (const campo of camposPermitidos) {
+                if (req.body[campo] !== undefined) {
+                    datosActualizar[campo] = req.body[campo];
+                }
+            }
+
+            // Validar que al menos un campo permitido se esté actualizando
+            if (Object.keys(datosActualizar).length === 0) {
+                logger.warn(`[USUARIO] No se enviaron campos válidos para actualizar: id=${req.params.id}`);
+                return res.status(400).json({ error: 'No se enviaron campos válidos para actualizar.' });
+            }
+
+            // Volver a la lógica anterior: pasar los campos cifrados directamente
+            await user.update(datosActualizar);
+            logger.info(`[USUARIO] Usuario actualizado correctamente: id=${user.id}`);
             res.status(200).json({
                 ...user.toJSON(),
                 nombre: descifrarDato(user.nombre),
@@ -158,29 +204,35 @@ usersCtl.updateUsuario = async (req, res) => {
                 direccion: descifrarDato(user.direccion)
             });
         } else {
+            logger.warn(`[USUARIO] Usuario no encontrado para actualizar: id=${req.params.id}`);
             res.status(404).json({ error: 'Usuario no encontrado' });
         }
     } catch (error) {
-        console.error('Error al actualizar el usuario:', error.message);
+        logger.error(`[USUARIO] Error al actualizar el usuario: ${error.message}`);
         res.status(500).json({ error: 'Error al actualizar el usuario' });
     }
 };
 
 // Borrar un usuario por ID (Marcar como eliminado)
 usersCtl.deleteUsuario = async (req, res) => {
+    const logger = getLogger(req);
+    logger.info(`[USUARIO] Eliminación de usuario: id=${req.params.id}`);
     try {
         const user = await usuario.findByPk(req.params.id);
         if (user && user.estado === 'activo') {
             // Marcar el usuario como eliminado
             await user.update({ estado: 'eliminado' });
+            logger.info(`[USUARIO] Usuario marcado como eliminado: id=${user.id}`);
             res.status(204).send();
         } else if (user && user.estado === 'eliminado') {
+            logger.warn(`[USUARIO] Usuario ya eliminado: id=${user.id}`);
             res.status(404).json({ error: 'Usuario ya ha sido eliminado' });
         } else {
+            logger.warn(`[USUARIO] Usuario no encontrado para eliminar: id=${req.params.id}`);
             res.status(404).json({ error: 'Usuario no encontrado' });
         }
     } catch (error) {
-        console.error('Error al borrar el usuario:', error.message);
+        logger.error(`[USUARIO] Error al borrar el usuario: ${error.message}`);
         res.status(500).json({ error: 'Error al borrar el usuario' });
     }
 };
