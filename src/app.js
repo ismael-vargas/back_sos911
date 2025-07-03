@@ -171,6 +171,9 @@ app.use('/usuarios_roles', require('./router/usuarios_roles.router'));
 app.use('/clientes', require('./router/clientes.router'));
 app.use('/clientes_numeros', require('./router/clientes_numeros.router'));
 app.use('/clientes_grupos', require('./router/clientes_grupos.router'));
+app.use('/servicios_emergencia', require('./router/servicios_emergencia.router'));
+app.use(require('./router/contenido_app.router.models'));
+
 
 // Asegura que la carpeta "logs" exista
 const logsDir = path.join(__dirname, 'logs');

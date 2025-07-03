@@ -58,7 +58,7 @@ const informesEstadisticasModel = require ('../models/informes_estadisticas.mode
 const notificacionesModel = require ('../models/notificaciones.model');
 const presionesBotonPanicosModel = require('../models/presiones_boton_panico.model');
 const usuariosRolesModel = require('../models/usuarios_roles.model');
-
+const serviciosEmergenciaModel = require('../models/servicios_emergencia');
 
 //Sincronia tablas
 const dispositivos = dispositivosModel(sequelize, Sequelize);
@@ -78,6 +78,7 @@ const informes_estadisticas = informesEstadisticasModel(sequelize, Sequelize);
 const notificaciones = notificacionesModel(sequelize, Sequelize);
 const presiones_boton_panico = presionesBotonPanicosModel(sequelize, Sequelize);
 const usuarios_roles = usuariosRolesModel(sequelize, Sequelize);
+const servicios_emergencia = serviciosEmergenciaModel(sequelize, Sequelize);
 
 
 // RELACIONES
@@ -147,7 +148,13 @@ cliente.hasMany(mensajes_grupo, { foreignKey: 'cliente_id' });
 
 
 
-sequelize.sync({ alter: true }) // alter actualizará el esquema de la base de datos para que coincida con el modelo
+// Relación usuario - servicios_emergencia
+usuario.hasMany(servicios_emergencia, { foreignKey: 'usuario_id' });
+servicios_emergencia.belongsTo(usuario, { foreignKey: 'usuario_id' });
+
+
+
+sequelize.sync({alter: true }) // alter actualizará el esquema de la base de datos para que coincida con el modelo
     .then(() => {
         console.log('Database synchronized');
     })
@@ -173,6 +180,6 @@ module.exports = {
     informes_estadisticas,
     notificaciones,
     presiones_boton_panico,
-    usuarios_roles, 
-
+    usuarios_roles,
+    servicios_emergencia, // <-- exportar el nuevo modelo
 };

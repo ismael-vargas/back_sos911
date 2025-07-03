@@ -6,7 +6,8 @@ const {
   getClientesNumeros,
   getClientesNumeroById,
   updateClientesNumero,
-  deleteClientesNumero
+  deleteClientesNumero,
+  getNumerosByClienteId // <-- nuevo método
 } = require('../controller/clientes_numeros.controller');
 
 // Rutas agrupadas para números de clientes
@@ -18,5 +19,8 @@ router.route('/:id')
   .get(getClientesNumeroById)
   .put(updateClientesNumero)
   .delete(deleteClientesNumero);
+
+// Ruta para obtener los números de un cliente específico
+router.get('/cliente/:cliente_id', getNumerosByClienteId);
 
 module.exports = router;

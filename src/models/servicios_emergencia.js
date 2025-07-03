@@ -1,39 +1,37 @@
-// Definición del modelo "clientes_numeros" para Sequelize (ORM)
-const clienteNumero = (sequelize, type) => {
-    return sequelize.define('clientes_numeros', {
+// Modelo servicios_emergencia para Sequelize (ORM)
+const serviciosEmergencia = (sequelize, type) => {
+    return sequelize.define('servicios_emergencia', {
         id: {
             type: type.INTEGER,
             autoIncrement: true,
             primaryKey: true,
-            comment: 'ID único del cliente número'
+            comment: 'ID único del servicio de emergencia'
         },
-        cliente_id: {
+        usuario_id: {
             type: type.INTEGER,
             allowNull: false,
-            references: {
-                model: 'clientes',
-                key: 'id'
-            },
-            comment: 'ID del cliente relacionado'
+            comment: 'ID del usuario que crea el servicio',
         },
         nombre: {
-            type: type.STRING(512),
+            type: type.STRING(100),
             allowNull: false,
-            comment: 'Nombre asociado al número del cliente'
-        },
-        numero: {
-            type: type.STRING(512),
-            comment: 'Número asociado al cliente'
+            comment: 'Nombre del servicio de emergencia'
         },
         descripcion: {
-            type: type.STRING(512),
+            type: type.STRING(255),
             allowNull: true,
-            comment: 'Descripción del número del cliente'
+            comment: 'Descripción del servicio de emergencia'
+        },
+        telefono: {
+            type: type.STRING(30),
+            allowNull: false,
+            comment: 'Teléfono del servicio de emergencia'
         },
         estado: {
             type: type.ENUM('activo', 'eliminado'),
             defaultValue: 'activo',
-            comment: 'Estado del número de cliente'
+            allowNull: false,
+            comment: 'Estado del servicio de emergencia'
         },
         fecha_creacion: {
             type: type.DATE,
@@ -47,11 +45,10 @@ const clienteNumero = (sequelize, type) => {
             defaultValue: type.literal('CURRENT_TIMESTAMP'),
             comment: 'Fecha de última modificación del registro'
         }
-
     }, {
         timestamps: false,
-        comment: 'Tabla de números de clientes'
+        comment: 'Tabla de servicios de emergencia públicos'
     });
 };
 
-module.exports = clienteNumero;
+module.exports = serviciosEmergencia;
