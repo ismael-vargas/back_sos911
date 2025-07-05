@@ -241,39 +241,24 @@ usersCtl.deleteUsuario = async (req, res) => {
 // Registrar preferencias para un usuario ya existente
 usersCtl.registrarPreferencias = async (req, res) => {
     const { id } = req.params;
-    const { tema, colores, fuente, botonPrincipal, barraSuperior } = req.body;
-
-
+    const { tema, sidebarMinimizado } = req.body;
+    const usuarioIdNum = Number(id);
     try {
-        // Verificar que el usuario exista en MySQL
-        const existeUsuario = await usuario.findByPk(id);
+        const existeUsuario = await usuario.findByPk(usuarioIdNum);
         if (!existeUsuario) {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
 
-        // Validar si ya existen preferencias para ese usuario
-        const yaTienePreferencias = await Preferencias.findOne({ usuarioId: id });
+        const yaTienePreferencias = await Preferencias.findOne({ usuarioId: usuarioIdNum });
         if (yaTienePreferencias) {
             return res.status(400).json({ message: 'El usuario ya tiene preferencias registradas.' });
         }
 
-        // Guardar las preferencias en Mongo
         const preferencias = await Preferencias.create({
-            usuarioId: id,
-            origen: 'usuario',
+            usuarioId: usuarioIdNum,
             tema,
-            colores: {
-                fondo: colores.fondo,
-                texto: colores.texto,
-                botones: colores.botones,
-                sidebar: colores.sidebar,
-                inicio: colores.inicio,
-                botonPrincipal,
-                barraSuperior
-            },
-            fuente,
+            sidebarMinimizado,
         });
-
 
         res.status(201).json({
             message: 'Preferencias guardadas exitosamente.',
@@ -285,25 +270,19 @@ usersCtl.registrarPreferencias = async (req, res) => {
     }
 };
 
-
 // Obtener un usuario y sus preferencias
 usersCtl.getUsuarioConPreferencias = async (req, res) => {
     const { id } = req.params;
-
+    const usuarioIdNum = Number(id);
     try {
-        // Paso 1: Obtiene el usuario desde la base relacional (MySQL)
-        const usuarioData = await usuario.findByPk(id);
-
+        const usuarioData = await usuario.findByPk(usuarioIdNum);
         if (!usuarioData) {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
-
-        // Paso 2: Obtiene las preferencias desde la base no relacional (MongoDB)
-        const preferenciasData = await Preferencias.findOne({ usuarioId: id });
-
+        const preferenciasData = await Preferencias.findOne({ usuarioId: usuarioIdNum });
         res.status(200).json({
-            usuario: usuarioData,    //  Información del usuario desde MySQL
-            preferencias: preferenciasData, // Información de preferencias desde MongoDB
+            usuario: usuarioData,
+            preferencias: preferenciasData,
         });
     } catch (error) {
         console.error('Error al obtener usuario y preferencias:', error.message);
@@ -315,37 +294,17 @@ usersCtl.getUsuarioConPreferencias = async (req, res) => {
 // Actualizar preferencias de un usuario existente
 usersCtl.actualizarPreferencias = async (req, res) => {
     const { id } = req.params;
-    const { tema, colores, fuente, botonPrincipal, barraSuperior, estado } = req.body;
-
-    const estadosValidos = ['activo', 'eliminado'];
-
+    const { tema, sidebarMinimizado, estado } = req.body;
+    const usuarioIdNum = Number(id);
     try {
-        // Verificar que existan preferencias
-        const preferencias = await Preferencias.findOne({ usuarioId: id });
+        const preferencias = await Preferencias.findOne({ usuarioId: usuarioIdNum });
         if (!preferencias) {
-            return res.status(404).json({ message: 'Preferencias no encontradas para este usuario.' });
+            return res.status(404).json({ message: 'No existen preferencias para este usuario.' });
         }
 
-        // Actualizar los campos si se proporcionan
         if (tema !== undefined) preferencias.tema = tema;
-        if (fuente !== undefined) preferencias.fuente = fuente;
-        if (estado !== undefined) {
-            if (!estadosValidos.includes(estado)) {
-                return res.status(400).json({ message: 'Estado inválido. Debe ser "activo" o "eliminado".' });
-            }
-            preferencias.estado = estado;
-        }
-        if (colores !== undefined) {
-            const camposColor = ['fondo', 'texto', 'botones', 'sidebar', 'inicio', 'botonPrincipal', 'barraSuperior'];
-            camposColor.forEach(campo => {
-                if (colores[campo] !== undefined) {
-                    preferencias.colores[campo] = colores[campo];
-                }
-            });
-        }
-        // Si se envían directamente botonPrincipal o barraSuperior en el body raíz
-        if (botonPrincipal !== undefined) preferencias.colores.botonPrincipal = botonPrincipal;
-        if (barraSuperior !== undefined) preferencias.colores.barraSuperior = barraSuperior;
+        if (sidebarMinimizado !== undefined) preferencias.sidebarMinimizado = sidebarMinimizado;
+        if (estado !== undefined) preferencias.estado = estado;
 
         await preferencias.save();
 
@@ -359,18 +318,15 @@ usersCtl.actualizarPreferencias = async (req, res) => {
 // Eliminar (lógicamente) las preferencias del usuario
 usersCtl.eliminarPreferencias = async (req, res) => {
     const { id } = req.params;
-
+    const usuarioIdNum = Number(id);
     try {
-        const preferencias = await Preferencias.findOne({ usuarioId: id });
-
+        const preferencias = await Preferencias.findOne({ usuarioId: usuarioIdNum });
         if (!preferencias) {
-            return res.status(404).json({ message: 'Preferencias no encontradas para este usuario.' });
+            return res.status(404).json({ message: 'No existen preferencias para este usuario.' });
         }
-
         if (preferencias.estado === 'eliminado') {
             return res.status(400).json({ message: 'Las preferencias ya están eliminadas.' });
         }
-
         preferencias.estado = 'eliminado';
         await preferencias.save();
 

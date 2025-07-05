@@ -34,8 +34,20 @@ connectMongoDB(); // Conectar a MongoDB Atlas
 const app = express();
 
 // Configurar CORS
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://192.168.1.31:3000'
+];
+
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://192.168.1.31'],
+  origin: function(origin, callback) {
+    // Permitir peticiones sin origen (como Postman) o desde orígenes permitidos
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'csrf-token']
@@ -79,7 +91,7 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        sameSite: 'Strict'
+        sameSite: 'Lax' // <--- CAMBIADO de 'Strict' a 'Lax' para permitir cookies cross-origin en PUT/POST
     }
 }));
 

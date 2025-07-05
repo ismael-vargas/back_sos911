@@ -14,6 +14,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 *.log  # <-- Añade esta línea
+src/logs/combined.log
 
 # Editor directories and files
 .idea

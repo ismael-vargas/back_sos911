@@ -3,32 +3,19 @@ const mongoose = require('mongoose');
 
 const PreferenciasSchema = new mongoose.Schema({
   usuarioId: {
-    type: Number, // ID del usuario en MySQL
-  },
-  clienteId: {
-    type: Number, // ID del cliente en MySQL
-  },
-  origen: {
-    type: String,
-    enum: ['usuario', 'cliente'], // para saber de quién es
+    type: Number,
     required: true,
+    unique: true, // Solo una preferencia por usuario
   },
   tema: {
     type: String,
+    enum: ['oscuro', 'claro'],
     required: true,
+    default: 'claro',
   },
-  colores: {
-    fondo: { type: String, required: true },
-    texto: { type: String, required: true },
-    botones: { type: String, required: true },
-    sidebar: { type: String }, // si lo necesitas
-    inicio: { type: String },  // color pantalla inicio
-    botonPrincipal: { type: String }, // nuevo sugerido
-    barraSuperior: { type: String },  // nuevo sugerido
-  },
-  fuente: {
-    type: String, // tipo de letra
-    default: 'Arial',
+  sidebarMinimizado: {
+    type: Boolean,
+    default: false,
   },
   estado: {
     type: String,
@@ -37,6 +24,7 @@ const PreferenciasSchema = new mongoose.Schema({
   },
 }, {
   timestamps: true,
+  // Para futuras migraciones: usa mongoose-migrate o scripts para actualizar documentos existentes si cambias el esquema.
 });
 
 module.exports = mongoose.model('Preferencias', PreferenciasSchema);
