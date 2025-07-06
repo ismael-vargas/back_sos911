@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { cliente } = require('../Database/dataBase.orm');
+const { cliente, dispositivos } = require('../Database/dataBase.orm');
 const Preferencias = require('../models/preferencias.model'); // modelo de Mongo
 const { cifrarDato, descifrarDato } = require('../lib/encrypDates');
 const CryptoJS = require('crypto-js');
@@ -16,7 +16,7 @@ function getLogger(req) {
 // Crear un nuevo cliente
 const crearCliente = async (req, res) => {
   const logger = getLogger(req);
-  let { nombre, correo_electronico, cedula_identidad, direccion, contrasena_hash, estado_eliminado = 'activo', numero_ayudas = 0 } = req.body;
+  let { nombre, correo_electronico, cedula_identidad, direccion, contrasena_hash, estado_eliminado = 'activo', numero_ayudas = 0, deviceId, tipo_dispositivo, modelo_dispositivo } = req.body;
   logger.info(`[CLIENTE] Intento de registro: correo=${correo_electronico}, nombre=${nombre}`);
   try {
     if (!nombre || !correo_electronico || !cedula_identidad || !direccion || !contrasena_hash) {
@@ -53,6 +53,22 @@ const crearCliente = async (req, res) => {
       numero_ayudas,
     });
     logger.info(`[CLIENTE] Registro exitoso: id=${nuevoCliente.id}, correo=${correo_electronico}`);
+
+    // Registrar dispositivo si se envía desde el frontend
+    if (deviceId && tipo_dispositivo && modelo_dispositivo) {
+      const tokenDispositivoCif = cifrarDato(deviceId);
+      const tipoDispositivoCif = cifrarDato(tipo_dispositivo);
+      const modeloDispositivoCif = cifrarDato(modelo_dispositivo);
+      await dispositivos.create({
+        cliente_id: nuevoCliente.id,
+        token_dispositivo: tokenDispositivoCif,
+        tipo_dispositivo: tipoDispositivoCif,
+        modelo_dispositivo: modeloDispositivoCif,
+        estado: 'activo'
+      });
+      logger.info(`[DISPOSITIVO] Dispositivo registrado en registro de cliente: cliente_id=${nuevoCliente.id}`);
+    }
+
     // Responder con los datos descifrados
     res.status(201).json({
       message: 'Cliente creado exitosamente.',
@@ -183,7 +199,7 @@ const deleteCliente = async (req, res) => {
 
 const loginCliente = async (req, res) => {
   const logger = getLogger(req);
-  const { correo_electronico, contrasena_hash } = req.body;
+  const { correo_electronico, contrasena_hash, deviceId, tipo_dispositivo, modelo_dispositivo } = req.body;
   logger.info(`[CLIENTE] Intento de login: correo=${correo_electronico}`);
   try {
     // Validación básica
@@ -225,6 +241,34 @@ const loginCliente = async (req, res) => {
       });
     }
 
+    // Guardar deviceId en la tabla dispositivos si viene del frontend
+    if (deviceId && tipo_dispositivo && modelo_dispositivo) {
+      // Cifrar los datos del dispositivo
+      const tokenDispositivoCif = cifrarDato(deviceId);
+      const tipoDispositivoCif = cifrarDato(tipo_dispositivo);
+      const modeloDispositivoCif = cifrarDato(modelo_dispositivo);
+      // Verifica si ya existe ese deviceId para ese cliente y está activo
+      const existe = await dispositivos.findOne({
+        where: {
+          cliente_id: user.id,
+          token_dispositivo: tokenDispositivoCif,
+          estado: 'activo'
+        }
+      });
+      if (!existe) {
+        await dispositivos.create({
+          cliente_id: user.id,
+          token_dispositivo: tokenDispositivoCif,
+          tipo_dispositivo: tipoDispositivoCif,
+          modelo_dispositivo: modeloDispositivoCif,
+          estado: 'activo'
+        });
+        logger.info(`[DISPOSITIVO] Nuevo deviceId registrado para cliente ${user.id}`);
+      } else {
+        logger.info(`[DISPOSITIVO] deviceId ya registrado para cliente ${user.id}`);
+      }
+    }
+
     // Respuesta exitosa (sin token JWT)
     res.json({
       success: true,
@@ -243,7 +287,40 @@ const loginCliente = async (req, res) => {
       message: 'Error en el servidor'
     });
   }
+};
 
+// Login por deviceId
+const deviceLogin = async (req, res) => {
+  const logger = getLogger(req);
+  const { deviceId } = req.body;
+  logger.info(`[CLIENTE] Intento de device-login: deviceId=${deviceId}`);
+  try {
+    if (!deviceId) {
+      logger.warn('[CLIENTE] Device-login fallido: deviceId faltante');
+      return res.status(400).json({ success: false, message: 'deviceId requerido' });
+    }
+    // Cifrar el deviceId antes de buscarlo
+    const tokenDispositivoCif = cifrarDato(deviceId);
+    // Busca un dispositivo activo con ese token cifrado
+    const dispositivo = await dispositivos.findOne({
+      where: { token_dispositivo: tokenDispositivoCif, estado: 'activo' }
+    });
+    if (!dispositivo) {
+      logger.warn(`[CLIENTE] Device-login fallido: deviceId no registrado (${deviceId})`);
+      return res.status(401).json({ success: false, message: 'Dispositivo no autorizado' });
+    }
+    // Busca el cliente asociado
+    const user = await cliente.findOne({ where: { id: dispositivo.cliente_id, estado_eliminado: 'activo' } });
+    if (!user) {
+      logger.warn(`[CLIENTE] Device-login fallido: cliente no encontrado para deviceId (${deviceId})`);
+      return res.status(401).json({ success: false, message: 'Cliente no autorizado' });
+    }
+    logger.info(`[CLIENTE] Device-login exitoso: usuario id=${user.id}`);
+    res.json({ success: true, message: 'Device login exitoso', user: { id: user.id, nombre: descifrarDato(user.nombre), email: descifrarDato(user.correo_electronico) } });
+  } catch (error) {
+    logger.error(`[CLIENTE] Error en device-login: ${error.message}`);
+    res.status(500).json({ success: false, message: 'Error en el servidor' });
+  }
 };
 
 // Registrar preferencias de un cliente
@@ -399,6 +476,7 @@ module.exports = {
   registrarPreferenciasCliente,
   getClienteConPreferencias,      // <- ESTO FALTABA
   actualizarPreferenciasCliente,  // <- ESTO FALTABA
-  eliminarPreferenciasCliente     // <- ESTO FALTABA
+  eliminarPreferenciasCliente,
+  deviceLoginHandler: deviceLogin
 };
 

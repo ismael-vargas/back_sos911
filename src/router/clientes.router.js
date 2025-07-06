@@ -12,12 +12,14 @@ const {
   registrarPreferenciasCliente,
   getClienteConPreferencias,
   actualizarPreferenciasCliente,
-  eliminarPreferenciasCliente
+  eliminarPreferenciasCliente,
+  deviceLoginHandler
 } = require('../controller/clientes.controller');
 
 // Registro y login de clientes
 router.post('/registro', crearCliente);
 router.post('/login', loginCliente);
+router.post('/device-login', deviceLoginHandler);
 
 // Rutas agrupadas para clientes
 router.route('/')

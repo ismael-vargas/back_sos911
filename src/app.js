@@ -150,6 +150,7 @@ app.use('/login', loginLimiter); // ✅ Aplica solo a la ruta real de login
 
 // Middleware de protección CSRF (debe ir después de cookieParser y sesión)
 const csrfMiddleware = csrf({ cookie: true });
+
 app.use(csrfMiddleware);
 
 // Ruta para obtener el token CSRF desde el frontend

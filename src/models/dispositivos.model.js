@@ -17,14 +17,19 @@ const dispositivos = (sequelize, type) => {
             comment: 'ID del cliente'
         },
         token_dispositivo: {
-            type: type.STRING,
+            type: type.STRING(255),
             allowNull: false,
-            comment: 'Token del dispositivo'
+            comment: 'Token del dispositivo (cifrado)'
         },
         tipo_dispositivo: {
-            type: type.ENUM('Android', 'iOS'),
+            type: type.STRING(100),
             allowNull: false,
-            comment: 'Tipo de dispositivo'
+            comment: 'Tipo de dispositivo (cifrado)'
+        },
+        modelo_dispositivo: {
+            type: type.STRING(100),
+            allowNull: false,
+            comment: 'Modelo del dispositivo (cifrado)'
         },
         estado: {
             type: type.ENUM('activo', 'eliminado'),
