@@ -6,13 +6,18 @@ const {
   getContactosEmergencias,
   getContactoEmergenciaById,
   updateContactoEmergencia,
-  deleteContactoEmergencia
+  deleteContactoEmergencia,
+  getContactosByCliente
 } = require('../controller/contactos_emergencias.controller');
 
 // Rutas agrupadas para contactos de emergencias
 router.route('/')
   .post(createContactoEmergencia)
   .get(getContactosEmergencias);
+
+// Ruta para obtener contactos por cliente
+router.route('/cliente/:cliente_id')
+  .get(getContactosByCliente);
 
 router.route('/:id')
   .get(getContactoEmergenciaById)

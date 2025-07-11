@@ -25,10 +25,14 @@ rolCtl.crearRol = async (req, res, next) => {
             usuario_id,
             nombre: nombreCif
         });
+        
+        // Obtener el rol completo con todos los campos después de crearlo
+        const rolCompleto = await rol.findByPk(nuevoRol.id);
+        
         logger.info(`[ROL] Registro exitoso: id=${nuevoRol.id}, usuario_id=${usuario_id}`);
         res.status(201).json({
-            ...nuevoRol.toJSON(),
-            nombre: descifrarDato(nuevoRol.nombre)
+            ...rolCompleto.toJSON(),
+            nombre: descifrarDato(rolCompleto.nombre)
         });
     } catch (error) {
         logger.error(`[ROL] Error al crear el rol: ${error.message}`);
@@ -36,12 +40,14 @@ rolCtl.crearRol = async (req, res, next) => {
     }
 };
 
-// Obtener todos los roles activos
+// Obtener todos los roles activos (o todos si se especifica incluirEliminados)
 rolCtl.getRoles = async (req, res) => {
     const logger = getLogger(req);
-    logger.info('[ROL] Solicitud de listado de roles');
+    const incluirEliminados = req.query.incluirEliminados === 'true';
+    logger.info(`[ROL] Solicitud de listado de roles (incluirEliminados: ${incluirEliminados})`);
     try {
-        const roles = await rol.findAll({ where: { estado: 'activo' } });
+        const whereClause = incluirEliminados ? {} : { estado: 'activo' };
+        const roles = await rol.findAll({ where: whereClause });
         // Descifrar los nombres antes de enviar
         const rolesDescifrados = roles.map(r => ({
             ...r.toJSON(),

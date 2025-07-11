@@ -17,7 +17,11 @@ function getLogger(req) {
 const crearCliente = async (req, res) => {
   const logger = getLogger(req);
   let { nombre, correo_electronico, cedula_identidad, direccion, contrasena_hash, estado_eliminado = 'activo', numero_ayudas = 0, deviceId, tipo_dispositivo, modelo_dispositivo } = req.body;
+  
+  logger.info(`[CLIENTE] Datos recibidos en registro:`, req.body);
+  logger.info(`[CLIENTE] Correo electrónico recibido: "${correo_electronico}"`);
   logger.info(`[CLIENTE] Intento de registro: correo=${correo_electronico}, nombre=${nombre}`);
+  
   try {
     if (!nombre || !correo_electronico || !cedula_identidad || !direccion || !contrasena_hash) {
       logger.warn('[CLIENTE] Registro fallido: campos obligatorios faltantes');
@@ -56,6 +60,26 @@ const crearCliente = async (req, res) => {
 
     // Registrar dispositivo si se envía desde el frontend
     if (deviceId && tipo_dispositivo && modelo_dispositivo) {
+      logger.info(`[DISPOSITIVO] Registrando dispositivo para nuevo cliente: ${nuevoCliente.id}, deviceId=${deviceId}`);
+      
+      // Primero, desactivar cualquier dispositivo existente con este deviceId
+      const todosDispositivos = await dispositivos.findAll({
+        where: { estado: 'activo' }
+      });
+      
+      for (const disp of todosDispositivos) {
+        try {
+          const deviceIdDescifrado = descifrarDato(disp.token_dispositivo);
+          if (deviceIdDescifrado === deviceId) {
+            await disp.update({ estado: 'inactivo' });
+            logger.info(`[DISPOSITIVO] Dispositivo desactivado: cliente_id=${disp.cliente_id} (nuevo propietario: ${nuevoCliente.id})`);
+          }
+        } catch (error) {
+          logger.warn(`[DISPOSITIVO] Error al descifrar token en registro: ${error.message}`);
+        }
+      }
+      
+      // Ahora registrar el nuevo dispositivo para este cliente
       const tokenDispositivoCif = cifrarDato(deviceId);
       const tipoDispositivoCif = cifrarDato(tipo_dispositivo);
       const modeloDispositivoCif = cifrarDato(modelo_dispositivo);
@@ -89,9 +113,14 @@ const crearCliente = async (req, res) => {
 // Obtener todos los clientes
 const getClientes = async (req, res) => {
   const logger = getLogger(req);
-  logger.info('[CLIENTE] Solicitud de listado de clientes');
+  const { incluirEliminados } = req.query;
+  
+  logger.info(`[CLIENTE] Solicitud de listado de clientes (incluirEliminados: ${incluirEliminados})`);
   try {
-    const clientesList = await cliente.findAll({ where: { estado_eliminado: 'activo' } });
+    // Si se pide incluir eliminados, devolver TODOS como dispositivos
+    const whereClause = incluirEliminados === 'true' ? {} : { estado_eliminado: 'activo' };
+    
+    const clientesList = await cliente.findAll({ where: whereClause });
     const clientesDescifrados = clientesList.map(c => ({
       ...c.toJSON(),
       nombre: descifrarDato(c.nombre),
@@ -99,6 +128,8 @@ const getClientes = async (req, res) => {
       cedula_identidad: descifrarDato(c.cedula_identidad),
       direccion: descifrarDato(c.direccion)
     }));
+    
+    logger.info(`[CLIENTE] Devolviendo ${clientesDescifrados.length} clientes (activos: ${clientesDescifrados.filter(c => c.estado_eliminado === 'activo').length}, eliminados: ${clientesDescifrados.filter(c => c.estado_eliminado === 'eliminado').length})`);
     res.status(200).json(clientesDescifrados);
   } catch (error) {
     logger.error(`[CLIENTE] Error al obtener los clientes: ${error.message}`);
@@ -113,10 +144,22 @@ const getClienteById = async (req, res) => {
   try {
     const c = await cliente.findByPk(req.params.id);
     if (c && c.estado_eliminado === 'activo') {
+      logger.info(`[CLIENTE] Cliente encontrado: id=${c.id}`);
+      logger.info(`[CLIENTE] Correo cifrado: ${c.correo_electronico}`);
+      
+      let correoDescifrado = '';
+      try {
+        correoDescifrado = descifrarDato(c.correo_electronico);
+        logger.info(`[CLIENTE] Correo descifrado exitosamente: ${correoDescifrado}`);
+      } catch (error) {
+        logger.error(`[CLIENTE] Error al descifrar correo: ${error.message}`);
+        correoDescifrado = ''; // Si no se puede descifrar, enviamos vacío
+      }
+      
       res.status(200).json({
         ...c.toJSON(),
         nombre: descifrarDato(c.nombre),
-        correo_electronico: descifrarDato(c.correo_electronico),
+        correo_electronico: correoDescifrado,
         cedula_identidad: descifrarDato(c.cedula_identidad),
         direccion: descifrarDato(c.direccion)
       });
@@ -149,9 +192,8 @@ const updateCliente = async (req, res) => {
       }
       if (req.body.correo_electronico !== undefined) {
         let correoPlano = req.body.correo_electronico;
-        try {
-          correoPlano = descifrarDato(correoPlano);
-        } catch (e) {}
+        // El correo viene en texto plano desde el frontend, no necesitamos descifrarlo
+        logger.info(`[CLIENTE] Actualizando correo electrónico: ${correoPlano}`);
         req.body.correo_electronico = cifrarDato(correoPlano);
         req.body.correo_hash = hashCorreo(correoPlano);
       }
@@ -241,21 +283,60 @@ const loginCliente = async (req, res) => {
       });
     }
 
-    // Guardar deviceId en la tabla dispositivos si viene del frontend
+    // Registrar dispositivo si viene del frontend y no existe
     if (deviceId && tipo_dispositivo && modelo_dispositivo) {
-      // Cifrar los datos del dispositivo
-      const tokenDispositivoCif = cifrarDato(deviceId);
-      const tipoDispositivoCif = cifrarDato(tipo_dispositivo);
-      const modeloDispositivoCif = cifrarDato(modelo_dispositivo);
-      // Verifica si ya existe ese deviceId para ese cliente y está activo
-      const existe = await dispositivos.findOne({
-        where: {
-          cliente_id: user.id,
-          token_dispositivo: tokenDispositivoCif,
-          estado: 'activo'
+      logger.info(`[DISPOSITIVO] Verificando si existe deviceId "${deviceId}" para cliente ${user.id}`);
+      
+      // Obtener TODOS los dispositivos (activos e inactivos) para buscar el del cliente
+      const todosDispositivos = await dispositivos.findAll();
+      
+      let dispositivoExistente = null;
+      let esDelMismoCliente = false;
+      let dispositivoDelCliente = null; // Para guardar el dispositivo inactivo del mismo cliente
+      
+      // Buscar el dispositivo comparando deviceId descifrado
+      for (const disp of todosDispositivos) {
+        try {
+          const deviceIdDescifrado = descifrarDato(disp.token_dispositivo);
+          if (deviceIdDescifrado === deviceId) {
+            if (disp.cliente_id === user.id) {
+              // Es el dispositivo del mismo cliente (puede estar activo o inactivo)
+              dispositivoDelCliente = disp;
+              esDelMismoCliente = true;
+              logger.info(`[DISPOSITIVO] Dispositivo del cliente encontrado: cliente_id=${disp.cliente_id}, estado=${disp.estado}`);
+            } else if (disp.estado === 'activo') {
+              // Es un dispositivo activo de otro cliente
+              dispositivoExistente = disp;
+              logger.info(`[DISPOSITIVO] Dispositivo activo de otro cliente encontrado: cliente_id=${disp.cliente_id}`);
+            }
+          }
+        } catch (error) {
+          logger.warn(`[DISPOSITIVO] Error al descifrar token_dispositivo: ${error.message}`);
         }
-      });
-      if (!existe) {
+      }
+      
+      // PRIMERO: Desactivar TODOS los dispositivos activos de otros clientes con el mismo deviceId
+      if (dispositivoExistente) {
+        logger.warn(`[DISPOSITIVO] Desactivando dispositivo de otro cliente: ${dispositivoExistente.cliente_id}`);
+        await dispositivoExistente.update({ estado: 'inactivo' });
+        logger.info(`[DISPOSITIVO] Dispositivo anterior desactivado (cliente ${dispositivoExistente.cliente_id})`);
+      }
+      
+      // SEGUNDO: Manejar el dispositivo del cliente actual
+      if (dispositivoDelCliente) {
+        // Si existe un dispositivo del mismo cliente, reactivarlo
+        if (dispositivoDelCliente.estado === 'inactivo') {
+          logger.info(`[DISPOSITIVO] Reactivando dispositivo inactivo del cliente ${user.id}`);
+          await dispositivoDelCliente.update({ estado: 'activo' });
+        } else {
+          logger.info(`[DISPOSITIVO] Dispositivo del cliente ${user.id} ya está activo`);
+        }
+      } else {
+        // No existe dispositivo para este cliente, crear uno nuevo
+        const tokenDispositivoCif = cifrarDato(deviceId);
+        const tipoDispositivoCif = cifrarDato(tipo_dispositivo);
+        const modeloDispositivoCif = cifrarDato(modelo_dispositivo);
+        
         await dispositivos.create({
           cliente_id: user.id,
           token_dispositivo: tokenDispositivoCif,
@@ -263,11 +344,16 @@ const loginCliente = async (req, res) => {
           modelo_dispositivo: modeloDispositivoCif,
           estado: 'activo'
         });
-        logger.info(`[DISPOSITIVO] Nuevo deviceId registrado para cliente ${user.id}`);
-      } else {
-        logger.info(`[DISPOSITIVO] deviceId ya registrado para cliente ${user.id}`);
+        logger.info(`[DISPOSITIVO] Nuevo deviceId registrado para cliente ${user.id} en login`);
       }
     }
+
+    // Guardar sesión para el cliente
+    req.session.clienteId = user.id;
+    req.session.clienteNombre = descifrarDato(user.nombre);
+    req.session.clienteEmail = descifrarDato(user.correo_electronico);
+    req.session.tipoUsuario = 'cliente';
+    logger.info(`[CLIENTE] Sesión guardada para cliente ${user.id}`);
 
     // Respuesta exitosa (sin token JWT)
     res.json({
@@ -299,23 +385,51 @@ const deviceLogin = async (req, res) => {
       logger.warn('[CLIENTE] Device-login fallido: deviceId faltante');
       return res.status(400).json({ success: false, message: 'deviceId requerido' });
     }
-    // Cifrar el deviceId antes de buscarlo
-    const tokenDispositivoCif = cifrarDato(deviceId);
-    // Busca un dispositivo activo con ese token cifrado
-    const dispositivo = await dispositivos.findOne({
-      where: { token_dispositivo: tokenDispositivoCif, estado: 'activo' }
+    
+    // Obtener todos los dispositivos activos para buscar por deviceId descifrado
+    const todosDispositivos = await dispositivos.findAll({
+      where: { estado: 'activo' },
+      order: [['fecha_creacion', 'DESC']] // Ordenar por fecha de creación descendente (más reciente primero)
     });
-    if (!dispositivo) {
+    logger.info(`[CLIENTE] Device-login: encontrados ${todosDispositivos.length} dispositivos activos`);
+    
+    let dispositivoEncontrado = null;
+    
+    // Buscar el dispositivo comparando deviceId descifrado (el más reciente primero)
+    for (const disp of todosDispositivos) {
+      try {
+        const deviceIdDescifrado = descifrarDato(disp.token_dispositivo);
+        logger.info(`[CLIENTE] Device-login debug: comparando "${deviceIdDescifrado}" con "${deviceId}" - cliente_id=${disp.cliente_id}`);
+        if (deviceIdDescifrado === deviceId) {
+          dispositivoEncontrado = disp;
+          logger.info(`[CLIENTE] Device-login: dispositivo encontrado para cliente ${disp.cliente_id} (creado: ${disp.fecha_creacion})`);
+          break; // Tomar el primero que coincida (el más reciente)
+        }
+      } catch (error) {
+        logger.error(`[CLIENTE] Device-login: error al descifrar token_dispositivo: ${error.message}`);
+      }
+    }
+    
+    if (!dispositivoEncontrado) {
       logger.warn(`[CLIENTE] Device-login fallido: deviceId no registrado (${deviceId})`);
       return res.status(401).json({ success: false, message: 'Dispositivo no autorizado' });
     }
+    
     // Busca el cliente asociado
-    const user = await cliente.findOne({ where: { id: dispositivo.cliente_id, estado_eliminado: 'activo' } });
+    const user = await cliente.findOne({ where: { id: dispositivoEncontrado.cliente_id, estado_eliminado: 'activo' } });
     if (!user) {
       logger.warn(`[CLIENTE] Device-login fallido: cliente no encontrado para deviceId (${deviceId})`);
       return res.status(401).json({ success: false, message: 'Cliente no autorizado' });
     }
     logger.info(`[CLIENTE] Device-login exitoso: usuario id=${user.id}`);
+
+    // Guardar sesión para el device-login
+    req.session.clienteId = user.id;
+    req.session.clienteNombre = descifrarDato(user.nombre);
+    req.session.clienteEmail = descifrarDato(user.correo_electronico);
+    req.session.tipoUsuario = 'cliente';
+    logger.info(`[CLIENTE] Sesión guardada para device-login cliente ${user.id}`);
+
     res.json({ success: true, message: 'Device login exitoso', user: { id: user.id, nombre: descifrarDato(user.nombre), email: descifrarDato(user.correo_electronico) } });
   } catch (error) {
     logger.error(`[CLIENTE] Error en device-login: ${error.message}`);

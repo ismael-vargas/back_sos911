@@ -19,16 +19,11 @@ const clienteNumero = (sequelize, type) => {
         nombre: {
             type: type.STRING(512),
             allowNull: false,
-            comment: 'Nombre asociado al número del cliente'
+            comment: 'Detalle del número (ej: Principal, Casa, Trabajo, Móvil)'
         },
         numero: {
             type: type.STRING(512),
-            comment: 'Número asociado al cliente'
-        },
-        descripcion: {
-            type: type.STRING(512),
-            allowNull: true,
-            comment: 'Descripción del número del cliente'
+            comment: 'Número de teléfono del cliente'
         },
         estado: {
             type: type.ENUM('activo', 'eliminado'),

@@ -13,19 +13,19 @@ const serviciosEmergencia = (sequelize, type) => {
             comment: 'ID del usuario que crea el servicio',
         },
         nombre: {
-            type: type.STRING(100),
+            type: type.STRING(255),
             allowNull: false,
-            comment: 'Nombre del servicio de emergencia'
+            comment: 'Nombre del servicio de emergencia (cifrado)'
         },
         descripcion: {
             type: type.STRING(255),
             allowNull: true,
-            comment: 'Descripción del servicio de emergencia'
+            comment: 'Descripción del servicio de emergencia (cifrado)'
         },
         telefono: {
-            type: type.STRING(30),
+            type: type.STRING(255),
             allowNull: false,
-            comment: 'Teléfono del servicio de emergencia'
+            comment: 'Teléfono del servicio de emergencia (cifrado)'
         },
         estado: {
             type: type.ENUM('activo', 'eliminado'),

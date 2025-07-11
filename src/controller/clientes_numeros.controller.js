@@ -5,7 +5,7 @@ const clientesNumerosCtl = {};
 
 // Crear un nuevo número de cliente
 clientesNumerosCtl.crearClientesNumero = async (req, res) => {
-    let { cliente_id, nombre, numero, descripcion } = req.body;
+    let { cliente_id, nombre, numero } = req.body;
 
     // Validar campos requeridos
     if (!cliente_id || !nombre || !numero) {
@@ -16,7 +16,6 @@ clientesNumerosCtl.crearClientesNumero = async (req, res) => {
         // Cifrar campos sensibles SIEMPRE antes de cualquier operación
         const nombreCif = cifrarDato(nombre);
         const numeroCif = cifrarDato(numero);
-        const descripcionCif = descripcion ? cifrarDato(descripcion) : null;
 
         // Verificar si ya existe el mismo número para el mismo cliente (comparando cifrado)
         const existente = await clientes_numeros.findOne({ where: { cliente_id, numero: numeroCif } });
@@ -28,8 +27,7 @@ clientesNumerosCtl.crearClientesNumero = async (req, res) => {
         const nuevoRegistro = await clientes_numeros.create({
             cliente_id,
             nombre: nombreCif,
-            numero: numeroCif,
-            descripcion: descripcionCif
+            numero: numeroCif
         });
 
         res.status(201).json({
@@ -37,8 +35,7 @@ clientesNumerosCtl.crearClientesNumero = async (req, res) => {
             clienteNumero: {
                 ...nuevoRegistro.toJSON(),
                 nombre: descifrarDato(nuevoRegistro.nombre),
-                numero: descifrarDato(nuevoRegistro.numero),
-                descripcion: nuevoRegistro.descripcion ? descifrarDato(nuevoRegistro.descripcion) : null
+                numero: descifrarDato(nuevoRegistro.numero)
             }
         });
 
@@ -59,8 +56,7 @@ clientesNumerosCtl.getClientesNumeros = async (req, res) => {
         const registrosDescifrados = registros.map(r => ({
             ...r.toJSON(),
             nombre: descifrarDato(r.nombre),
-            numero: descifrarDato(r.numero),
-            descripcion: r.descripcion ? descifrarDato(r.descripcion) : null
+            numero: descifrarDato(r.numero)
         }));
         res.status(200).json(registrosDescifrados);
     } catch (error) {
@@ -77,8 +73,7 @@ clientesNumerosCtl.getClientesNumeroById = async (req, res) => {
             res.status(200).json({
                 ...registro.toJSON(),
                 nombre: descifrarDato(registro.nombre),
-                numero: descifrarDato(registro.numero),
-                descripcion: registro.descripcion ? descifrarDato(registro.descripcion) : null
+                numero: descifrarDato(registro.numero)
             });
         } else {
             res.status(404).json({ error: 'Número de cliente no encontrado' });
@@ -91,7 +86,7 @@ clientesNumerosCtl.getClientesNumeroById = async (req, res) => {
 
 // Actualizar un número de cliente por ID
 clientesNumerosCtl.updateClientesNumero = async (req, res) => {
-    let { nombre, numero, descripcion } = req.body;
+    let { nombre, numero } = req.body;
 
     if (!nombre || !numero) {
         return res.status(400).json({ message: 'Los campos nombre y numero son requeridos.' });
@@ -103,15 +98,13 @@ clientesNumerosCtl.updateClientesNumero = async (req, res) => {
             // Cifrar campos antes de actualizar
             nombre = cifrarDato(nombre);
             numero = cifrarDato(numero);
-            descripcion = descripcion ? cifrarDato(descripcion) : null;
-            await registro.update({ nombre, numero, descripcion });
+            await registro.update({ nombre, numero });
             res.status(200).json({
                 message: 'Registro actualizado correctamente',
                 clienteNumero: {
                     ...registro.toJSON(),
                     nombre: descifrarDato(registro.nombre),
-                    numero: descifrarDato(registro.numero),
-                    descripcion: registro.descripcion ? descifrarDato(registro.descripcion) : null
+                    numero: descifrarDato(registro.numero)
                 }
             });
         } else {
@@ -151,8 +144,7 @@ clientesNumerosCtl.getNumerosByClienteId = async (req, res) => {
         const numerosDescifrados = numeros.map(n => ({
             ...n.toJSON(),
             nombre: descifrarDato(n.nombre),
-            numero: descifrarDato(n.numero),
-            descripcion: n.descripcion ? descifrarDato(n.descripcion) : null
+            numero: descifrarDato(n.numero)
         }));
         res.status(200).json(numerosDescifrados);
     } catch (error) {

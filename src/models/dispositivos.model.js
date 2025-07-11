@@ -32,7 +32,7 @@ const dispositivos = (sequelize, type) => {
             comment: 'Modelo del dispositivo (cifrado)'
         },
         estado: {
-            type: type.ENUM('activo', 'eliminado'),
+            type: type.ENUM('activo', 'inactivo', 'eliminado'),
             allowNull: false,
             defaultValue: 'activo',
             comment: 'Estado del dispositivo'

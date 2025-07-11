@@ -362,6 +362,13 @@ usersCtl.loginUsuario = async (req, res) => {
             return res.status(400).json({ message: 'Correo o contraseña incorrectos.' });
         }
 
+        // Guardar sesión para el usuario
+        req.session.usuarioId = user.id;
+        req.session.usuarioNombre = descifrarDato(user.nombre);
+        req.session.usuarioEmail = descifrarDato(user.correo_electronico);
+        req.session.tipoUsuario = 'usuario';
+        console.log('DEBUG - Sesión guardada para usuario:', user.id);
+
         // Descifra los datos antes de responder
         res.status(200).json({
             usuario_id: user.id,

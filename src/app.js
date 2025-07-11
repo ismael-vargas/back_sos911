@@ -149,18 +149,58 @@ app.use('/login', loginLimiter); // ✅ Aplica solo a la ruta real de login
 
 
 // Middleware de protección CSRF (debe ir después de cookieParser y sesión)
-const csrfMiddleware = csrf({ cookie: true });
+const csrfMiddleware = csrf({ 
+  cookie: {
+    httpOnly: false, // Permitir acceso desde JavaScript
+    sameSite: 'lax',
+    secure: false // Para desarrollo, cambiar a true en producción
+  }
+});
 
-app.use(csrfMiddleware);
+// Aplicar CSRF solo a la ruta /csrf-token para generar el token
+app.use('/csrf-token', csrfMiddleware);
 
-// Ruta para obtener el token CSRF desde el frontend
+// Ruta para obtener el token CSRF desde el frontend 
 app.get('/csrf-token', (req, res) => {
-  res.json({ csrfToken: req.csrfToken() });
+  try {
+    console.log('=== GENERANDO TOKEN CSRF ===');
+    console.log('Session ID:', req.sessionID);
+    
+    // Generar token CSRF real usando el middleware
+    const token = req.csrfToken ? req.csrfToken() : 'no-csrf-available';
+    console.log('Token CSRF generado:', token);
+    
+    res.json({ csrfToken: token });
+  } catch (error) {
+    console.error('Error al generar token CSRF:', error);
+    res.status(500).json({ error: 'Error al generar token CSRF', details: error.message });
+  }
+});
+
+// Aplicar CSRF a todas las demás rutas excepto GET
+app.use((req, res, next) => {
+  // Excluir ciertas rutas del CSRF
+  if (req.method === 'GET' || 
+      req.path === '/csrf-token' || 
+      req.path.startsWith('/login') ||
+      req.path.startsWith('/registro')) {
+    return next();
+  }
+  
+  // Aplicar validación CSRF para métodos POST, PUT, DELETE
+  return csrfMiddleware(req, res, next);
 });
 
 // Middleware para exponer el token CSRF en res.locals
 app.use((req, res, next) => {
-    res.locals.csrfToken = req.csrfToken();
+    try {
+        if (req.csrfToken) {
+            res.locals.csrfToken = req.csrfToken();
+        }
+    } catch (error) {
+        // Si no hay sesión, no hay problema
+        res.locals.csrfToken = null;
+    }
     next();
 });
 

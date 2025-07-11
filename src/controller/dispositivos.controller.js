@@ -41,11 +41,37 @@ dispositivosCtl.createDispositivo = async (req, res) => {
     }
 };
 
-// Obtener todos los dispositivos activos
+// Obtener todos los dispositivos con información del cliente
 dispositivosCtl.getDispositivos = async (req, res) => {
     try {
-        const dispositivosList = await dispositivos.findAll({ where: { estado: 'activo' } });
-        res.status(200).json(dispositivosList);
+        const { cliente } = require('../Database/dataBase.orm');
+        
+        const dispositivosList = await dispositivos.findAll({
+            include: [{
+                model: cliente,
+                attributes: ['id', 'nombre', 'correo_electronico', 'cedula_identidad']
+            }],
+            order: [['fecha_creacion', 'DESC']]
+        });
+
+        // Descifrar los datos antes de enviarlos
+        const dispositivosDescifrados = dispositivosList.map(dispositivo => {
+            const dispositivoData = dispositivo.toJSON();
+            
+            try {
+                dispositivoData.token_dispositivo = descifrarDato(dispositivoData.token_dispositivo);
+                dispositivoData.tipo_dispositivo = descifrarDato(dispositivoData.tipo_dispositivo);
+                dispositivoData.modelo_dispositivo = descifrarDato(dispositivoData.modelo_dispositivo);
+            } catch (error) {
+                console.error('Error al descifrar datos del dispositivo:', error);
+                // Mantener datos cifrados si hay error
+            }
+            
+            return dispositivoData;
+        });
+
+        console.log('Dispositivos descifrados:', JSON.stringify(dispositivosDescifrados, null, 2));
+        res.status(200).json(dispositivosDescifrados);
     } catch (error) {
         console.error('Error al obtener los dispositivos:', error.message);
         res.status(500).json({ error: 'Error al obtener los dispositivos' });
