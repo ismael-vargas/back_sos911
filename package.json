@@ -1,5 +1,5 @@
 {
-  "name": "apiProduccion",
+  "name": "api-produccion",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -33,6 +33,7 @@
     "express-session": "^1.18.0",
     "express-validator": "^7.1.0",
     "helmet": "^7.1.0",
+    "hpp": "^0.2.3",
     "html-minifier-terser": "^7.2.0",
     "leaflet": "^1.9.4",
     "mongoose": "^8.16.0",
@@ -43,6 +44,7 @@
     "passport-local": "^1.0.0",
     "sequelize": "^6.37.3",
     "timeago.js": "^4.0.2",
+    "toobusy-js": "^0.5.1",
     "winston": "^3.13.1"
   },
   "devDependencies": {

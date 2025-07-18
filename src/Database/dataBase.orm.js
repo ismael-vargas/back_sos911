@@ -5,62 +5,82 @@ let sequelize;
 
 // Usar URI de conexión si está disponible
 if (MYSQL_URI) {
-    sequelize = new Sequelize(MYSQL_URI);
+    sequelize = new Sequelize(MYSQL_URI, {
+        dialect: 'mysql',
+        dialectOptions: {
+            charset: 'utf8mb4', // Soporte para caracteres especiales y emojis
+        },
+        pool: {
+            max: 20,
+            min: 5,
+            acquire: 30000,
+            idle: 10000
+        },
+        logging: false
+    });
 } else {
     // Configuración para parámetros individuales
     sequelize = new Sequelize(MYSQLDATABASE, MYSQLUSER, MYSQLPASSWORD, {
         host: MYSQLHOST,
         port: MYSQLPORT,
         dialect: 'mysql',
+        dialectOptions: {
+            charset: 'utf8mb4',
+        },
         pool: {
-            max: 10,
-            min: 2,
+            max: 20,
+            min: 5,
             acquire: 30000,
             idle: 10000
         },
         logging: false
     });
 }
-
-// Autenticar y sincronizar
+ 
+// Autenticación de la conexión
 sequelize.authenticate()
     .then(() => {
-        console.log("Conexión establecida con la base de datos");
+        console.log("✅ Conexión establecida con la base de datos.");
     })
     .catch((err) => {
-        console.error("No se pudo conectar a la base de datos:", err.message);
+        console.error("❌ No se pudo conectar a la base de datos:", err.message);
     });
 
-/* sequelize.sync({ force: true })
+// Sincronización Segura de la Base de Datos
+const syncOptions = process.env.NODE_ENV === 'development' ? { force: true } : { alter: true };
+
+sequelize.sync(syncOptions)
     .then(() => {
-        console.log("Tablas sincronizadas");
+        console.log('✅ Base de Datos y tablas sincronizadas.');
     })
-    .catch((err) => {
-        console.error("Error al sincronizar las tablas:", err.message);
-    }); */
+    .catch((error) => {
+        console.error('❌ Error al sincronizar la Base de Datos:', error);
+    });
 
-//extracionModelos
+// --- Extracción de Modelos ---
+const dispositivosModel = require('../models/sql/dispositivos.model');
+const evaluacionesSituacionModel = require('../models/sql/evaluaciones_situaciones.model');
+const gruposModel = require('../models/sql/grupos.model');
+const usuarioModel = require('../models/sql/usuarios.model');
+const rolModel = require('../models/sql/roles.model');
+const usuarioNumeroModel = require('../models/sql/usuarios_numeros.model');
+const ubicacionClientesModel = require('../models/sql/ubicaciones_clientes.model');
+const clienteModel =require('../models/sql/clientes.model');
+const cliente_gruposModel =require('../models/sql/clientes_grupos');
+const cliente_numeroModel =require('../models/sql/clientes_numeros');
+const contactosClientesModel =require('../models/sql/contactos_clientes.model');
+const contactosEmergenciaModel =require('../models/sql/contactos_emergencias.model');
+const mensajesGrupoModel = require('../models/sql/mensajes_grupo.model');
+const informesEstadisticasModel = require ('../models/sql/informes_estadisticas.model');
+const notificacionesModel = require ('../models/sql/notificaciones.model');
+const presionesBotonPanicosModel = require('../models/sql/presiones_boton_panico.model');
+const usuariosRolesModel = require('../models/sql/usuarios_roles.model');
+const serviciosEmergenciaModel = require('../models/sql/servicios_emergencia');
+const preferenciasModel = require('../models/sql/preferencias.model'); 
+const contenidoAppModel = require('../models/sql/contenido_app.model'); 
+const paginaModel = require('../models/sql/pagina.model'); 
 
-const dispositivosModel = require('../models/dispositivos.model');
-const evaluacionesSituacionModel = require('../models/evaluaciones_situaciones.model');
-const gruposModel = require('../models/grupos.model');
-const usuarioModel = require('../models/usuarios.model');
-const rolModel = require('../models/roles.model');
-const usuarioNumeroModel = require('../models/usuarios_numeros.model');
-const ubicacionClientesModel = require('../models/ubicaciones_clientes.model');
-const clienteModel =require('../models/clientes.model');
-const cliente_gruposModel =require('../models/clientes_grupos');
-const cliente_numeroModel =require('../models/clientes_numeros');
-const contactosClientesModel =require('../models/contactos_clientes.model');
-const contactosEmergenciaModel =require('../models/contactos_emergencias.model');
-const mensajesGrupoModel = require('../models/mensajes_grupo.model');
-const informesEstadisticasModel = require ('../models/informes_estadisticas.model');
-const notificacionesModel = require ('../models/notificaciones.model');
-const presionesBotonPanicosModel = require('../models/presiones_boton_panico.model');
-const usuariosRolesModel = require('../models/usuarios_roles.model');
-const serviciosEmergenciaModel = require('../models/servicios_emergencia');
-
-//Sincronia tablas
+// --- Instanciación de Modelos ---
 const dispositivos = dispositivosModel(sequelize, Sequelize);
 const evaluaciones_situacion = evaluacionesSituacionModel(sequelize, Sequelize);
 const grupos = gruposModel(sequelize, Sequelize);
@@ -79,90 +99,118 @@ const notificaciones = notificacionesModel(sequelize, Sequelize);
 const presiones_boton_panico = presionesBotonPanicosModel(sequelize, Sequelize);
 const usuarios_roles = usuariosRolesModel(sequelize, Sequelize);
 const servicios_emergencia = serviciosEmergenciaModel(sequelize, Sequelize);
+const preferencias = preferenciasModel(sequelize, Sequelize); 
+const contenido_app = contenidoAppModel(sequelize, Sequelize); 
+const pagina = paginaModel(sequelize, Sequelize);
+
+// ==================================================================
+//                      DEFINICIÓN DE RELACIONES
+// ================================================================== //
+
+// --- Relaciones de Usuario y Roles ---
+// Un usuario puede tener múltiples roles a través de la tabla intermedia 'usuarios_roles'.
+usuario.hasMany(usuarios_roles);
+usuarios_roles.belongsTo(usuario);
+
+rol.hasMany(usuarios_roles);
+usuarios_roles.belongsTo(rol);
+
+// Un usuario puede tener múltiples números de teléfono.
+usuario.hasMany(usuario_numero);
+usuario_numero.belongsTo(usuario);
+
+// Un usuario tiene un único conjunto de preferencias.
+usuario.hasOne(preferencias);
+preferencias.belongsTo(usuario);
+
+// Un usuario (administrador/operador) puede gestionar múltiples servicios de emergencia.
+usuario.hasMany(servicios_emergencia);
+servicios_emergencia.belongsTo(usuario);
 
 
-// RELACIONES
-usuario.belongsToMany(rol, { through: usuarios_roles, foreignKey: 'usuario_id' });
-rol.belongsToMany(usuario, { through: usuarios_roles, foreignKey: 'rol_id' });
+// --- Relaciones de Cliente, Grupos y Dispositivos ---
+// Un cliente es el creador/propietario de un grupo.
+cliente.hasMany(grupos);
+grupos.belongsTo(cliente);
 
-usuario.hasMany(rol, { foreignKey: 'usuario_id' });
-rol.belongsTo(usuario, { foreignKey: 'usuario_id' });
+// Relación Muchos a Muchos entre Cliente y Grupos a través de 'clientes_grupos'.
+cliente.hasMany(clientes_grupos);
+clientes_grupos.belongsTo(cliente);
 
-usuario.hasMany(usuario_numero, { foreignKey: 'usuario_id' });
-usuario_numero.belongsTo(usuario, { foreignKey: 'usuario_id' });
+grupos.hasMany(clientes_grupos);
+clientes_grupos.belongsTo(grupos);
 
-cliente.belongsToMany(grupos, { through: clientes_grupos, foreignKey: 'cliente_id' });
-grupos.belongsToMany(cliente, { through: clientes_grupos, foreignKey: 'grupo_id' });
+// Un cliente puede tener múltiples números de teléfono.
+cliente.hasMany(clientes_numeros);
+clientes_numeros.belongsTo(cliente);
 
-cliente.hasMany(ubicacion_cliente, { foreignKey: 'cliente_id' });
-ubicacion_cliente.belongsTo(cliente, { foreignKey: 'cliente_id' });
-
-cliente.hasMany(presiones_boton_panico, { foreignKey: 'cliente_id' });
-presiones_boton_panico.belongsTo(cliente, { foreignKey: 'cliente_id' });
-
-ubicacion_cliente.hasMany(presiones_boton_panico, { foreignKey: 'ubicacion_id' });
-presiones_boton_panico.belongsTo(ubicacion_cliente, { foreignKey: 'ubicacion_id' });
-
-presiones_boton_panico.hasMany(informes_estadisticas, { foreignKey: 'presion_boton_id' });
-informes_estadisticas.belongsTo(presiones_boton_panico, { foreignKey: 'presion_boton_id' });
-
-cliente.hasMany(clientes_numeros, { foreignKey: 'cliente_id' });
-clientes_numeros.belongsTo(cliente, { foreignKey: 'cliente_id' });
-
-cliente.hasMany(grupos, { foreignKey: 'cliente_id' });
-grupos.belongsTo(cliente, { foreignKey: 'cliente_id' });
-
-cliente.hasMany(dispositivos, { foreignKey: 'cliente_id' });
-dispositivos.belongsTo(cliente, { foreignKey: 'cliente_id' });
-
-cliente.hasMany(notificaciones, { foreignKey: 'cliente_notificado_id' });
-notificaciones.belongsTo(cliente, { foreignKey: 'cliente_notificado_id' });
-
-presiones_boton_panico.hasMany(notificaciones, { foreignKey: 'presion_boton_id' });
-notificaciones.belongsTo(presiones_boton_panico, { foreignKey: 'presion_boton_id' });
-
-notificaciones.hasMany(evaluaciones_situacion, { foreignKey: 'notificacion_id' });
-evaluaciones_situacion.belongsTo(notificaciones, { foreignKey: 'notificacion_id' });
-
-// Relaciones de contacto emergencia y contacto cliente
-cliente.hasMany(contactos_emergencia, { foreignKey: 'cliente_id' });
-contactos_emergencia.belongsTo(cliente, { foreignKey: 'cliente_id' });
-
-cliente.hasMany(contactos_clientes, { foreignKey: 'cliente_id' });
-contactos_clientes.belongsTo(cliente, { foreignKey: 'cliente_id' });
-
-contactos_emergencia.hasMany(contactos_clientes, { foreignKey: 'contacto_id' });
-contactos_clientes.belongsTo(contactos_emergencia, { foreignKey: 'contacto_id' });
-
-notificaciones.hasMany(contactos_clientes, { foreignKey: 'notificacion_id' });
-contactos_clientes.belongsTo(notificaciones, { foreignKey: 'notificacion_id' });
+// Un cliente puede tener múltiples dispositivos asociados.
+cliente.hasMany(dispositivos);
+dispositivos.belongsTo(cliente);
 
 
+// --- Relaciones de Flujo de Pánico, Ubicación y Notificaciones ---
+// Un cliente puede tener múltiples ubicaciones registradas.
+cliente.hasMany(ubicacion_cliente);
+ubicacion_cliente.belongsTo(cliente);
 
-// Relacionar mensajes con grupos y clientes
-mensajes_grupo.belongsTo(grupos, { foreignKey: 'grupo_id' });
-grupos.hasMany(mensajes_grupo, { foreignKey: 'grupo_id' });
+// Un cliente puede generar múltiples presiones del botón de pánico.
+cliente.hasMany(presiones_boton_panico);
+presiones_boton_panico.belongsTo(cliente);
 
-mensajes_grupo.belongsTo(cliente, { foreignKey: 'cliente_id' });
-cliente.hasMany(mensajes_grupo, { foreignKey: 'cliente_id' });
+// Una ubicación específica puede estar asociada a múltiples presiones del botón de pánico.
+ubicacion_cliente.hasMany(presiones_boton_panico);
+presiones_boton_panico.belongsTo(ubicacion_cliente);
+
+// Una presión de pánico puede generar múltiples notificaciones.
+presiones_boton_panico.hasMany(notificaciones);
+notificaciones.belongsTo(presiones_boton_panico);
+
+// Un cliente puede recibir múltiples notificaciones.
+cliente.hasMany(notificaciones);
+notificaciones.belongsTo(cliente);
+
+// Una notificación puede tener múltiples evaluaciones de situación.
+notificaciones.hasMany(evaluaciones_situacion);
+evaluaciones_situacion.belongsTo(notificaciones);
+
+// Una presión de pánico puede generar múltiples informes estadísticos.
+presiones_boton_panico.hasMany(informes_estadisticas);
+informes_estadisticas.belongsTo(presiones_boton_panico);
 
 
+// --- Relaciones de Contactos de Emergencia y del Cliente ---
+// Un cliente puede tener múltiples contactos de emergencia.
+cliente.hasMany(contactos_emergencia);
+contactos_emergencia.belongsTo(cliente);
 
-// Relación usuario - servicios_emergencia
-usuario.hasMany(servicios_emergencia, { foreignKey: 'usuario_id' });
-servicios_emergencia.belongsTo(usuario, { foreignKey: 'usuario_id' });
+// Un cliente puede tener múltiples registros de envío de notificaciones a contactos de emergencia.
+// Esta tabla 'contactos_clientes' registra el evento de que un cliente envió/registró una notificación
+// a un contacto de emergencia específico.
+cliente.hasMany(contactos_clientes);
+contactos_clientes.belongsTo(cliente);
+
+// Un contacto de emergencia puede estar vinculado a un registro de envío de notificación.
+contactos_emergencia.hasMany(contactos_clientes);
+contactos_clientes.belongsTo(contactos_emergencia);
+
+// Una notificación puede ser enviada a múltiples registros de contactos de clientes de emergencia.
+notificaciones.hasMany(contactos_clientes);
+contactos_clientes.belongsTo(notificaciones);
 
 
+// --- Relaciones de Mensajería en Grupos ---
+// Un mensaje pertenece a un grupo y un grupo tiene muchos mensajes.
+mensajes_grupo.belongsTo(grupos);
+grupos.hasMany(mensajes_grupo);
 
-sequelize.sync({alter: true }) // alter actualizará el esquema de la base de datos para que coincida con el modelo
-    .then(() => {
-        console.log('Database synchronized');
-    })
-    .catch((error) => {
-        console.error('Error synchronizing the database:', error);
-    });
+// Un mensaje es enviado por un cliente y un cliente puede enviar muchos mensajes.
+mensajes_grupo.belongsTo(cliente);
+cliente.hasMany(mensajes_grupo);
+
+// ==================================================================
  
-// Exportar el objeto sequelize
+// Exportar todos los modelos
 module.exports = {
     rol,
     dispositivos,
@@ -181,5 +229,8 @@ module.exports = {
     notificaciones,
     presiones_boton_panico,
     usuarios_roles,
-    servicios_emergencia, // <-- exportar el nuevo modelo
+    servicios_emergencia,
+    preferencias, 
+    contenido_app, 
+    pagina,
 };

@@ -12,7 +12,6 @@ const pool = createPool({
     host: MYSQLHOST,
     port: MYSQLPORT,
     database: MYSQLDATABASE,
-    // Opcional: uri: MYSQL_URI, (no es necesario)
 });
 
 pool.getConnection((err, connection) => {
@@ -35,7 +34,7 @@ pool.getConnection((err, connection) => {
     if (connection) {
         connection.release();
         console.log('Base de datos conectada');
-        return;
+       
     }
 });
 

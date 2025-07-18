@@ -1,22 +1,29 @@
+// mensajes_grupo.router.js 
 const express = require('express');
 const router = express.Router();
+
 const {
-  crearMensaje,
-  getMensajesPorGrupo,
-  deleteMensaje,
-  editarMensaje
+  createGroupMessage,  
+  getMessagesByGroup,  
+  updateGroupMessage,   
+  deleteGroupMessage   
 } = require('../controller/mensajes_grupo.controller');
 
-// Crear un nuevo mensaje
-router.post('/', crearMensaje);
+// Ruta para crear un nuevo mensaje en un grupo
+// El ID del grupo y del cliente vendrán en el cuerpo (body) de la petición.
+// URL final: POST /mensajes_grupo/crear
+router.post('/crear', createGroupMessage);
 
-// Obtener todos los mensajes de un grupo (explícito)
-router.get('/grupo/:grupo_id', getMensajesPorGrupo);
+// Ruta para listar todos los mensajes de un grupo específico
+// URL final: GET /mensajes_grupo/listar/por-grupo/123
+router.get('/listar/por-grupo/:grupo_id', getMessagesByGroup);
 
-// Eliminar un mensaje por ID
-router.delete('/:id', deleteMensaje);
+// Ruta para actualizar un mensaje por su ID
+// URL final: PUT /mensajes_grupo/actualizar/123
+router.put('/actualizar/:id', updateGroupMessage);
 
-// Editar un mensaje existente por ID
-router.put('/:id', editarMensaje);
+// Ruta para eliminar un mensaje por su ID
+// URL final: DELETE /mensajes_grupo/eliminar/123
+router.delete('/eliminar/:id', deleteGroupMessage);
 
 module.exports = router;

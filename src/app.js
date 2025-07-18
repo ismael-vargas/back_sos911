@@ -7,53 +7,138 @@ const session = require('express-session');
 const passport = require('passport');
 const flash = require('connect-flash');
 const MySQLStore = require('express-mysql-session')(session);
-const bodyparser = require('body-parser');
 const fileUpload = require("express-fileupload");
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
-const { minify } = require('html-minifier-terser');
 const winston = require('winston');
 const fs = require('fs');
+const crypto = require('crypto');
+const hpp = require('hpp');
+const toobusy = require('toobusy-js');
 const cors = require('cors');
-const { Loader } = require('@googlemaps/js-api-loader')
-
-
+const { minify } = require('html-minifier-terser');
 
 // Importar módulos locales
 const { MYSQLHOST, MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE, MYSQLPORT } = require('./keys');
 require('./lib/passport');
 
-// Base de datos MongoDB
-const connectMongoDB = require('./Database/dataBase.mongo');
-connectMongoDB(); // Conectar a MongoDB Atlas
-
 // Crear aplicación Express
 const app = express();
 
-// Configurar CORS
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://192.168.1.31:3000'
-];
+// ==================== CONFIGURACIÓN BÁSICA ====================
+app.set('port', process.env.PORT || 9000); // Usar tu puerto 9000 como predeterminado
 
+// Configuración CORS correcta para CSRF (REEMPLAZADO)
+const allowedOrigins = [
+  'http://localhost:3000', // Tu frontend
+  'http://localhost:4500', // Tu backend (si accedes a él desde el mismo dominio pero diferente puerto)
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
+];
 app.use(cors({
   origin: function(origin, callback) {
     // Permitir peticiones sin origen (como Postman) o desde orígenes permitidos
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('No permitido por CORS'));
     }
   },
-  credentials: true,
+  credentials: true, // Importante para que las cookies se envíen cross-origin
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'csrf-token']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'csrf-token'] // ✅ CSRF headers permitidos
 }));
 
-// Configurar helmet y Content Security Policy
+// ==================== CONFIGURACIÓN DE LOGS ====================
+
+// Asegura que la carpeta "logs" exista
+const logDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir, { recursive: true });
+}
+
+// CONFIGURACIÓN DE LOGGING (ÚNICA Y MEJORADA) - RESTAURADA A LA VERSIÓN DEL USUARIO
+const logger = winston.createLogger({
+  levels: {
+    error: 0,
+    warn: 1,
+    info: 2,
+    http: 3,
+    verbose: 4,
+    debug: 5,
+    silly: 6
+  },
+  level: 'debug', // Nivel por defecto para el logger
+  format: winston.format.combine(
+    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.errors({ stack: true }),
+    winston.format.splat(),
+    winston.format.printf(info => {
+      // Si el mensaje ya viene con el formato de Morgan, no lo alteres
+      if (info.message.startsWith('[') && info.message.includes('] [INFO]: [') && info.message.includes('Agent:')) {
+        return info.message;
+      }
+      // Para logs de negocio, usa el formato con dos puntos después de [INFO]:
+      return `[${info.timestamp}] [${info.level.toUpperCase()}]: ${info.message}${info.stack ? '\nSTACK:\n' + info.stack : ''}`;
+    })
+  ),
+  transports: [
+    new winston.transports.File({
+      filename: path.join(logDir, 'combined.log'), // <-- Aquí se define 'combined.log'
+      level: 'http', // Nivel para el archivo
+      maxsize: 5242880 * 5, // 25MB
+      maxFiles: 3,
+      tailable: true
+    }),
+    ...(process.env.NODE_ENV !== 'production'
+      ? [new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.simple()
+          )
+        })]
+      : [])
+  ]
+});
+
+// Redefinir console.log y console.error para que usen winston
+console.log = (...args) => logger.info(args.join(' '));
+console.info = (...args) => logger.info(args.join(' '));
+console.warn = (...args) => logger.warn(args.join(' '));
+console.error = (...args) => logger.error(args.join(' '));
+console.debug = (...args) => logger.debug(args.join(' '));
+
+// Configurar Morgan para logging HTTP
+app.use(morgan(function (tokens, req, res) {
+  const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  const method = tokens.method(req, res);
+  const url = tokens.url(req, res);
+  const status = tokens.status(req, res);
+  const responseTime = tokens["response-time"](req, res);
+  const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress || req.ip;
+  const agent = req.headers["user-agent"];
+  return `[${timestamp}] [INFO]: [${method}] ${url} ${status} ${responseTime} ms - IP: ${ip} - Agent: ${agent}`;
+}, { stream: { write: message => logger.info(message.trim()) } }
+));
+
+// Añadir el logger a la app para acceso global en controladores
+app.set('logger', logger);
+
+// ==================== CONFIGURACIÓN DE SEGURIDAD MEJORADA ====================
+
+// 4. Middleware de protección contra sobrecarga del servidor
+app.use((req, res, next) => {
+    if (toobusy()) {
+        logger.warn('Server too busy!');
+        res.status(503).json({ error: 'Server too busy. Please try again later.' });
+    } else {
+        next();
+    }
+});
+
+// 5. Configuración de Helmet
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -66,57 +151,131 @@ app.use(helmet({
             "default-src": ["'self'"]
         }
     },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginResourcePolicy: false,
 }));
 
-// Configurar almacenamiento de sesiones MySQL
-const mysqlOptions = {
-    host: MYSQLHOST,
-    port: MYSQLPORT,
-    user: MYSQLUSER,
-    password: MYSQLPASSWORD,
-    database: MYSQLDATABASE,
-    createDatabaseTable: true
-};
-const sessionStore = new MySQLStore(mysqlOptions);
+// 6. Protección contra HTTP Parameter Pollution
+app.use(hpp());
 
+// 7. Limitar tamaño de payload
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
-// Middleware para parsear cookies (debe ir antes de CSRF y sesiones)
-app.use(cookieParser());
+// 8. Rate limiting para prevenir ataques de fuerza bruta
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    handler: (req, res) => {
+        logger.warn(`Rate limit exceeded for IP: ${req.ip} (Global Limiter)`);
+        res.status(429).json({
+            error: 'Too many requests, please try again later.'
+        });
+    }
+});
+app.use(globalLimiter);
 
-app.use(session({
-    store: sessionStore,
-    secret: process.env.CLAVE_SECRETA || "una_clave_secreta_fuerte_y_unica", // ✅ Usa variable de entorno si existe
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: 'Demasiados intentos de inicio de sesión desde esta IP, por favor intente nuevamente después de 15 minutos.'
+});
+app.use('/login', loginLimiter);
+
+// 9. Configuración avanzada de cookies
+app.use(cookieParser(
+    process.env.COOKIE_SECRET || crypto.randomBytes(64).toString('hex')
+));
+
+// 10. Configuración de sesiones seguras
+const sessionConfig = {
+    store: new MySQLStore({
+        host: MYSQLHOST,
+        port: MYSQLPORT,
+        user: MYSQLUSER,
+        password: MYSQLPASSWORD,
+        database: MYSQLDATABASE,
+        createDatabaseTable: true
+    }),
+    secret: process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex'),
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        sameSite: 'Lax' // <--- CAMBIADO de 'Strict' a 'Lax' para permitir cookies cross-origin en PUT/POST
-    }
-}));
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict', // Cambiado a 'Strict'
+        maxAge: 24 * 60 * 60 * 1000
+    },
+    name: 'secureSessionId',
+    rolling: true,
+    unset: 'destroy'
+};
 
-app.set('port', process.env.PORT || 9000);
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+    sessionConfig.cookie.secure = true;
+}
 
-// Middleware para subir archivos
-app.use(fileUpload({ createParentPath: true }));
-
-// Logger de peticiones HTTP
-app.use(morgan('dev'));
-
-// Parseo de JSON y URL-encoded
-app.use(express.json({ limit: '300mb' }));
-app.use(express.urlencoded({ extended: true }));
-
-// Flash messages para sesiones
+app.use(session(sessionConfig));
 app.use(flash());
 
-// Inicializar passport y sesiones
-app.use(passport.initialize());
-app.use(passport.session());
+// 11. CSRF Protection mejorada
+const csrfProtection = csrf({
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict' // Cambiado a 'Strict'
+    }
+});
 
-// Seguridad extra y compresión
-app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
-app.use(compression());
+// Middleware para pasar datos comunes a las respuestas (incluyendo res.apiResponse/apiError)
+app.use((req, res, next) => {
+    // Tus métodos para API responses (ya los tienes, pero asegúrate que estén aquí)
+    res.apiResponse = (data, status = 200, message = 'Success') => {
+        const response = {
+            success: status >= 200 && status < 300,
+            message,
+            data
+        };
+        return res.status(status).json(response);
+    };
+    res.apiError = (message, status = 400, errors = null) => {
+        const response = {
+            success: false,
+            message,
+            errors
+        };
+        return res.status(status).json(response);
+    };
+    // Variables globales para vistas (si usas plantillas)
+    app.locals.message = req.flash('message');
+    app.locals.success = req.flash('success');
+    app.locals.user = req.user || null;
+    // ✅ EXPONER EL TOKEN CSRF PARA EL FRONTEND
+    if (req.csrfToken) {
+        res.locals.csrfToken = req.csrfToken();
+    } else {
+        res.locals.csrfToken = null;
+    }
+    next();
+});
+
+// ✅ RUTA PARA OBTENER EL TOKEN CSRF DESDE EL FRONTEND
+app.get('/csrf-token', csrfProtection, (req, res) => {
+    try {
+        res.apiResponse({ csrfToken: req.csrfToken() }, 200, 'CSRF token generated');
+    } catch (error) {
+        logger.error('Error al generar token CSRF:', error);
+        res.apiError('Error al generar token CSRF', 500, { details: error.message });
+    }
+});
+
+// Aplicar CSRF protection a todas las rutas POST, PUT, DELETE, etc.
+// Es crucial que esto vaya DESPUÉS de la ruta '/csrf-token' para que esa ruta no requiera CSRF
+app.use(csrfProtection);
+
 
 // Middleware para minificar HTML SOLO si el tipo de respuesta es HTML
 app.use(async (req, res, next) => {
@@ -139,74 +298,29 @@ app.use(async (req, res, next) => {
     next();
 });
 
-// Rate limiter SOLO para rutas de login reales
-const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
-    message: 'Demasiados intentos de inicio de sesión desde esta IP, por favor intente nuevamente después de 15 minutos.'
-});
-app.use('/login', loginLimiter); // ✅ Aplica solo a la ruta real de login
+// ==================== MIDDLEWARE ADICIONAL ====================
+
+// Configurar middleware de subida de archivos
+app.use(fileUpload({
+    createParentPath: true,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    abortOnLimit: true,
+    safeFileNames: true,
+    preserveExtension: true
+}));
+
+// Middleware de compresión
+app.use(compression());
+
+// Configurar passport (después de la sesión y flash)
+app.use(passport.initialize());
+app.use(passport.session());
 
 
-// Middleware de protección CSRF (debe ir después de cookieParser y sesión)
-const csrfMiddleware = csrf({ 
-  cookie: {
-    httpOnly: false, // Permitir acceso desde JavaScript
-    sameSite: 'lax',
-    secure: false // Para desarrollo, cambiar a true en producción
-  }
-});
-
-// Aplicar CSRF solo a la ruta /csrf-token para generar el token
-app.use('/csrf-token', csrfMiddleware);
-
-// Ruta para obtener el token CSRF desde el frontend 
-app.get('/csrf-token', (req, res) => {
-  try {
-    console.log('=== GENERANDO TOKEN CSRF ===');
-    console.log('Session ID:', req.sessionID);
-    
-    // Generar token CSRF real usando el middleware
-    const token = req.csrfToken ? req.csrfToken() : 'no-csrf-available';
-    console.log('Token CSRF generado:', token);
-    
-    res.json({ csrfToken: token });
-  } catch (error) {
-    console.error('Error al generar token CSRF:', error);
-    res.status(500).json({ error: 'Error al generar token CSRF', details: error.message });
-  }
-});
-
-// Aplicar CSRF a todas las demás rutas excepto GET
-app.use((req, res, next) => {
-  // Excluir ciertas rutas del CSRF
-  if (req.method === 'GET' || 
-      req.path === '/csrf-token' || 
-      req.path.startsWith('/login') ||
-      req.path.startsWith('/registro')) {
-    return next();
-  }
-  
-  // Aplicar validación CSRF para métodos POST, PUT, DELETE
-  return csrfMiddleware(req, res, next);
-});
-
-// Middleware para exponer el token CSRF en res.locals
-app.use((req, res, next) => {
-    try {
-        if (req.csrfToken) {
-            res.locals.csrfToken = req.csrfToken();
-        }
-    } catch (error) {
-        // Si no hay sesión, no hay problema
-        res.locals.csrfToken = null;
-    }
-    next();
-});
-
-// Rutas principales de la aplicación
+// ==================== RUTAS API ====================
 app.use(require('./router/index.router'));
 app.use(require('./router/envio.router'));
+app.use('/pagina', require('./router/pagina.router'));
 app.use('/usuarios', require('./router/usuarios.router'));
 app.use('/contactos_clientes', require('./router/contactos_clientes.router'));
 app.use('/contactos_emergencias', require('./router/contactos_emergencias.router'));
@@ -225,118 +339,43 @@ app.use('/clientes', require('./router/clientes.router'));
 app.use('/clientes_numeros', require('./router/clientes_numeros.router'));
 app.use('/clientes_grupos', require('./router/clientes_grupos.router'));
 app.use('/servicios_emergencia', require('./router/servicios_emergencia.router'));
-app.use(require('./router/contenido_app.router.models'));
+app.use('/contenido_app', require('./router/contenido_app.router'));
 
 
-// Asegura que la carpeta "logs" exista
-const logsDir = path.join(__dirname, 'logs');
-if (!fs.existsSync(logsDir)) {
-  fs.mkdirSync(logsDir, { recursive: true });
-}
+// ==================== MANEJO DE ERRORES ====================
 
-// CONFIGURACIÓN DE LOGGING (MEJORADA)
-const logger = winston.createLogger({
-  levels: {
-    error: 0,
-    warn: 1,
-    info: 2,
-    http: 3,
-    verbose: 4,
-    debug: 5,
-    silly: 6
-  },
-  level: 'debug',
-  format: winston.format.combine(
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    winston.format.errors({ stack: true }),
-    winston.format.splat(),
-    winston.format.printf(info => {
-      // Si el mensaje ya viene con el formato de Morgan, no lo alteres
-      if (info.message.startsWith('[') && info.message.includes('] [INFO]: [') && info.message.includes('Agent:')) {
-        return info.message;
-      }
-      // Para logs de negocio, usa el formato con dos puntos después de [INFO]:
-      return `[${info.timestamp}] [${info.level.toUpperCase()}]: ${info.message}${info.stack ? '\nSTACK:\n' + info.stack : ''}`;
-    })
-  ),
-  transports: [
-    new winston.transports.File({
-      filename: path.join(logsDir, 'combined.log'),
-      level: 'http',
-      maxsize: 5242880 * 5, // 25MB
-      maxFiles: 3,
-      tailable: true
-    }),
-    ...(process.env.NODE_ENV !== 'production'
-      ? [new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.colorize(),
-            winston.format.simple()
-          )
-        })]
-      : [])
-  ]
-});
-
-// Redefinir console.log y console.error para que usen winston
-console.log = (...args) => logger.info(args.join(' '));
-console.error = (...args) => logger.error(args.join(' '));
-console.warn = (...args) => logger.warn(args.join(' '));
-
-// Configura Morgan para logging HTTP 
-app.use(morgan(function (tokens, req, res) {
-  const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
-  const method = tokens.method(req, res);
-  const url = tokens.url(req, res);
-  const status = tokens.status(req, res);
-  const responseTime = tokens["response-time"](req, res);
-  const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress || req.ip;
-  const agent = req.headers["user-agent"];
-  return `[${timestamp}] [INFO]: [${method}] ${url} ${status} ${responseTime} ms - IP: ${ip} - Agent: ${agent}`;
-}, { stream: { write: message => logger.info(message.trim()) } }
-));
-
-// Añadir el logger a la app para acceso global en controladores
-app.set('logger', logger);
-
-// Variables globales para vistas (si usas plantillas)
-app.use((req, res, next) => {
-    app.locals.message = req.flash('message');
-    app.locals.success = req.flash('success');
-    app.locals.user = req.user || null;
-    next();
-});
-
-// Middleware de manejo de errores 
+// Middleware de manejo de errores mejorado para API
 app.use((err, req, res, next) => {
-    // Si ya se enviaron los headers, pasa al siguiente manejador
-    if (res.headersSent) return next(err);
+    if (res.headersSent) {
+        return next(err);
+    }
 
-    // Registrar el error en el logger
-    logger.error(err.message, { stack: err.stack });
+    logger.error(`Error: ${err.message}\nStack: ${err.stack}`);
 
-    // Ejemplo de registro de errores reales:
+    // Respuestas de error estandarizadas
     if (err.name === 'ValidationError') {
-        logger.warn('Error de validación de datos recibido');
-        return res.status(400).json({ error: 'Datos inválidos.' });
+        return res.apiError('Validation error', 400, err.errors);
     }
 
     if (err.code === 'EBADCSRFTOKEN') {
-        logger.warn('Error de validación CSRF');
-        return res.status(403).send('La validación del token CSRF ha fallado. Por favor, recarga la página.');
+        return res.apiError('CSRF token validation failed', 403);
     }
 
-    // Ejemplo de error personalizado: ruta no encontrada
-    if (err.status === 404) {
-        logger.warn(`Ruta no encontrada: ${req.originalUrl}`);
-        return res.status(404).send('Ruta no encontrada');
-    }
+    // Error no manejado
+    const errorResponse = {
+        message: 'Internal server error',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined,
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    };
 
-    // Respuesta genérica para otros errores
-    logger.error('Error interno del servidor');
-    return res.status(500).send('Error interno del servidor');
+    res.status(500).json(errorResponse);
 });
 
+// Middleware para rutas no encontradas (API)
+app.use((req, res, next) => {
+    logger.warn(`404 Not Found: ${req.originalUrl}`);
+    res.apiError('Endpoint not found', 404);
+});
+
+// Exportar la aplicación
 module.exports = app;
-
-

@@ -1,40 +1,68 @@
-//usuarios.router.js
+// usuarios.router.js 
 const express = require('express');
 const router = express.Router();
+
 const {
-  crearUsuario,
-  getUsuarios,
-  getUsuarioById,
-  updateUsuario,
-  deleteUsuario,
-  registrarPreferencias,
-  getUsuarioConPreferencias,
-  actualizarPreferencias,
-  eliminarPreferencias,
-  loginUsuario
+  createUser,           
+  getAllUsers,          
+  getUserById,         
+  updateUser,              
+  deleteUser,            
+  loginUser,             
+  registerPreferences,    
+  getUserWithPreferences,   
+  updatePreferences,        
+  deletePreferences       
 } = require('../controller/usuario.controller');
 
-// Registro de usuario
-router.post('/registro', crearUsuario);
+// --- Rutas Individuales (Acciones Específicas de Autenticación) ---
+// Estas rutas tienen un propósito único y es correcto que mantengan su nombre.
 
-// Login de usuario
-router.post('/login', loginUsuario);
+// Ruta para registrar un nuevo usuario
+// URL final: POST /usuarios/registro
+router.post('/registro', createUser);
 
-// Rutas agrupadas para usuarios
-router.route('/')
-  .get(getUsuarios); // GET /usuarios/
+// Ruta para el login de un usuario
+// URL final: POST /usuarios/login
+router.post('/login', loginUser);
 
-router.route('/:id')
-  .get(getUsuarioById)    // GET /usuarios/:id
-  .put(updateUsuario)     // PUT /usuarios/:id
-  .delete(deleteUsuario); // DELETE /usuarios/:id
 
-// Rutas agrupadas para preferencias del usuario
-router.route('/:id/preferencias')
-  .post(registrarPreferencias)      // POST /usuarios/:id/preferencias
-  .put(actualizarPreferencias)      // PUT /usuarios/:id/preferencias
-  .get(getUsuarioConPreferencias);  // GET /usuarios/:id/preferencias
+// --- Rutas de Agrupación (CRUD Estándar para Usuarios) ---
 
-router.put('/:id/preferencias/eliminar', eliminarPreferencias); // PUT /usuarios/:id/preferencias/eliminar
+// Ruta para listar todos los usuarios
+// URL final: GET /usuarios/listar
+router.get('/listar', getAllUsers);
+
+// Ruta para obtener un usuario específico por su ID
+// URL final: GET /usuarios/detalle/123
+router.get('/detalle/:id', getUserById);
+
+// Ruta para actualizar un usuario por su ID
+// URL final: PUT /usuarios/actualizar/123
+router.put('/actualizar/:id', updateUser);
+
+// Ruta para eliminar un usuario por su ID
+// URL final: DELETE /usuarios/eliminar/123
+router.delete('/eliminar/:id', deleteUser);
+
+
+// --- Rutas para el Sub-Recurso "Preferencias" de un Usuario ---
+
+// Ruta para registrar/crear las preferencias de un usuario específico
+// URL final: POST /usuarios/preferencias/registrar/123
+router.post('/preferencias/registrar/:id', registerPreferences);
+
+// Ruta para obtener las preferencias de un usuario específico
+// URL final: GET /usuarios/preferencias/listar/123
+router.get('/preferencias/listar/:id', getUserWithPreferences);
+
+// Ruta para actualizar las preferencias de un usuario específico
+// URL final: PUT /usuarios/preferencias/actualizar/123
+router.put('/preferencias/actualizar/:id', updatePreferences);
+
+// Ruta para eliminar (borrado lógico) las preferencias de un usuario específico
+// URL final: DELETE /usuarios/preferencias/eliminar/123
+router.delete('/preferencias/eliminar/:id', deletePreferences);
+
 
 module.exports = router;

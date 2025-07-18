@@ -1,388 +1,378 @@
-const { usuario } = require('../Database/dataBase.orm'); // Modelo relacional
-const Preferencias = require('../models/preferencias.model'); // Modelo no relacional
+// Importa los modelos de ambas bases de datos y las utilidades
+const orm = require('../Database/dataBase.orm'); // Para Sequelize (SQL)
+const sql = require('../Database/dataBase.sql'); // MySQL directo
+const mongo = require('../Database/dataBase.mongo'); // Para Mongoose (MongoDB)
 const { cifrarDato, descifrarDato } = require('../lib/encrypDates');
-const bcrypt = require('bcryptjs');
-const CryptoJS = require('crypto-js'); // <-- Para hash SHA256
 
-function hashCorreo(correo) {
-    return CryptoJS.SHA256(correo).toString(CryptoJS.enc.Hex);
-}
-
-// Controlador de usuarios
 const usersCtl = {};
 
-// Utilidad para obtener el logger desde req.app
-function getLogger(req) {
-    return req.app.get('logger');
+// --- Utilidad para Descifrado Seguro ---
+function safeDecrypt(data) {
+    try {
+        return data ? descifrarDato(data) : '';
+    } catch (error) {
+        console.error('Error al descifrar datos:', error.message);
+        return '';
+    }
 }
 
-// Crear un nuevo usuario
-usersCtl.crearUsuario = async (req, res, next) => {
-    const logger = getLogger(req);
-    let { nombre, correo_electronico, cedula_identidad, direccion, estado, contrasena } = req.body;
-    logger.info(`[USUARIO] Intento de registro: correo=${correo_electronico}, nombre=${nombre}`);
+// --- CRUD de Usuarios ---
+usersCtl.createUser = async (req, res) => {
+    const { nombre, correo_electronico, cedula_identidad, contrasena, fecha_nacimiento, direccion, estado } = req.body; // Se añade 'estado' al destructuring
     try {
-        // Cifrar los campos sensibles
-        const nombreCif = cifrarDato(nombre);
-        const correoCif = cifrarDato(correo_electronico);
-        const correoHash = hashCorreo(correo_electronico); // <-- Hash para búsqueda
-        const cedulaCif = cifrarDato(cedula_identidad);
-        const direccionCif = cifrarDato(direccion);
+        // La contraseña ahora se cifrará con la función 'cifrarDato' para que sea descifrable
+        const contrasena_cifrada = cifrarDato(contrasena); 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
 
-        // Verificar si el usuario ya existe (busca por hash)
-        const existingUser = await usuario.findOne({ where: { correo_hash: correoHash } });
-        if (existingUser) {
-            logger.warn(`[USUARIO] Registro fallido: correo ya registrado (${correo_electronico})`);
-            return res.status(400).json({ message: 'El correo electrónico ya está registrado.' });
-        }
-
-        // Validar que el estado es un valor ENUM válido
-        const validStates = ['activo', 'eliminado'];
-        if (!validStates.includes(estado)) {
-            logger.warn(`[USUARIO] Registro fallido: estado inválido (${estado})`);
-            return res.status(400).json({ message: 'El estado debe ser uno de los siguientes valores: activo, eliminado.' });
-        }
-
-        // Hashear la contraseña
-        const hashedPassword = await bcrypt.hash(contrasena, 10);
-
-        // Crear un nuevo usuario
-        const newUser = await usuario.create({
-            nombre: nombreCif,
-            correo_electronico: correoCif,
-            correo_hash: correoHash, // <-- Guarda el hash
-            cedula_identidad: cedulaCif,
-            direccion: direccionCif,
-            estado, // No se cifra
-            contrasena_hash: hashedPassword
-        });
-        logger.info(`[USUARIO] Registro exitoso: id=${newUser.id}, correo=${correo_electronico}`);
-        // Responder con los datos descifrados
-        res.status(201).json({
-            message: 'Registro exitoso',
-            user: {
-                ...newUser.toJSON(),
-                nombre: descifrarDato(newUser.nombre),
-                correo_electronico: descifrarDato(newUser.correo_electronico),
-                cedula_identidad: descifrarDato(newUser.cedula_identidad),
-                direccion: descifrarDato(newUser.direccion)
-            }
-        });
-
+        const nuevoUsuarioSQL = {
+            nombre: cifrarDato(nombre),
+            correo_electronico: cifrarDato(correo_electronico),
+            cedula_identidad: cifrarDato(cedula_identidad), 
+            contrasena_hash: contrasena_cifrada, // Se usa la contraseña cifrada con crypto
+            estado: estado || 'activo', // Se cambia el estado por defecto a 'activo'
+            fecha_creacion: now, // Se añade la fecha de creación
+        };
+        const usuarioGuardadoSQL = await orm.usuario.create(nuevoUsuarioSQL);
+        const idUsuarioSql = usuarioGuardadoSQL.id;
+        
+        const nuevoUsuarioMongo = { 
+            idUsuarioSql, 
+            fecha_nacimiento, 
+            direccion, 
+            estado: estado || 'activo', // Se asegura que el estado también se guarde en Mongo con el nuevo valor por defecto
+            fecha_creacion: now, // Se añade la fecha de creación para Mongo
+        };
+        await mongo.Usuario.create(nuevoUsuarioMongo);
+        res.status(201).json({ message: 'Usuario registrado exitosamente.' });
     } catch (error) {
-        logger.error(`[USUARIO] Error en el registro: ${error.message}`);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        console.error('Error al crear el usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
     }
 };
 
-// Obtener todos los usuarios, incluidos los eliminados
-usersCtl.getUsuarios = async (req, res) => {
-    const logger = getLogger(req);
-    logger.info('[USUARIO] Solicitud de listado de usuarios');
+// 2. OBTENER TODOS LOS USUARIOS (Usando SQL Directo)
+usersCtl.getAllUsers = async (req, res) => {
     try {
-        const usuarios = await usuario.findAll();
-        // Descifra los campos antes de enviar
-        const usuariosDescifrados = usuarios.map(u => ({
-            ...u.toJSON(),
-            nombre: descifrarDato(u.nombre),
-            correo_electronico: descifrarDato(u.correo_electronico),
-            cedula_identidad: descifrarDato(u.cedula_identidad),
-            direccion: descifrarDato(u.direccion)
-        }));
-        res.status(200).json(usuariosDescifrados);
-    } catch (error) {
-        logger.error(`[USUARIO] Error al obtener los usuarios: ${error.message}`);
-        res.status(500).json({ error: 'Error al obtener los usuarios' });
-    }
-};
-
-// Obtener un usuario por ID
-usersCtl.getUsuarioById = async (req, res) => {
-    const logger = getLogger(req);
-    logger.info(`[USUARIO] Solicitud de usuario por ID: ${req.params.id}`);
-    try {
-        const user = await usuario.findByPk(req.params.id);
-        if (user && user.estado === 'activo') {
-            // Descifra los campos antes de enviar
-            res.status(200).json({
-                ...user.toJSON(),
-                nombre: descifrarDato(user.nombre),
-                correo_electronico: descifrarDato(user.correo_electronico),
-                cedula_identidad: descifrarDato(user.cedula_identidad),
-                direccion: descifrarDato(user.direccion)
-            });
-        } else {
-            logger.warn(`[USUARIO] Usuario no encontrado: id=${req.params.id}`);
-            res.status(404).json({ error: 'Usuario no encontrado' });
-        }
-    } catch (error) {
-        logger.error(`[USUARIO] Error al obtener el usuario: ${error.message}`);
-        res.status(500).json({ error: 'Error al obtener el usuario' });
-    }
-};
-
-// Actualizar un usuario por ID
-usersCtl.updateUsuario = async (req, res) => {
-    const logger = getLogger(req);
-    logger.info(`[USUARIO] Actualización de usuario: id=${req.params.id}`);
-    const validStates = ['activo', 'eliminado'];
-    try {
-        const user = await usuario.findByPk(req.params.id);
-        if (user) {
-            // Validar que el estado es un valor ENUM válido si está presente
-            if (req.body.estado !== undefined && !validStates.includes(req.body.estado)) {
-                logger.warn(`[USUARIO] Actualización fallida: estado inválido (${req.body.estado})`);
-                return res.status(400).json({ message: `El estado debe ser uno de los siguientes valores: ${validStates.join(', ')}.` });
-            }
-
-            // Cifrar campos sensibles si se actualizan (como antes funcionaba)
-            if (req.body.nombre !== undefined) {
-                req.body.nombre = cifrarDato(req.body.nombre);
-            }
-            if (req.body.cedula_identidad !== undefined) {
-                req.body.cedula_identidad = cifrarDato(req.body.cedula_identidad);
-            }
-            if (req.body.direccion !== undefined) {
-                req.body.direccion = cifrarDato(req.body.direccion);
-            }
-
-            // SOLO procesar correo_electronico si realmente cambió
-            if (req.body.correo_electronico !== undefined && req.body.correo_electronico !== descifrarDato(user.correo_electronico)) {
-                let correoPlano = req.body.correo_electronico;
-                if (!correoPlano || correoPlano.trim() === '') {
-                    logger.warn(`[USUARIO] Actualización fallida: el correo electrónico no puede estar vacío.`);
-                    return res.status(400).json({ message: 'El correo electrónico no puede estar vacío.' });
+        // Se usa la conexión 'sql' para una consulta directa
+        const [usuariosSQL] = await sql.promise().query("SELECT * FROM usuarios WHERE estado = 'activo'");
+        
+        const usuariosCompletos = await Promise.all(
+            usuariosSQL.map(async (userSQL) => {
+                let usuarioMongo = null;
+                // SOLO si se encuentra un usuario en SQL, intentamos buscar en Mongo
+                if (userSQL) { 
+                    usuarioMongo = await mongo.Usuario.findOne({ idUsuarioSql: userSQL.id });
+                    // Opcional: Si el profesor quiere un control más estricto,
+                    // se podría añadir un 'if' aquí para verificar el estado en Mongo también,
+                    // por ejemplo: if (usuarioMongo && usuarioMongo.estado !== 'bloqueado')
                 }
-                try {
-                    correoPlano = descifrarDato(correoPlano);
-                } catch (e) {}
-                req.body.correo_electronico = cifrarDato(correoPlano);
-                req.body.correo_hash = hashCorreo(correoPlano);
-                // Verificar si el nuevo correo ya existe en otro usuario
-                const existingUserWithNewEmail = await usuario.findOne({ where: { correo_hash: req.body.correo_hash } });
-                if (existingUserWithNewEmail && existingUserWithNewEmail.id !== parseInt(req.params.id)) {
-                    logger.warn(`[USUARIO] Actualización fallida: el nuevo correo (${correoPlano}) ya está en uso.`);
-                    return res.status(400).json({ message: 'El correo electrónico ya está registrado.' });
-                }
-            } else {
-                // Si no se cambia el correo, no lo actualices ni lo incluyas en el update
-                delete req.body.correo_electronico;
-                delete req.body.correo_hash;
+
+                return {
+                    id: userSQL.id,
+                    nombre: safeDecrypt(userSQL.nombre),
+                    correo_electronico: safeDecrypt(userSQL.correo_electronico),
+                    cedula_identidad: safeDecrypt(userSQL.cedula_identidad),
+                    estado: userSQL.estado,
+                    fecha_nacimiento: usuarioMongo ? usuarioMongo.fecha_nacimiento : null,
+                    direccion: usuarioMongo ? usuarioMongo.direccion : null,
+                    fecha_creacion: userSQL.fecha_creacion, // Se añade la fecha de creación de SQL
+                    fecha_modificacion: userSQL.fecha_modificacion, // Se añade la fecha de modificación de SQL
+                };
+            })
+        );
+        res.status(200).json(usuariosCompletos);
+    } catch (error) {
+        console.error('Error al obtener todos los usuarios:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+};
+
+// 3. OBTENER USUARIO POR ID (Usando SQL Directo)
+usersCtl.getUserById = async (req, res) => {
+    // Se usa req.user.id si la solicitud viene de un usuario logueado para su propio perfil
+    // De lo contrario, se usa req.params.id para buscar por ID (ej. por un administrador)
+    const idUsuario = req.user ? req.user.id : req.params.id; 
+
+    try {
+        // SQL directo en lugar de ORM
+        const [usuariosSQL] = await sql.promise().query("SELECT * FROM usuarios WHERE id = ? AND estado = 'activo'", [idUsuario]);
+        
+        if (usuariosSQL.length === 0) {
+            return res.status(404).json({ error: 'Usuario no encontrado.' });
+        }
+        
+        const usuarioSQL = usuariosSQL[0];
+        let usuarioMongo = null;
+
+        // SOLO si se encuentra un usuario en SQL, intentamos buscar en Mongo
+        if (usuarioSQL) {
+            usuarioMongo = await mongo.Usuario.findOne({ idUsuarioSql: idUsuario });
+            // Opcional: Si el profesor quiere un control más estricto,
+            // se podría añadir un 'if' aquí para verificar el estado en Mongo también.
+        }
+
+        const usuarioCompleto = {
+            id: usuarioSQL.id,
+            nombre: safeDecrypt(usuarioSQL.nombre),
+            correo_electronico: safeDecrypt(usuarioSQL.correo_electronico),
+            cedula_identidad: safeDecrypt(usuarioSQL.cedula_identidad),
+            estado: usuarioSQL.estado,
+            fecha_nacimiento: usuarioMongo?.fecha_nacimiento || null,
+            direccion: usuarioMongo?.direccion || null,
+            fecha_creacion: usuarioSQL.fecha_creacion, // Se añade la fecha de creación de SQL
+            fecha_modificacion: usuarioSQL.fecha_modificacion, // Se añade la fecha de modificación de SQL
+        };
+        res.status(200).json(usuarioCompleto);
+    } catch (error) {
+        console.error('Error al obtener el usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+};
+
+// 4. ACTUALIZAR USUARIO (Usando SQL Directo)
+usersCtl.updateUser = async (req, res) => {
+    // Se usa req.user.id si la solicitud viene de un usuario logueado para su propio perfil
+    // De lo contrario, se usa req.params.id para buscar por ID (ej. por un administrador)
+    const idUsuario = req.user ? req.user.id : req.params.id; 
+    const { nombre, correo_electronico, cedula_identidad, fecha_nacimiento, direccion, estado } = req.body;
+    try {
+        // Preparar datos para SQL (solo los que no son undefined)
+        const campos = [];
+        const valores = [];
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
+        if (nombre) {
+            campos.push('nombre = ?');
+            valores.push(cifrarDato(nombre));
+        }
+        if (correo_electronico) {
+            campos.push('correo_electronico = ?');
+            valores.push(cifrarDato(correo_electronico));
+        }
+        if (cedula_identidad) {
+            campos.push('cedula_identidad = ?');
+            valores.push(cifrarDato(cedula_identidad));
+        }
+        if (estado) {
+            campos.push('estado = ?');
+            valores.push(estado);
+        }
+        
+        // Siempre actualizar fecha_modificacion en SQL
+        campos.push('fecha_modificacion = ?');
+        valores.push(now);
+
+        if (campos.length > 0) {
+            valores.push(idUsuario); // Para el WHERE, usando el ID del usuario logueado o del parámetro
+            const consultaSQL = `UPDATE usuarios SET ${campos.join(', ')} WHERE id = ?`;
+            const [resultado] = await sql.promise().query(consultaSQL, valores);
+            
+            if (resultado.affectedRows === 0) {
+                return res.status(404).json({ error: 'Usuario no encontrado en SQL.' });
             }
-
-            if (req.body.contrasena) {
-                const hashedPassword = await bcrypt.hash(req.body.contrasena, 10);
-                req.body.contrasena_hash = hashedPassword;
-                delete req.body.contrasena;
-            }
-
-            // Solo actualiza los campos permitidos
-            const camposPermitidos = [
-                'nombre', 'correo_electronico', 'correo_hash', 'cedula_identidad', 'direccion', 'estado', 'contrasena_hash'
-            ];
-            const datosActualizar = {};
-            for (const campo of camposPermitidos) {
-                if (req.body[campo] !== undefined) {
-                    datosActualizar[campo] = req.body[campo];
-                }
-            }
-
-            // Validar que al menos un campo permitido se esté actualizando
-            if (Object.keys(datosActualizar).length === 0) {
-                logger.warn(`[USUARIO] No se enviaron campos válidos para actualizar: id=${req.params.id}`);
-                return res.status(400).json({ error: 'No se enviaron campos válidos para actualizar.' });
-            }
-
-            // Volver a la lógica anterior: pasar los campos cifrados directamente
-            await user.update(datosActualizar);
-            logger.info(`[USUARIO] Usuario actualizado correctamente: id=${user.id}`);
-            res.status(200).json({
-                ...user.toJSON(),
-                nombre: descifrarDato(user.nombre),
-                correo_electronico: descifrarDato(user.correo_electronico),
-                cedula_identidad: descifrarDato(user.cedula_identidad),
-                direccion: descifrarDato(user.direccion)
-            });
-        } else {
-            logger.warn(`[USUARIO] Usuario no encontrado para actualizar: id=${req.params.id}`);
-            res.status(404).json({ error: 'Usuario no encontrado' });
         }
+        
+        // Actualizar MongoDB
+        const datosParaMongo = { fecha_nacimiento, direccion, estado };
+        // Eliminar propiedades undefined para que no se sobrescriban con 'undefined' en Mongo
+        Object.keys(datosParaMongo).forEach(key => datosParaMongo[key] === undefined && delete datosParaMongo[key]);
+        
+        // Cifrar la dirección si se está actualizando y no es undefined
+        if (datosParaMongo.direccion) {
+            datosParaMongo.direccion = cifrarDato(datosParaMongo.direccion);
+        }
+        
+        // Siempre actualizar fecha_modificacion en Mongo
+        datosParaMongo.fecha_modificacion = now;
+
+        await mongo.Usuario.updateOne({ idUsuarioSql: idUsuario }, { $set: datosParaMongo });
+        
+        res.status(200).json({ message: 'Usuario actualizado correctamente.' });
     } catch (error) {
-        logger.error(`[USUARIO] Error al actualizar el usuario: ${error.message}`);
-        res.status(500).json({ error: 'Error al actualizar el usuario' });
+        console.error('Error al actualizar el usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
     }
 };
 
-// Borrar un usuario por ID (Marcar como eliminado)
-usersCtl.deleteUsuario = async (req, res) => {
-    const logger = getLogger(req);
-    logger.info(`[USUARIO] Eliminación de usuario: id=${req.params.id}`);
+// 5. ELIMINAR USUARIO (Usando SQL Directo)
+usersCtl.deleteUser = async (req, res) => {
+    // Se usa req.user.id si la solicitud viene de un usuario logueado para su propio perfil
+    // De lo contrario, se usa req.params.id para buscar por ID (ej. por un administrador)
+    const idUsuario = req.user ? req.user.id : req.params.id; 
     try {
-        const user = await usuario.findByPk(req.params.id);
-        if (user && user.estado === 'activo') {
-            // Marcar el usuario como eliminado
-            await user.update({ estado: 'eliminado' });
-            logger.info(`[USUARIO] Usuario marcado como eliminado: id=${user.id}`);
-            res.status(204).send();
-        } else if (user && user.estado === 'eliminado') {
-            logger.warn(`[USUARIO] Usuario ya eliminado: id=${user.id}`);
-            res.status(404).json({ error: 'Usuario ya ha sido eliminado' });
-        } else {
-            logger.warn(`[USUARIO] Usuario no encontrado para eliminar: id=${req.params.id}`);
-            res.status(404).json({ error: 'Usuario no encontrado' });
+        const now = new Date().toISOString();
+        // SQL directo para actualizar estado a 'eliminado'
+        const [resultado] = await sql.promise().query("UPDATE usuarios SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, idUsuario]);
+        
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ error: 'Usuario no encontrado.' });
         }
+        
+        // Actualizar MongoDB
+        await mongo.Usuario.updateOne({ idUsuarioSql: idUsuario }, { $set: { estado: 'eliminado', fecha_modificacion: now } });
+        
+        res.status(200).json({ message: 'Usuario marcado como eliminado.' });
     } catch (error) {
-        logger.error(`[USUARIO] Error al borrar el usuario: ${error.message}`);
-        res.status(500).json({ error: 'Error al borrar el usuario' });
+        console.error('Error al eliminar el usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
     }
 };
 
-
-// Registrar preferencias para un usuario ya existente
-usersCtl.registrarPreferencias = async (req, res) => {
-    const { id } = req.params;
-    const { tema, sidebarMinimizado } = req.body;
-    const usuarioIdNum = Number(id);
-    try {
-        const existeUsuario = await usuario.findByPk(usuarioIdNum);
-        if (!existeUsuario) {
-            return res.status(404).json({ message: 'Usuario no encontrado.' });
-        }
-
-        const yaTienePreferencias = await Preferencias.findOne({ usuarioId: usuarioIdNum });
-        if (yaTienePreferencias) {
-            return res.status(400).json({ message: 'El usuario ya tiene preferencias registradas.' });
-        }
-
-        const preferencias = await Preferencias.create({
-            usuarioId: usuarioIdNum,
-            tema,
-            sidebarMinimizado,
-        });
-
-        res.status(201).json({
-            message: 'Preferencias guardadas exitosamente.',
-            preferencias,
-        });
-    } catch (error) {
-        console.error('Error al registrar preferencias:', error.message);
-        res.status(500).json({ message: 'Error interno del servidor.' });
-    }
-};
-
-// Obtener un usuario y sus preferencias
-usersCtl.getUsuarioConPreferencias = async (req, res) => {
-    const { id } = req.params;
-    const usuarioIdNum = Number(id);
-    try {
-        const usuarioData = await usuario.findByPk(usuarioIdNum);
-        if (!usuarioData) {
-            return res.status(404).json({ message: 'Usuario no encontrado.' });
-        }
-        const preferenciasData = await Preferencias.findOne({ usuarioId: usuarioIdNum });
-        res.status(200).json({
-            usuario: usuarioData,
-            preferencias: preferenciasData,
-        });
-    } catch (error) {
-        console.error('Error al obtener usuario y preferencias:', error.message);
-        res.status(500).json({ message: 'Error interno del servidor.' });
-    }
-};
-
-
-// Actualizar preferencias de un usuario existente
-usersCtl.actualizarPreferencias = async (req, res) => {
-    const { id } = req.params;
-    const { tema, sidebarMinimizado, estado } = req.body;
-    const usuarioIdNum = Number(id);
-    try {
-        const preferencias = await Preferencias.findOne({ usuarioId: usuarioIdNum });
-        if (!preferencias) {
-            return res.status(404).json({ message: 'No existen preferencias para este usuario.' });
-        }
-
-        if (tema !== undefined) preferencias.tema = tema;
-        if (sidebarMinimizado !== undefined) preferencias.sidebarMinimizado = sidebarMinimizado;
-        if (estado !== undefined) preferencias.estado = estado;
-
-        await preferencias.save();
-
-        res.status(200).json({ message: 'Preferencias actualizadas correctamente.', preferencias });
-    } catch (error) {
-        console.error('Error al actualizar preferencias:', error.message);
-        res.status(500).json({ message: 'Error interno del servidor.' });
-    }
-};
-
-// Eliminar (lógicamente) las preferencias del usuario
-usersCtl.eliminarPreferencias = async (req, res) => {
-    const { id } = req.params;
-    const usuarioIdNum = Number(id);
-    try {
-        const preferencias = await Preferencias.findOne({ usuarioId: usuarioIdNum });
-        if (!preferencias) {
-            return res.status(404).json({ message: 'No existen preferencias para este usuario.' });
-        }
-        if (preferencias.estado === 'eliminado') {
-            return res.status(400).json({ message: 'Las preferencias ya están eliminadas.' });
-        }
-        preferencias.estado = 'eliminado';
-        await preferencias.save();
-
-        res.status(200).json({ message: 'Preferencias eliminadas correctamente.' });
-    } catch (error) {
-        console.error('Error al eliminar preferencias:', error.message);
-        res.status(500).json({ message: 'Error interno del servidor.' });
-    }
-};
-
-// LOGIN DE USUARIO (para /login)
-usersCtl.loginUsuario = async (req, res) => {
+// 6. LOGIN USUARIO (Usando SQL Directo)
+usersCtl.loginUser = async (req, res) => {
     const { correo_electronico, contrasena } = req.body;
     try {
-        // Hash del correo recibido
-        const correoHash = hashCorreo(correo_electronico);
-        console.log('DEBUG - Correo recibido:', correo_electronico);
-        console.log('DEBUG - Hash para búsqueda:', correoHash);
-
-        // Busca el usuario por hash
-        const user = await usuario.findOne({ where: { correo_hash: correoHash } });
+        // SQL directo para obtener todos los usuarios activos
+        const [usuariosSQL] = await sql.promise().query("SELECT * FROM usuarios WHERE estado = 'activo'");
+        
+        // Buscar usuario por correo descifrado
+        const user = usuariosSQL.find(u => descifrarDato(u.correo_electronico) === correo_electronico);
+        
         if (!user) {
-            console.log('DEBUG - Usuario NO encontrado con ese hash');
-            return res.status(400).json({ message: 'Correo o contraseña incorrectos.' });
-        } else {
-            console.log('DEBUG - Usuario encontrado:', user.id);
+            return res.status(401).json({ message: 'Correo o contraseña incorrectos.' });
         }
-
-        // Compara la contraseña
-        const passwordMatch = await bcrypt.compare(contrasena, user.contrasena_hash);
-        console.log('DEBUG - Password match:', passwordMatch);
-        if (!passwordMatch) {
-            return res.status(400).json({ message: 'Correo o contraseña incorrectos.' });
+        
+        // Ahora se descifra la contraseña almacenada y se compara directamente
+        const contrasena_descifrada = descifrarDato(user.contrasena_hash);
+        if (contrasena !== contrasena_descifrada) {
+            return res.status(401).json({ message: 'Correo o contraseña incorrectos.' });
         }
-
-        // Guardar sesión para el usuario
-        req.session.usuarioId = user.id;
-        req.session.usuarioNombre = descifrarDato(user.nombre);
-        req.session.usuarioEmail = descifrarDato(user.correo_electronico);
-        req.session.tipoUsuario = 'usuario';
-        console.log('DEBUG - Sesión guardada para usuario:', user.id);
-
-        // Descifra los datos antes de responder
-        res.status(200).json({
-            usuario_id: user.id,
-            nombre: descifrarDato(user.nombre),
-            correo_electronico: descifrarDato(user.correo_electronico),
-            cedula_identidad: descifrarDato(user.cedula_identidad),
-            direccion: descifrarDato(user.direccion),
-            estado: user.estado
-        });
+        
+        res.status(200).json({ message: "Login exitoso", userId: user.id });
     } catch (error) {
         console.error('Error en login:', error.message);
         res.status(500).json({ message: 'Error interno del servidor.' });
     }
 };
 
-// Exportar el controlador
+// --- CRUD de Preferencias (Asociadas a un Usuario) ---
+
+usersCtl.registerPreferences = async (req, res) => {
+    // Se usa req.user.id si la solicitud viene de un usuario logueado para su propio perfil
+    // De lo contrario, se usa req.params.id para buscar por ID (ej. por un administrador)
+    const idUsuario = req.user ? req.user.id : req.params.id; 
+    const { tema, sidebarMinimizado } = req.body;
+    try {
+        // CORREGIDO: Se usa 'orm.preferencias' en plural
+        const nuevaPreferenciaSQL = { tema, usuarioId: idUsuario }; // Usamos el ID del usuario
+        const preferenciaGuardadaSQL = await orm.preferencias.create(nuevaPreferenciaSQL);
+        const idPreferenciaSql = preferenciaGuardadaSQL.id;
+        
+        // CORREGIDO: Se usa 'mongo.Preferencias' con mayúscula
+        const nuevaPreferenciaMongo = { idPreferenciaSql, sidebarMinimizado };
+        await mongo.Preferencias.create(nuevaPreferenciaMongo);
+        
+        res.status(201).json({ message: 'Preferencias registradas exitosamente.' });
+    } catch (error) {
+        console.error('Error al registrar las preferencias:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+};
+
+// OBTENER USUARIO CON PREFERENCIAS (Usando SQL Directo)
+usersCtl.getUserWithPreferences = async (req, res) => {
+    // Se usa req.user.id si la solicitud viene de un usuario logueado para su propio perfil
+    // De lo contrario, se usa req.params.id para buscar por ID (ej. por un administrador)
+    const idUsuario = req.user ? req.user.id : req.params.id; 
+    try {
+        // SQL directo para obtener usuario
+        const [usuariosSQL] = await sql.promise().query("SELECT * FROM usuarios WHERE id = ? AND estado = 'activo'", [idUsuario]);
+        
+        if (usuariosSQL.length === 0) {
+            return res.status(404).json({ error: 'Usuario no encontrado.' });
+        }
+        
+        const usuarioSQL = usuariosSQL[0];
+        
+        // SQL directo para obtener preferencias
+        const [preferenciasSQL] = await sql.promise().query("SELECT * FROM preferencias WHERE usuarioId = ?", [idUsuario]);
+        
+        let preferenciasMongo = null;
+        if (preferenciasSQL.length > 0) {
+            // CORREGIDO: Se usa 'mongo.Preferencias' con mayúscula
+            preferenciasMongo = await mongo.Preferencias.findOne({ idPreferenciaSql: preferenciasSQL[0].id });
+        }
+        
+        const resultado = {
+            id: usuarioSQL.id,
+            nombre: safeDecrypt(usuarioSQL.nombre),
+            preferencias: preferenciasSQL.length > 0 ? {
+                tema: preferenciasSQL[0].tema,
+                sidebarMinimizado: preferenciasMongo?.sidebarMinimizado || false,
+                estado: preferenciasSQL[0].estado
+            } : null
+        };
+        
+        res.status(200).json(resultado);
+    } catch (error) {
+        console.error('Error al obtener usuario con preferencias:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+};
+
+// ACTUALIZAR PREFERENCIAS (Usando SQL Directo)
+usersCtl.updatePreferences = async (req, res) => {
+    // Se usa req.user.id si la solicitud viene de un usuario logueado para su propio perfil
+    // De lo contrario, se usa req.params.id para buscar por ID (ej. por un administrador)
+    const idUsuario = req.user ? req.user.id : req.params.id; 
+    const { tema, sidebarMinimizado } = req.body;
+    try {
+        // SQL directo para buscar preferencias
+        const [preferenciasSQL] = await sql.promise().query("SELECT * FROM preferencias WHERE usuarioId = ?", [idUsuario]);
+        
+        if (preferenciasSQL.length === 0) {
+            return res.status(404).json({ error: 'Preferencias no encontradas.' });
+        }
+        
+        const preferenciaSQL = preferenciasSQL[0];
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        
+        // SQL directo para actualizar tema
+        await sql.promise().query("UPDATE preferencias SET tema = ?, fecha_modificacion = ? WHERE id = ?", [tema, now, preferenciaSQL.id]);
+        
+        // CORREGIDO: Se usa 'mongo.Preferencias' con mayúscula
+        await mongo.Preferencias.updateOne(
+            { idPreferenciaSql: preferenciaSQL.id },
+            { $set: { sidebarMinimizado, fecha_modificacion: now } }
+        );
+        
+        res.status(200).json({ message: 'Preferencias actualizadas.' });
+    } catch (error) {
+        console.error('Error al actualizar preferencias:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+};
+
+// ELIMINAR PREFERENCIAS (Usando SQL Directo)
+usersCtl.deletePreferences = async (req, res) => {
+    // Se usa req.user.id si la solicitud viene de un usuario logueado para su propio perfil
+    // De lo contrario, se usa req.params.id para buscar por ID (ej. por un administrador)
+    const idUsuario = req.user ? req.user.id : req.params.id; 
+    try {
+        // SQL directo para buscar preferencias
+        const [preferenciasSQL] = await sql.promise().query("SELECT * FROM preferencias WHERE usuarioId = ?", [idUsuario]);
+        
+        if (preferenciasSQL.length === 0) {
+            return res.status(404).json({ error: 'Preferencias no encontradas.' });
+        }
+        
+        const preferenciaSQL = preferenciasSQL[0];
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        
+        // SQL directo para marcar como eliminado
+        await sql.promise().query("UPDATE preferencias SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, preferenciaSQL.id]);
+        
+        // CORREGIDO: Se usa 'mongo.Preferencias' con mayúscula
+        await mongo.Preferencias.updateOne(
+            { idPreferenciaSql: preferenciaSQL.id },
+            { $set: { estado: 'eliminado', fecha_modificacion: now } }
+        );
+        
+        res.status(200).json({ message: 'Preferencias marcadas como eliminadas.' });
+    } catch (error) {
+        console.error('Error al eliminar preferencias:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+};
+
 module.exports = usersCtl;

@@ -5,11 +5,7 @@ const MYSQLPASSWORD = '0987021692@Rj';
 const MYSQLDATABASE = 'sos911';
 const MYSQLPORT = '3306';
 const MYSQL_URI = process.env.MYSQL_URI ?? '';
-
 const MONGO_URI = 'mongodb://localhost:27017/sos_mongo';
-
-// Nueva clave para cifrado (debe ser de 32 caracteres)
-
 
 module.exports = {
     MYSQLHOST,
