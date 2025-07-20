@@ -2,9 +2,19 @@ const mongoose = require('mongoose');
 
 const ContenidoAppSchema = new mongoose.Schema({
     idContenidoAppSql: String,
-    keySection: String,
-    titleSection: String,
-    contentSection: String,
+    // Campos para la primera sección
+    howItWorksKey: String,
+    howItWorksTitle: String,
+    howItWorksContent: String,
+    // Campos para la segunda sección (Misión)
+    missionKey: String,
+    missionTitle: String,
+    missionContent: String,
+    // Campos para la tercera sección (Visión)
+    visionKey: String,
+    visionTitle: String,
+    visionContent: String,
+    
     logoApp: String,
     estado: String,
     fecha_creacion: String,
@@ -17,5 +27,4 @@ const ContenidoAppSchema = new mongoose.Schema({
 
 const ContenidoApp = mongoose.model('ContenidoApp', ContenidoAppSchema);
 
-// Exporta el modelo 'ContenidoApp' 
 module.exports = ContenidoApp;

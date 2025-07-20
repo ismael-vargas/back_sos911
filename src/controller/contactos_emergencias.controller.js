@@ -39,6 +39,8 @@ contactosEmergenciasCtl.createEmergencyContact = async (req, res) => {
             return res.status(400).json({ message: 'Los campos clienteId, nombre y número/teléfono son requeridos.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Cifrar los datos sensibles
         const nombreCifrado = cifrarDato(nombre);
         const telefonoCifrado = cifrarDato(phone);
@@ -55,12 +57,18 @@ contactosEmergenciasCtl.createEmergencyContact = async (req, res) => {
             return res.status(409).json({ message: 'El contacto de emergencia ya está registrado para este cliente con ese nombre.' });
         }
 
-        // Crear el nuevo contacto usando SQL directo
-        const [resultadoSQL] = await sql.promise().query(
-            "INSERT INTO contactos_emergencias (clienteId, nombre, descripcion, telefono, estado, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [clienteId, nombreCifrado, descripcionCifrada, telefonoCifrado, estado || 'activo']
-        );
-        const newContactId = resultadoSQL.insertId;
+        // Crear el nuevo contacto usando ORM (como usuario.controller.js)
+        // CORREGIDO: Se cambió 'orm.contactos_emergencias' a 'orm.contactos_emergencia' para coincidir con la exportación del ORM
+        const nuevoContacto = await orm.contactos_emergencia.create({
+            clienteId: clienteId,
+            nombre: nombreCifrado,
+            descripcion: descripcionCifrada,
+            telefono: telefonoCifrado,
+            estado: estado || 'activo',
+            fecha_creacion: now,
+        });
+
+        const newContactId = nuevoContacto.id; // Obtener el ID insertado por ORM
         logger.info(`[CONTACTOS_EMERGENCIA] Contacto creado exitosamente con ID: ${newContactId} para clienteId: ${clienteId}.`);
 
         // Obtener el contacto recién creado para la respuesta
@@ -77,11 +85,11 @@ contactosEmergenciasCtl.createEmergencyContact = async (req, res) => {
                 telefono: safeDecrypt(createdContact.telefono),
                 estado: createdContact.estado,
                 fecha_creacion: createdContact.fecha_creacion,
-                fecha_modificacion: createdContact.fecha_modificacion
+                fecha_modificacion: createdContact.fecha_modificacion // Puede ser null si no se ha modificado
             }
         });
     } catch (error) {
-        console.error(`[CONTACTOS_EMERGENCIA] Error al crear contacto: ${error.message}`, error);
+        logger.error(`[CONTACTOS_EMERGENCIA] Error al crear contacto: ${error.message}`, error);
         res.status(500).json({ error: 'Error interno del servidor al crear el contacto de emergencia.' });
     }
 };
@@ -89,31 +97,33 @@ contactosEmergenciasCtl.createEmergencyContact = async (req, res) => {
 // 2. OBTENER TODOS LOS CONTACTOS DE EMERGENCIA ACTIVOS
 contactosEmergenciasCtl.getAllEmergencyContacts = async (req, res) => {
     const logger = getLogger(req);
-    logger.info('[CONTACTOS_EMERGENCIA] Solicitud de obtención de todos los contactos de emergencia activos.');
+    const { incluirEliminados } = req.query; // Añadido para consistencia
+    logger.info(`[CONTACTOS_EMERGENCIA] Solicitud de obtención de todos los contactos de emergencia (incluirEliminados: ${incluirEliminados}).`);
 
     try {
-        // Usar SQL directo para obtener todos los contactos de emergencia activos y unirse con clientes
-        const [contactosSQL] = await sql.promise().query(
-            `SELECT 
-                ce.id, 
-                ce.clienteId, 
-                ce.nombre, 
-                ce.descripcion, 
-                ce.telefono, 
-                ce.estado, 
-                ce.fecha_creacion, 
-                ce.fecha_modificacion,
-                c.nombre AS cliente_nombre,
-                c.correo_electronico AS cliente_correo
-            FROM 
-                contactos_emergencias ce
-            JOIN 
-                clientes c ON ce.clienteId = c.id
-            WHERE 
-                ce.estado = 'activo'
-            ORDER BY 
-                ce.fecha_creacion DESC`
-        );
+        let querySQL = `SELECT 
+                            ce.id, 
+                            ce.clienteId, 
+                            ce.nombre, 
+                            ce.descripcion, 
+                            ce.telefono, 
+                            ce.estado, 
+                            ce.fecha_creacion, 
+                            ce.fecha_modificacion,
+                            c.nombre AS cliente_nombre,
+                            c.correo_electronico AS cliente_correo
+                        FROM 
+                            contactos_emergencias ce
+                        JOIN 
+                            clientes c ON ce.clienteId = c.id`;
+        
+        const params = [];
+        if (!incluirEliminados) {
+            querySQL += ` WHERE ce.estado = 'activo'`;
+        }
+        querySQL += ` ORDER BY ce.fecha_creacion DESC`; // Ordenar para consistencia
+
+        const [contactosSQL] = await sql.promise().query(querySQL, params);
         
         // Descifrar los datos sensibles antes de enviar
         const contactosCompletos = contactosSQL.map(contactSQL => ({
@@ -134,7 +144,7 @@ contactosEmergenciasCtl.getAllEmergencyContacts = async (req, res) => {
         logger.info(`[CONTACTOS_EMERGENCIA] Se devolvieron ${contactosCompletos.length} contactos de emergencia.`);
         res.status(200).json(contactosCompletos);
     } catch (error) {
-        console.error('Error al obtener los contactos de emergencia:', error.message);
+        logger.error('Error al obtener los contactos de emergencia:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al obtener los contactos de emergencia.' });
     }
 };
@@ -167,7 +177,7 @@ contactosEmergenciasCtl.getContactsByClientId = async (req, res) => {
         logger.info(`[CONTACTOS_EMERGENCIA] Se devolvieron ${contactosDescifrados.length} contactos para clienteId: ${clienteId}.`);
         res.status(200).json(contactosDescifrados);
     } catch (error) {
-        console.error('Error al obtener los contactos de emergencia del cliente:', error.message);
+        logger.error('Error al obtener los contactos de emergencia del cliente:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al obtener los contactos de emergencia del cliente.' });
     }
 };
@@ -201,7 +211,7 @@ contactosEmergenciasCtl.getEmergencyContactById = async (req, res) => {
             fecha_modificacion: contacto.fecha_modificacion
         });
     } catch (error) {
-        console.error('Error al obtener el contacto de emergencia:', error.message);
+        logger.error('Error al obtener el contacto de emergencia:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al obtener el contacto de emergencia.' });
     }
 };
@@ -227,6 +237,8 @@ contactosEmergenciasCtl.updateEmergencyContact = async (req, res) => {
             return res.status(404).json({ error: 'Contacto de emergencia no encontrado o inactivo para actualizar.' });
         }
         const contactoExistente = existingContactSQL[0];
+
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
 
         // Preparar datos para SQL (solo los que no son undefined)
         const camposSQL = [];
@@ -254,8 +266,12 @@ contactosEmergenciasCtl.updateEmergencyContact = async (req, res) => {
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
 
+        // Siempre actualizar fecha_modificacion en SQL
+        camposSQL.push('fecha_modificacion = ?');
+        valoresSQL.push(now);
+
         valoresSQL.push(id); // Para el WHERE
-        const consultaSQL = `UPDATE contactos_emergencias SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
+        const consultaSQL = `UPDATE contactos_emergencias SET ${camposSQL.join(', ')} WHERE id = ?`;
         const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
         
         if (resultadoSQLUpdate.affectedRows === 0) {
@@ -283,7 +299,7 @@ contactosEmergenciasCtl.updateEmergencyContact = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al actualizar el contacto de emergencia:', error.message);
+        logger.error('Error al actualizar el contacto de emergencia:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al actualizar el contacto de emergencia.' });
     }
 };
@@ -302,8 +318,10 @@ contactosEmergenciasCtl.deleteEmergencyContact = async (req, res) => {
             return res.status(404).json({ error: 'Contacto de emergencia no encontrado o ya estaba eliminado.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE contactos_emergencias SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE contactos_emergencias SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[CONTACTOS_EMERGENCIA] No se pudo marcar como eliminado el contacto con ID: ${id}.`);
@@ -313,7 +331,7 @@ contactosEmergenciasCtl.deleteEmergencyContact = async (req, res) => {
         logger.info(`[CONTACTOS_EMERGENCIA] Contacto de emergencia marcado como eliminado: id=${id}`);
         res.status(200).json({ message: 'Contacto de emergencia marcado como eliminado correctamente.' });
     } catch (error) {
-        console.error('Error al borrar el contacto de emergencia:', error.message);
+        logger.error('Error al borrar el contacto de emergencia:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al borrar el contacto de emergencia.' });
     }
 };

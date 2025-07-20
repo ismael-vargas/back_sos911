@@ -15,12 +15,10 @@ const usuario = (sequelize, type) => { // Cambiado DataTypes a type
         correo_electronico: {
            type: type.STRING, // Cambiado DataTypes a type
             allowNull: false,
-            unique: true,
             comment: 'Correo electrónico del usuario cifrado o principal'
         },
         cedula_identidad: {
             type: type.STRING, // Cambiado DataTypes a type
-            unique: true,
             comment: 'Cédula de identidad o número de identificación del usuario'
         },
         contrasena_hash: {

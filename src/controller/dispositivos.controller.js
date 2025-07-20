@@ -34,6 +34,8 @@ dispositivosCtl.createDevice = async (req, res) => {
             return res.status(400).json({ message: 'Todos los campos obligatorios son requeridos (clienteId, token_dispositivo, tipo_dispositivo, modelo_dispositivo).' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Cifrar los campos sensibles
         const tokenCifrado = cifrarDato(token_dispositivo);
         const tipoCifrado = cifrarDato(tipo_dispositivo);
@@ -50,12 +52,18 @@ dispositivosCtl.createDevice = async (req, res) => {
             return res.status(409).json({ message: 'El dispositivo ya está registrado para este cliente.' });
         }
 
-        // Si no existe, crear un nuevo dispositivo (usando SQL directo)
-        const [resultadoSQL] = await sql.promise().query(
-            "INSERT INTO dispositivos (clienteId, token_dispositivo, tipo_dispositivo, modelo_dispositivo, estado, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [clienteId, tokenCifrado, tipoCifrado, modeloCifrado, estado || 'activo']
-        );
-        const newDeviceId = resultadoSQL.insertId;
+        // Si no existe, crear un nuevo dispositivo usando ORM (orm.dispositivos.create())
+        const nuevoDispositivo = {
+            clienteId: clienteId,
+            token_dispositivo: tokenCifrado,
+            tipo_dispositivo: tipoCifrado,
+            modelo_dispositivo: modeloCifrado,
+            estado: estado || 'activo',
+            fecha_creacion: now, // Se añade la fecha de creación
+            // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
+        };
+        const dispositivoGuardado = await orm.dispositivos.create(nuevoDispositivo);
+        const newDeviceId = dispositivoGuardado.id; // Obtener el ID insertado por ORM
         logger.info(`[DISPOSITIVO] Dispositivo creado exitosamente con ID: ${newDeviceId} para clienteId: ${clienteId}.`);
 
         // Obtener el dispositivo recién creado para la respuesta
@@ -72,7 +80,7 @@ dispositivosCtl.createDevice = async (req, res) => {
                 modelo_dispositivo: safeDecrypt(createdDevice.modelo_dispositivo),
                 estado: createdDevice.estado,
                 fecha_creacion: createdDevice.fecha_creacion,
-                fecha_modificacion: createdDevice.fecha_modificacion
+                fecha_modificacion: createdDevice.fecha_modificacion // Puede ser null si no se ha modificado
             }
         });
     } catch (error) {
@@ -84,32 +92,34 @@ dispositivosCtl.createDevice = async (req, res) => {
 // 2. OBTENER TODOS LOS DISPOSITIVOS CON INFORMACIÓN DEL CLIENTE
 dispositivosCtl.getAllDevices = async (req, res) => {
     const logger = getLogger(req);
-    logger.info('[DISPOSITIVO] Solicitud de obtención de todos los dispositivos.');
+    const { incluirEliminados } = req.query; // Añadido para consistencia
+    logger.info(`[DISPOSITIVO] Solicitud de obtención de todos los dispositivos (incluirEliminados: ${incluirEliminados}).`);
 
     try {
-        // Usar SQL directo para obtener dispositivos y unirse con clientes
-        const [dispositivosSQL] = await sql.promise().query(
-            `SELECT 
-                d.id, 
-                d.clienteId, 
-                d.token_dispositivo, 
-                d.tipo_dispositivo, 
-                d.modelo_dispositivo, 
-                d.estado, 
-                d.fecha_creacion, 
-                d.fecha_modificacion,
-                c.nombre AS cliente_nombre,
-                c.correo_electronico AS cliente_correo,
-                c.cedula_identidad AS cliente_cedula
-            FROM 
-                dispositivos d
-            JOIN 
-                clientes c ON d.clienteId = c.id
-            WHERE 
-                d.estado = 'activo'
-            ORDER BY 
-                d.fecha_creacion DESC`
-        );
+        let querySQL = `SELECT 
+                            d.id, 
+                            d.clienteId, 
+                            d.token_dispositivo, 
+                            d.tipo_dispositivo, 
+                            d.modelo_dispositivo, 
+                            d.estado, 
+                            d.fecha_creacion, 
+                            d.fecha_modificacion,
+                            c.nombre AS cliente_nombre,
+                            c.correo_electronico AS cliente_correo,
+                            c.cedula_identidad AS cliente_cedula
+                        FROM 
+                            dispositivos d
+                        JOIN 
+                            clientes c ON d.clienteId = c.id`;
+        
+        const params = [];
+        if (!incluirEliminados) {
+            querySQL += ` WHERE d.estado = 'activo'`;
+        }
+        querySQL += ` ORDER BY d.fecha_creacion DESC`; // Ordenar para consistencia
+
+        const [dispositivosSQL] = await sql.promise().query(querySQL, params);
 
         // Descifrar los datos sensibles antes de enviar
         const dispositivosCompletos = dispositivosSQL.map(dispSQL => ({
@@ -131,7 +141,7 @@ dispositivosCtl.getAllDevices = async (req, res) => {
         logger.info(`[DISPOSITIVO] Se devolvieron ${dispositivosCompletos.length} dispositivos.`);
         res.status(200).json(dispositivosCompletos);
     } catch (error) {
-        console.error('Error al obtener los dispositivos:', error.message);
+        logger.error('Error al obtener los dispositivos:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al obtener los dispositivos.' });
     }
 };
@@ -165,7 +175,7 @@ dispositivosCtl.getDeviceById = async (req, res) => {
             fecha_modificacion: dispositivo.fecha_modificacion
         });
     } catch (error) {
-        console.error('Error al obtener el dispositivo:', error.message);
+        logger.error('Error al obtener el dispositivo:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al obtener el dispositivo.' });
     }
 };
@@ -185,6 +195,8 @@ dispositivosCtl.updateDevice = async (req, res) => {
             return res.status(404).json({ error: 'Dispositivo no encontrado o inactivo para actualizar.' });
         }
         const dispositivoExistente = existingDeviceSQL[0];
+
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
 
         // Preparar datos para SQL (solo los que no son undefined)
         const camposSQL = [];
@@ -212,8 +224,12 @@ dispositivosCtl.updateDevice = async (req, res) => {
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
 
+        // Siempre actualizar fecha_modificacion en SQL
+        camposSQL.push('fecha_modificacion = ?');
+        valoresSQL.push(now);
+
         valoresSQL.push(id); // Para el WHERE
-        const consultaSQL = `UPDATE dispositivos SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
+        const consultaSQL = `UPDATE dispositivos SET ${camposSQL.join(', ')} WHERE id = ?`;
         const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
         
         if (resultadoSQLUpdate.affectedRows === 0) {
@@ -241,7 +257,7 @@ dispositivosCtl.updateDevice = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al actualizar el dispositivo:', error.message);
+        logger.error('Error al actualizar el dispositivo:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al actualizar el dispositivo.' });
     }
 };
@@ -260,8 +276,10 @@ dispositivosCtl.deleteDevice = async (req, res) => {
             return res.status(404).json({ error: 'Dispositivo no encontrado o ya estaba eliminado.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE dispositivos SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE dispositivos SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[DISPOSITIVO] No se pudo marcar como eliminado el dispositivo con ID: ${id}.`);
@@ -271,7 +289,7 @@ dispositivosCtl.deleteDevice = async (req, res) => {
         logger.info(`[DISPOSITIVO] Dispositivo marcado como eliminado con ID: ${id}.`);
         res.status(200).json({ message: 'Dispositivo marcado como eliminado correctamente.' });
     } catch (error) {
-        console.error('Error al borrar el dispositivo:', error.message);
+        logger.error('Error al borrar el dispositivo:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al borrar el dispositivo.' });
     }
 };

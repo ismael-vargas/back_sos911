@@ -9,7 +9,6 @@ const paginaModel = (sequelize, type) => {
         nombrePagina: {
             type: type.STRING,
             allowNull: false,
-            unique: true,
             comment: 'Nombre principal del sitio web o aplicación'
         },
         descripcionPagina: type.TEXT,

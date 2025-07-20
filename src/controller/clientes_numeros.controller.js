@@ -34,6 +34,8 @@ clientesNumerosCtl.createClientNumber = async (req, res) => {
     }
 
     try {
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Cifrar los campos sensibles antes de guardar
         const nombreCif = cifrarDato(nombre);
         const numeroCif = cifrarDato(numero);
@@ -48,12 +50,15 @@ clientesNumerosCtl.createClientNumber = async (req, res) => {
             return res.status(409).json({ message: 'El número de cliente ya está registrado para este cliente.' });
         }
 
-        // Crear registro usando SQL directo
-        const [resultadoSQL] = await sql.promise().query(
-            "INSERT INTO clientes_numeros (clienteId, nombre, numero, estado, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [clienteId, nombreCif, numeroCif, 'activo']
-        );
-        const newClientNumberId = resultadoSQL.insertId;
+        // Crear registro usando ORM (como usuario.controller.js)
+        const nuevoNumeroCliente = await orm.clientes_numeros.create({
+            clienteId: clienteId,
+            nombre: nombreCif,
+            numero: numeroCif,
+            estado: 'activo',
+            fecha_creacion: now,
+        });
+        const newClientNumberId = nuevoNumeroCliente.id; // Obtener el ID insertado por ORM
         logger.info(`[CLIENTES_NUMEROS] Registro exitoso con ID: ${newClientNumberId}, clienteId=${clienteId}`);
 
         // Obtener el registro recién creado para la respuesta
@@ -69,11 +74,11 @@ clientesNumerosCtl.createClientNumber = async (req, res) => {
                 numero: safeDecrypt(createdClientNumber.numero),
                 estado: createdClientNumber.estado,
                 fecha_creacion: createdClientNumber.fecha_creacion,
-                fecha_modificacion: createdClientNumber.fecha_modificacion
+                fecha_modificacion: createdClientNumber.fecha_modificacion // Puede ser null si no se ha modificado
             }
         });
     } catch (error) {
-        console.error('Error al crear el número de cliente:', error);
+        logger.error('Error al crear el número de cliente:', error);
         res.status(500).json({ error: 'Error interno del servidor al crear el número de cliente.' });
     }
 };
@@ -81,29 +86,31 @@ clientesNumerosCtl.createClientNumber = async (req, res) => {
 // 2. OBTENER TODOS LOS NÚMEROS DE CLIENTE (GET /clientes_numeros/listar)
 clientesNumerosCtl.getAllClientNumbers = async (req, res) => {
     const logger = getLogger(req);
-    logger.info('[CLIENTES_NUMEROS] Solicitud de listado de clientes_numeros.');
+    const { incluirEliminados } = req.query; // Añadido para consistencia
+    logger.info(`[CLIENTES_NUMEROS] Solicitud de listado de clientes_numeros (incluirEliminados: ${incluirEliminados}).`);
     try {
-        // Usar SQL directo para obtener clientes_numeros y unirse con clientes
-        const [clientesNumerosSQL] = await sql.promise().query(
-            `SELECT 
-                cn.id, 
-                cn.clienteId, 
-                cn.nombre, 
-                cn.numero, 
-                cn.estado, 
-                cn.fecha_creacion, 
-                cn.fecha_modificacion,
-                c.nombre AS cliente_nombre,
-                c.correo_electronico AS cliente_correo
-            FROM 
-                clientes_numeros cn
-            JOIN 
-                clientes c ON cn.clienteId = c.id
-            WHERE 
-                cn.estado = 'activo'
-            ORDER BY 
-                cn.fecha_creacion DESC`
-        );
+        let querySQL = `SELECT 
+                            cn.id, 
+                            cn.clienteId, 
+                            cn.nombre, 
+                            cn.numero, 
+                            cn.estado, 
+                            cn.fecha_creacion, 
+                            cn.fecha_modificacion,
+                            c.nombre AS cliente_nombre,
+                            c.correo_electronico AS cliente_correo
+                        FROM 
+                            clientes_numeros cn
+                        JOIN 
+                            clientes c ON cn.clienteId = c.id`;
+        
+        const params = [];
+        if (!incluirEliminados) {
+            querySQL += ` WHERE cn.estado = 'activo'`;
+        }
+        querySQL += ` ORDER BY cn.fecha_creacion DESC`; // Ordenar para consistencia
+
+        const [clientesNumerosSQL] = await sql.promise().query(querySQL, params);
         
         // Descifrar los campos sensibles antes de enviar
         const clientesNumerosCompletos = clientesNumerosSQL.map(numSQL => ({
@@ -123,7 +130,7 @@ clientesNumerosCtl.getAllClientNumbers = async (req, res) => {
         logger.info(`[CLIENTES_NUMEROS] Se devolvieron ${clientesNumerosCompletos.length} números de cliente.`);
         res.status(200).json(clientesNumerosCompletos);
     } catch (error) {
-        console.error('Error al obtener los números de clientes:', error.message);
+        logger.error('Error al obtener los números de clientes:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al obtener los números de clientes.' });
     }
 };
@@ -155,7 +162,7 @@ clientesNumerosCtl.getClientNumberById = async (req, res) => {
             fecha_modificacion: clientNumber.fecha_modificacion
         });
     } catch (error) {
-        console.error('Error al obtener el número de cliente:', error.message);
+        logger.error('Error al obtener el número de cliente:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al obtener el número de cliente.' });
     }
 };
@@ -175,6 +182,8 @@ clientesNumerosCtl.updateClientNumber = async (req, res) => {
             return res.status(404).json({ error: 'Número de cliente no encontrado o inactivo.' });
         }
         const numExistente = existingNumSQL[0];
+
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
 
         // Preparar campos y valores para la actualización SQL
         const camposSQL = [];
@@ -198,8 +207,12 @@ clientesNumerosCtl.updateClientNumber = async (req, res) => {
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
 
+        // Siempre actualizar fecha_modificacion en SQL
+        camposSQL.push('fecha_modificacion = ?');
+        valoresSQL.push(now);
+
         valoresSQL.push(id); // Añadir el ID para la cláusula WHERE
-        const consultaSQL = `UPDATE clientes_numeros SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
+        const consultaSQL = `UPDATE clientes_numeros SET ${camposSQL.join(', ')} WHERE id = ?`;
         const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
 
         if (resultadoSQLUpdate.affectedRows === 0) {
@@ -225,7 +238,7 @@ clientesNumerosCtl.updateClientNumber = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error al actualizar el número de cliente:', error.message);
+        logger.error('Error al actualizar el número de cliente:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al actualizar el número de cliente.' });
     }
 };
@@ -243,8 +256,10 @@ clientesNumerosCtl.deleteClientNumber = async (req, res) => {
             return res.status(404).json({ error: 'Número de cliente no encontrado o ya estaba eliminado.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE clientes_numeros SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE clientes_numeros SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[CLIENTES_NUMEROS] No se pudo marcar como eliminado el número de cliente con ID: ${id}.`);
@@ -254,7 +269,7 @@ clientesNumerosCtl.deleteClientNumber = async (req, res) => {
         logger.info(`[CLIENTES_NUMEROS] Número de cliente marcado como eliminado: id=${id}`);
         res.status(200).json({ message: 'Número de cliente marcado como eliminado correctamente.' });
     } catch (error) {
-        console.error('Error al borrar el número de cliente:', error.message);
+        logger.error('Error al borrar el número de cliente:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al borrar el número de cliente.' });
     }
 };
@@ -268,7 +283,7 @@ clientesNumerosCtl.getNumbersByClientId = async (req, res) => {
     try {
         // Usar SQL directo para obtener números por clienteId
         const [numerosSQL] = await sql.promise().query(
-            "SELECT * FROM clientes_numeros WHERE clienteId = ? AND estado = 'activo' ORDER BY id ASC", 
+            "SELECT * FROM clientes_numeros WHERE clienteId = ? AND estado = 'activo' ORDER BY fecha_creacion DESC", // Ordenar para consistencia
             [clienteId]
         );
         
@@ -286,7 +301,7 @@ clientesNumerosCtl.getNumbersByClientId = async (req, res) => {
         logger.info(`[CLIENTES_NUMEROS] Se devolvieron ${numerosDescifrados.length} números para clienteId: ${clienteId}.`);
         res.status(200).json(numerosDescifrados);
     } catch (error) {
-        console.error('Error al obtener los números del cliente:', error.message);
+        logger.error('Error al obtener los números del cliente:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al obtener los números del cliente.' });
     }
 };

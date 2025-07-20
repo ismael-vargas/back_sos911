@@ -24,7 +24,7 @@ function getLogger(req) {
 notificacionesCtl.createNotification = async (req, res) => {
     const logger = getLogger(req);
     // Usamos presionesBotonPanicoId (plural) y clienteId (camelCase) para consistencia con la DB
-    const { presionesBotonPanicoId, clienteId, recibido, respuesta, estado } = req.body; 
+    const { presionesBotonPanicoId, clienteId, estado } = req.body; // 'recibido' y 'respuesta' se inicializan a 0
     logger.info(`[NOTIFICACIONES] Solicitud de creación: presionesBotonPanicoId=${presionesBotonPanicoId}, clienteId=${clienteId}`);
 
     // Validar campos obligatorios
@@ -34,11 +34,13 @@ notificacionesCtl.createNotification = async (req, res) => {
     }
 
     try {
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Verificar si la presión del botón de pánico existe en SQL
-        const [existingPresionSQL] = await sql.promise().query("SELECT id FROM presiones_boton_panicos WHERE id = ?", [presionesBotonPanicoId]);
+        const [existingPresionSQL] = await sql.promise().query("SELECT id FROM presiones_boton_panicos WHERE id = ? AND estado = 'activo'", [presionesBotonPanicoId]);
         if (existingPresionSQL.length === 0) {
             logger.warn(`[NOTIFICACIONES] Presión del botón de pánico no encontrada con ID: ${presionesBotonPanicoId}.`);
-            return res.status(404).json({ error: 'Presión del botón de pánico no encontrada.' });
+            return res.status(404).json({ error: 'Presión del botón de pánico no encontrada o inactiva.' });
         }
 
         // Verificar si el cliente existe en SQL
@@ -48,13 +50,20 @@ notificacionesCtl.createNotification = async (req, res) => {
             return res.status(404).json({ error: 'Cliente no encontrado o inactivo.' });
         }
 
-        // Crear la nueva notificación usando SQL directo
-        const [resultadoSQL] = await sql.promise().query(
-            "INSERT INTO notificaciones (presionesBotonPanicoId, clienteId, recibido, respuesta, estado, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [presionesBotonPanicoId, clienteId, recibido || false, respuesta || false, estado || 'pendiente'] // respuesta ahora es BOOLEAN
-        );
-        const newNotificationId = resultadoSQL.insertId;
-        logger.info(`[NOTIFICACIONES] Notificación creada exitosamente con ID: ${newNotificationId}.`);
+        // Crear la nueva notificación usando ORM (orm.notificaciones.create())
+        // recibido y respuesta se inicializan a 0
+        // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
+        const nuevaNotificacionSQL = {
+            presionesBotonPanicoId: presionesBotonPanicoId,
+            clienteId: clienteId,
+            recibido: 0,
+            respuesta: 0,
+            estado: estado || 'pendiente',
+            fecha_creacion: now,
+        };
+        const notificacionGuardadaSQL = await orm.notificaciones.create(nuevaNotificacionSQL); // Usando ORM para crear
+        const newNotificationId = notificacionGuardadaSQL.id; // Obtener el ID insertado por ORM
+        logger.info(`[NOTIFICACIONES] Notificación creada exitosamente con ID: ${newNotificationId} usando ORM.`);
 
         // Obtener la notificación recién creada para la respuesta
         const [createdNotificationSQL] = await sql.promise().query(
@@ -88,11 +97,11 @@ notificacionesCtl.createNotification = async (req, res) => {
                 id: createdNotification.id,
                 presionesBotonPanicoId: createdNotification.presionesBotonPanicoId, 
                 clienteId: createdNotification.clienteId, 
-                recibido: createdNotification.recibido,
-                respuesta: createdNotification.respuesta,
+                recibido: createdNotification.recibido, 
+                respuesta: createdNotification.respuesta, 
                 estado: createdNotification.estado,
                 fecha_creacion: createdNotification.fecha_creacion,
-                fecha_modificacion: createdNotification.fecha_modificacion,
+                fecha_modificacion: createdNotification.fecha_modificacion, // Puede ser null si no se ha modificado
                 presion_info: {
                     marca_tiempo: createdNotification.presion_marca_tiempo
                 },
@@ -146,8 +155,8 @@ notificacionesCtl.getAllNotifications = async (req, res) => {
             id: notifSQL.id,
             presionesBotonPanicoId: notifSQL.presionesBotonPanicoId, 
             clienteId: notifSQL.clienteId, 
-            recibido: notifSQL.recibido,
-            respuesta: notifSQL.respuesta,
+            recibido: notifSQL.recibido, 
+            respuesta: notifSQL.respuesta, 
             estado: notifSQL.estado,
             fecha_creacion: notifSQL.fecha_creacion,
             fecha_modificacion: notifSQL.fecha_modificacion,
@@ -212,8 +221,8 @@ notificacionesCtl.getNotificationById = async (req, res) => {
             id: notificacion.id,
             presionesBotonPanicoId: notificacion.presionesBotonPanicoId, 
             clienteId: notificacion.clienteId, 
-            recibido: notificacion.recibido,
-            respuesta: notificacion.respuesta,
+            recibido: notificacion.recibido, 
+            respuesta: notificacion.respuesta, 
             estado: notificacion.estado,
             fecha_creacion: notificacion.fecha_creacion,
             fecha_modificacion: notificacion.fecha_modificacion,
@@ -246,18 +255,36 @@ notificacionesCtl.updateNotification = async (req, res) => {
             return res.status(404).json({ error: 'Notificación no encontrada o eliminada para actualizar.' });
         }
         
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Preparar datos para SQL
         const camposSQL = [];
         const valoresSQL = [];
         
+        // Lógica de incremento para 'recibido'
         if (recibido !== undefined) {
-            camposSQL.push('recibido = ?');
-            valoresSQL.push(recibido);
+            // Si el valor recibido es true/1, incrementamos el contador
+            if (recibido === true || recibido === 'true' || recibido === 1) {
+                camposSQL.push('recibido = IFNULL(recibido, 0) + 1');
+            } else if (recibido === false || recibido === 'false' || recibido === 0) {
+                // Si se envía false/0, lo reseteamos a 0
+                camposSQL.push('recibido = ?');
+                valoresSQL.push(0);
+            }
         }
+        
+        // Lógica de incremento para 'respuesta'
         if (respuesta !== undefined) {
-            camposSQL.push('respuesta = ?');
-            valoresSQL.push(respuesta);
+            // Si el valor recibido es true/1, incrementamos el contador
+            if (respuesta === true || respuesta === 'true' || respuesta === 1) {
+                camposSQL.push('respuesta = IFNULL(respuesta, 0) + 1');
+            } else if (respuesta === false || respuesta === 'false' || respuesta === 0) {
+                // Si se envía false/0, lo reseteamos a 0
+                camposSQL.push('respuesta = ?');
+                valoresSQL.push(0);
+            }
         }
+
         if (estado !== undefined) {
             camposSQL.push('estado = ?');
             valoresSQL.push(estado);
@@ -268,8 +295,12 @@ notificacionesCtl.updateNotification = async (req, res) => {
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
 
+        // Siempre actualizar fecha_modificacion en SQL
+        camposSQL.push('fecha_modificacion = ?');
+        valoresSQL.push(now);
+
         valoresSQL.push(id); // Para el WHERE
-        const consultaSQL = `UPDATE notificaciones SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
+        const consultaSQL = `UPDATE notificaciones SET ${camposSQL.join(', ')} WHERE id = ?`;
         const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
         
         if (resultadoSQLUpdate.affectedRows === 0) {
@@ -310,8 +341,8 @@ notificacionesCtl.updateNotification = async (req, res) => {
                 id: updatedNotification.id,
                 presionesBotonPanicoId: updatedNotification.presionesBotonPanicoId, 
                 clienteId: updatedNotification.clienteId, 
-                recibido: updatedNotification.recibido,
-                respuesta: updatedNotification.respuesta,
+                recibido: updatedNotification.recibido, 
+                respuesta: updatedNotification.respuesta, 
                 estado: updatedNotification.estado,
                 fecha_creacion: updatedNotification.fecha_creacion,
                 fecha_modificacion: updatedNotification.fecha_modificacion,
@@ -345,8 +376,10 @@ notificacionesCtl.deleteNotification = async (req, res) => {
             return res.status(404).json({ error: 'Notificación no encontrada o ya estaba eliminada.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE notificaciones SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE notificaciones SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[NOTIFICACIONES] No se pudo marcar como eliminado la notificación con ID: ${id}.`);

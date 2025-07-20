@@ -34,6 +34,8 @@ clientesGruposCtl.createClientGroup = async (req, res) => {
     }
 
     try {
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Verificar si la relación ya existe (usando SQL directo)
         const [existingRelationSQL] = await sql.promise().query(
             "SELECT id FROM clientes_grupos WHERE clienteId = ? AND grupoId = ? AND estado = 'activo'", 
@@ -45,12 +47,14 @@ clientesGruposCtl.createClientGroup = async (req, res) => {
             return res.status(409).json({ message: 'La relación cliente-grupo ya está registrada.' });
         }
 
-        // Crear la nueva relación usando SQL directo
-        const [resultadoSQL] = await sql.promise().query(
-            "INSERT INTO clientes_grupos (clienteId, grupoId, estado, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [clienteId, grupoId, estado || 'activo']
-        );
-        const newRelationId = resultadoSQL.insertId;
+        // Crear la nueva relación usando ORM (como usuario.controller.js)
+        const nuevaRelacionGrupo = await orm.clientes_grupos.create({
+            clienteId: clienteId,
+            grupoId: grupoId,
+            estado: estado || 'activo',
+            fecha_creacion: now,
+        });
+        const newRelationId = nuevaRelacionGrupo.id; // Obtener el ID insertado por ORM
         logger.info(`[CLIENTES_GRUPOS] Relación creada exitosamente con ID: ${newRelationId}.`);
 
         // Obtener la relación recién creada para la respuesta
@@ -65,7 +69,7 @@ clientesGruposCtl.createClientGroup = async (req, res) => {
                 grupoId: createdRelation.grupoId,
                 estado: createdRelation.estado,
                 fecha_creacion: createdRelation.fecha_creacion,
-                fecha_modificacion: createdRelation.fecha_modificacion
+                fecha_modificacion: createdRelation.fecha_modificacion // Puede ser null si no se ha modificado
             }
         });
     } catch (error) {
@@ -180,16 +184,18 @@ clientesGruposCtl.updateClientGroup = async (req, res) => {
         }
 
         // Verificar si la relación existe y está activa
-        const [existingRelationSQL] = await sql.promise().query("SELECT * FROM clientes_grupos WHERE id = ? AND estado = 'activo'", [id]);
+        const [existingRelationSQL] = await sql.promise().query("SELECT id FROM clientes_grupos WHERE id = ? AND estado = 'activo'", [id]);
         if (existingRelationSQL.length === 0) {
             logger.warn(`[CLIENTES_GRUPOS] Relación cliente-grupo no encontrada o inactiva para actualizar con ID: ${id}`);
             return res.status(404).json({ error: 'Relación cliente-grupo no encontrada o inactiva para actualizar.' });
         }
         
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Actualizar estado usando SQL directo
         const [resultadoSQLUpdate] = await sql.promise().query(
-            "UPDATE clientes_grupos SET estado = ?, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", 
-            [estado, id]
+            "UPDATE clientes_grupos SET estado = ?, fecha_modificacion = ? WHERE id = ?", 
+            [estado, now, id]
         );
         
         if (resultadoSQLUpdate.affectedRows === 0) {
@@ -230,11 +236,13 @@ clientesGruposCtl.deleteClientGroup = async (req, res) => {
         const [existingRelationSQL] = await sql.promise().query("SELECT id FROM clientes_grupos WHERE id = ? AND estado = 'activo'", [id]);
         if (existingRelationSQL.length === 0) {
             logger.warn(`[CLIENTES_GRUPOS] Relación cliente-grupo no encontrada o ya eliminada con ID: ${id}`);
-            return res.status(404).json({ error: 'Relación cliente-grupo no encontrada o ya estaba eliminada.' });
+            return res.status(404).json({ error: 'Relación cliente-grupo no encontrada o ya estaba eliminado.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE clientes_grupos SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE clientes_grupos SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[CLIENTES_GRUPOS] No se pudo marcar como eliminado la relación cliente-grupo con ID: ${id}.`);

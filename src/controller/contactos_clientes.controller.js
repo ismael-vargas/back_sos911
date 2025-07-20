@@ -1,5 +1,5 @@
 // Importa los modelos y utilidades necesarias
-const orm = require('../Database/dataBase.orm'); // Para Sequelize (ORM) - Necesario para relaciones
+const orm = require('../Database/dataBase.orm'); // Para Sequelize (SQL) - Necesario para relaciones
 const sql = require('../Database/dataBase.sql'); // MySQL directo
 const { cifrarDato, descifrarDato } = require('../lib/encrypDates'); // Se mantiene por consistencia
 
@@ -23,17 +23,19 @@ function getLogger(req) {
 // 1. CREAR UN NUEVO CONTACTO DE CLIENTE
 contactosClientesCtl.createClientContact = async (req, res) => {
     const logger = getLogger(req);
-    // Usamos clienteId, contactosEmergenciaId y notificacionId para consistencia con la DB
+    // Usamos clienteId, contactosEmergenciaId y notificacioneId para consistencia con la DB
     const { clienteId, contactosEmergenciaId, notificacioneId, estado } = req.body; 
     logger.info(`[CONTACTOS_CLIENTES] Solicitud de creación: clienteId=${clienteId}, contactosEmergenciaId=${contactosEmergenciaId}, notificacionId=${notificacioneId}`);
 
     // Validar campos obligatorios
     if (!clienteId || !contactosEmergenciaId || !notificacioneId) {
         logger.warn('[CONTACTOS_CLIENTES] Creación fallida: campos obligatorios faltantes.');
-        return res.status(400).json({ message: 'Los campos clienteId, contactosEmergenciaId y notificacionId son requeridos.' });
+        return res.status(400).json({ message: 'Los campos clienteId, contactosEmergenciaId y notificacioneId son requeridos.' });
     }
 
     try {
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Verificar si el cliente existe en SQL
         const [existingClienteSQL] = await sql.promise().query("SELECT id FROM clientes WHERE id = ? AND estado = 'activo'", [clienteId]);
         if (existingClienteSQL.length === 0) {
@@ -44,7 +46,7 @@ contactosClientesCtl.createClientContact = async (req, res) => {
         // Verificar si el contacto de emergencia existe en SQL
         const [existingContactoEmergenciaSQL] = await sql.promise().query("SELECT id FROM contactos_emergencias WHERE id = ? AND estado = 'activo'", [contactosEmergenciaId]);
         if (existingContactoEmergenciaSQL.length === 0) {
-            logger.warn(`[CONTACTOS_CLIENTES] Contacto de emergencia no encontrado o inactivo con ID: ${contactosEmergenciaId}.`);
+            logger.warn(`[CONTACTOS_EMERGENCIA] Contacto de emergencia no encontrado o inactivo con ID: ${contactosEmergenciaId}.`);
             return res.status(404).json({ error: 'Contacto de emergencia no encontrado o inactivo.' });
         }
 
@@ -68,13 +70,24 @@ contactosClientesCtl.createClientContact = async (req, res) => {
             return res.status(409).json({ message: 'La relación de contacto de cliente ya está registrada.' });
         }
 
-        // Crear la nueva relación usando SQL directo
-        const [resultadoSQL] = await sql.promise().query(
-            "INSERT INTO contactos_clientes (clienteId, contactosEmergenciaId, notificacioneId, estado, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [clienteId, contactosEmergenciaId, notificacioneId, estado || 'activo']
-        );
-        const newContactClientId = resultadoSQL.insertId;
+        // Crear la nueva relación usando ORM (como usuario.controller.js)
+        const nuevaRelacion = await orm.contactos_clientes.create({
+            clienteId: clienteId,
+            contactosEmergenciaId: contactosEmergenciaId,
+            notificacioneId: notificacioneId,
+            estado: estado || 'activo',
+            fecha_creacion: now,
+        });
+        const newContactClientId = nuevaRelacion.id; // Obtener el ID insertado por ORM
         logger.info(`[CONTACTOS_CLIENTES] Contacto de cliente creado exitosamente con ID: ${newContactClientId}.`);
+
+        // AHORA: Incrementar el contador de 'recibido' en la notificación asociada
+        await sql.promise().query(
+            "UPDATE notificaciones SET recibido = IFNULL(recibido, 0) + 1, fecha_modificacion = ? WHERE id = ?",
+            [now, notificacioneId]
+        );
+        logger.info(`[CONTACTOS_CLIENTES] Contador de recibido de notificación ${notificacioneId} incrementado.`);
+
 
         // Obtener la relación recién creada para la respuesta
         const [createdRelationSQL] = await sql.promise().query(
@@ -112,7 +125,7 @@ contactosClientesCtl.createClientContact = async (req, res) => {
                 notificacionId: createdRelation.notificacionId,
                 estado: createdRelation.estado,
                 fecha_creacion: createdRelation.fecha_creacion,
-                fecha_modificacion: createdRelation.fecha_modificacion,
+                fecha_modificacion: createdRelation.fecha_modificacion, // Puede ser null si no se ha modificado
                 cliente_info: {
                     nombre: safeDecrypt(createdRelation.cliente_nombre)
                 },
@@ -286,10 +299,12 @@ contactosClientesCtl.updateClientContact = async (req, res) => {
             return res.status(404).json({ error: 'Contacto de cliente no encontrado o inactivo para actualizar.' });
         }
         
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Actualizar estado usando SQL directo
         const [resultadoSQLUpdate] = await sql.promise().query(
-            "UPDATE contactos_clientes SET estado = ?, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", 
-            [estado, id]
+            "UPDATE contactos_clientes SET estado = ?, fecha_modificacion = ? WHERE id = ?", 
+            [estado, now, id]
         );
         
         if (resultadoSQLUpdate.affectedRows === 0) {
@@ -369,8 +384,10 @@ contactosClientesCtl.deleteClientContact = async (req, res) => {
             return res.status(404).json({ error: 'Contacto de cliente no encontrado o ya estaba eliminado.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE contactos_clientes SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE contactos_clientes SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[CONTACTOS_CLIENTES] No se pudo marcar como eliminado la relación de contacto de cliente con ID: ${id}.`);

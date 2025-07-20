@@ -20,6 +20,22 @@ function safeDecrypt(data) {
 usersCtl.createUser = async (req, res) => {
     const { nombre, correo_electronico, cedula_identidad, contrasena, fecha_nacimiento, direccion, estado } = req.body; // Se añade 'estado' al destructuring
     try {
+        // Validación: Verificar si el correo electrónico ya existe
+        const [existingEmail] = await sql.promise().query("SELECT correo_electronico FROM usuarios");
+        const isEmailTaken = existingEmail.some(user => safeDecrypt(user.correo_electronico) === correo_electronico);
+
+        if (isEmailTaken) {
+            return res.status(400).json({ error: 'El correo electrónico ya está registrado.' });
+        }
+
+        // Validación: Verificar si la cédula de identidad ya existe
+        const [existingCedula] = await sql.promise().query("SELECT cedula_identidad FROM usuarios");
+        const isCedulaTaken = existingCedula.some(user => safeDecrypt(user.cedula_identidad) === cedula_identidad);
+
+        if (isCedulaTaken) {
+            return res.status(400).json({ error: 'La cédula de identidad ya está registrada.' });
+        }
+
         // La contraseña ahora se cifrará con la función 'cifrarDato' para que sea descifrable
         const contrasena_cifrada = cifrarDato(contrasena); 
         const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
@@ -253,13 +269,25 @@ usersCtl.registerPreferences = async (req, res) => {
     const idUsuario = req.user ? req.user.id : req.params.id; 
     const { tema, sidebarMinimizado } = req.body;
     try {
-        // CORREGIDO: Se usa 'orm.preferencias' en plural
-        const nuevaPreferenciaSQL = { tema, usuarioId: idUsuario }; // Usamos el ID del usuario
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
+        // CORREGIDO: Se usa 'orm.preferencias' en singular y se añaden 'estado' y 'fecha_creacion'
+        const nuevaPreferenciaSQL = { 
+            tema, 
+            usuarioId: idUsuario,
+            estado: 'activo', // Asegurar que el estado se guarde
+            fecha_creacion: now, // Asegurar que la fecha de creación se guarde
+        }; 
         const preferenciaGuardadaSQL = await orm.preferencias.create(nuevaPreferenciaSQL);
         const idPreferenciaSql = preferenciaGuardadaSQL.id;
         
         // CORREGIDO: Se usa 'mongo.Preferencias' con mayúscula
-        const nuevaPreferenciaMongo = { idPreferenciaSql, sidebarMinimizado };
+        const nuevaPreferenciaMongo = { 
+            idPreferenciaSql, 
+            sidebarMinimizado,
+            estado: 'activo', // Asegurar que el estado se guarde en Mongo
+            fecha_creacion: now, // Asegurar que la fecha de creación se guarde en Mongo
+        };
         await mongo.Preferencias.create(nuevaPreferenciaMongo);
         
         res.status(201).json({ message: 'Preferencias registradas exitosamente.' });
@@ -299,7 +327,9 @@ usersCtl.getUserWithPreferences = async (req, res) => {
             preferencias: preferenciasSQL.length > 0 ? {
                 tema: preferenciasSQL[0].tema,
                 sidebarMinimizado: preferenciasMongo?.sidebarMinimizado || false,
-                estado: preferenciasSQL[0].estado
+                estado: preferenciasSQL[0].estado, // Asegurarse de que el estado se incluya
+                fecha_creacion: preferenciasSQL[0].fecha_creacion, // Asegurarse de que la fecha de creación se incluya
+                fecha_modificacion: preferenciasSQL[0].fecha_modificacion // Asegurarse de que la fecha de modificación se incluya
             } : null
         };
         

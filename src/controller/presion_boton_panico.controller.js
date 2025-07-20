@@ -24,7 +24,7 @@ function getLogger(req) {
 presionesBotonPanicoCtl.createPanicButtonPress = async (req, res) => {
     const logger = getLogger(req);
     // Usamos clienteId y ubicacionesClienteId para que coincidan con las columnas de la DB
-    const { clienteId, ubicacionesClienteId } = req.body; 
+    const { clienteId, ubicacionesClienteId, estado } = req.body; // marca_tiempo se generará automáticamente
     logger.info(`[PRESION_BOTON_PANICO] Solicitud de creación: clienteId=${clienteId}, ubicacionesClienteId=${ubicacionesClienteId}`);
 
     // Validar campos obligatorios
@@ -34,6 +34,8 @@ presionesBotonPanicoCtl.createPanicButtonPress = async (req, res) => {
     }
 
     try {
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Verificar si el cliente existe en SQL
         const [existingClienteSQL] = await sql.promise().query("SELECT id FROM clientes WHERE id = ? AND estado = 'activo'", [clienteId]);
         if (existingClienteSQL.length === 0) {
@@ -48,14 +50,18 @@ presionesBotonPanicoCtl.createPanicButtonPress = async (req, res) => {
             return res.status(404).json({ error: 'Ubicación no encontrada o inactiva.' });
         }
 
-        // Crear la nueva presión del botón de pánico usando SQL directo
-        const [resultadoSQL] = await sql.promise().query(
-            // CORREGIDO: Usar ubicacionesClienteId en el INSERT
-            "INSERT INTO presiones_boton_panicos (clienteId, ubicacionesClienteId, marca_tiempo, fecha_creacion, fecha_modificacion) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [clienteId, ubicacionesClienteId]
-        );
-        const newPressId = resultadoSQL.insertId;
-        logger.info(`[PRESION_BOTON_PANICO] Presión de pánico creada exitosamente con ID: ${newPressId}.`);
+        // Crear la nueva presión del botón de pánico usando ORM (orm.presiones_boton_panico.create())
+        // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
+        const nuevaPresionSQL = {
+            clienteId: clienteId,
+            ubicacionesClienteId: ubicacionesClienteId,
+            marca_tiempo: now, // Marca de tiempo del evento
+            estado: estado || 'activo',
+            fecha_creacion: now,
+        };
+        const presionGuardadaSQL = await orm.presiones_boton_panico.create(nuevaPresionSQL); // Usando ORM para crear
+        const newPressId = presionGuardadaSQL.id; // Obtener el ID insertado por ORM
+        logger.info(`[PRESION_BOTON_PANICO] Presión de pánico creada exitosamente con ID: ${newPressId} usando ORM.`);
 
         // Opcional: Aquí podrías llamar a la lógica para generar notificaciones e informes
         // Por ejemplo:
@@ -67,10 +73,11 @@ presionesBotonPanicoCtl.createPanicButtonPress = async (req, res) => {
             `SELECT 
                 p.id, 
                 p.clienteId, 
-                p.ubicacionesClienteId,  -- CORREGIDO: Usar ubicacionesClienteId en el SELECT
+                p.ubicacionesClienteId,  
                 p.marca_tiempo, 
                 p.fecha_creacion, 
                 p.fecha_modificacion,
+                p.estado,
                 c.nombre AS cliente_nombre,
                 c.correo_electronico AS cliente_correo,
                 uc.latitud AS ubicacion_latitud,
@@ -80,7 +87,7 @@ presionesBotonPanicoCtl.createPanicButtonPress = async (req, res) => {
             JOIN 
                 clientes c ON p.clienteId = c.id
             JOIN
-                ubicaciones_clientes uc ON p.ubicacionesClienteId = uc.id -- CORREGIDO: Usar ubicacionesClienteId en el JOIN
+                ubicaciones_clientes uc ON p.ubicacionesClienteId = uc.id 
             WHERE 
                 p.id = ?`, 
             [newPressId]
@@ -92,10 +99,11 @@ presionesBotonPanicoCtl.createPanicButtonPress = async (req, res) => {
             presion: {
                 id: createdPress.id,
                 clienteId: createdPress.clienteId,
-                ubicacionesClienteId: createdPress.ubicacionesClienteId, // CORREGIDO: Usar ubicacionesClienteId en la respuesta
+                ubicacionesClienteId: createdPress.ubicacionesClienteId, 
                 marca_tiempo: createdPress.marca_tiempo,
+                estado: createdPress.estado, // Incluir estado en la respuesta
                 fecha_creacion: createdPress.fecha_creacion,
-                fecha_modificacion: createdPress.fecha_modificacion,
+                fecha_modificacion: createdPress.fecha_modificacion, // Puede ser null si no se ha modificado
                 cliente_info: {
                     nombre: safeDecrypt(createdPress.cliente_nombre),
                     correo_electronico: safeDecrypt(createdPress.cliente_correo)
@@ -115,37 +123,43 @@ presionesBotonPanicoCtl.createPanicButtonPress = async (req, res) => {
 // 2. OBTENER TODAS LAS PRESIONES DEL BOTÓN DE PÁNICO
 presionesBotonPanicoCtl.getAllPanicButtonPresses = async (req, res) => {
     const logger = getLogger(req);
-    logger.info('[PRESION_BOTON_PANICO] Solicitud de obtención de todas las presiones del botón de pánico.');
+    const { incluirEliminados } = req.query; // Añadido para consistencia
+    logger.info(`[PRESION_BOTON_PANICO] Solicitud de obtención de todas las presiones del botón de pánico (incluirEliminados: ${incluirEliminados}).`);
 
     try {
-        // Usar SQL directo para obtener presiones y unirse con clientes y ubicaciones
-        const [presionesSQL] = await sql.promise().query(
-            `SELECT 
-                p.id, 
-                p.clienteId, 
-                p.ubicacionesClienteId,  -- CORREGIDO: Usar ubicacionesClienteId en el SELECT
-                p.marca_tiempo, 
-                p.fecha_creacion, 
-                p.fecha_modificacion,
-                c.nombre AS cliente_nombre,
-                c.correo_electronico AS cliente_correo,
-                uc.latitud AS ubicacion_latitud,
-                uc.longitud AS ubicacion_longitud
-            FROM 
-                presiones_boton_panicos p
-            JOIN 
-                clientes c ON p.clienteId = c.id
-            JOIN
-                ubicaciones_clientes uc ON p.ubicacionesClienteId = uc.id -- CORREGIDO: Usar ubicacionesClienteId en el JOIN
-            ORDER BY 
-                p.marca_tiempo DESC`
-        );
+        let querySQL = `SELECT 
+                            p.id, 
+                            p.clienteId, 
+                            p.ubicacionesClienteId,  
+                            p.marca_tiempo, 
+                            p.fecha_creacion, 
+                            p.fecha_modificacion,
+                            p.estado,
+                            c.nombre AS cliente_nombre,
+                            c.correo_electronico AS cliente_correo,
+                            uc.latitud AS ubicacion_latitud,
+                            uc.longitud AS ubicacion_longitud
+                        FROM 
+                            presiones_boton_panicos p
+                        JOIN 
+                            clientes c ON p.clienteId = c.id
+                        JOIN
+                            ubicaciones_clientes uc ON p.ubicacionesClienteId = uc.id`;
+        
+        const params = [];
+        if (!incluirEliminados) {
+            querySQL += ` WHERE p.estado = 'activo'`; // Asumiendo que el modelo tiene campo 'estado'
+        }
+        querySQL += ` ORDER BY p.marca_tiempo DESC`; // Ordenar para consistencia
+
+        const [presionesSQL] = await sql.promise().query(querySQL, params);
         
         const presionesCompletas = presionesSQL.map(pressSQL => ({
             id: pressSQL.id,
             clienteId: pressSQL.clienteId,
-            ubicacionesClienteId: pressSQL.ubicacionesClienteId, // CORREGIDO: Usar ubicacionesClienteId
+            ubicacionesClienteId: pressSQL.ubicacionesClienteId, 
             marca_tiempo: pressSQL.marca_tiempo,
+            estado: pressSQL.estado,
             fecha_creacion: pressSQL.fecha_creacion,
             fecha_modificacion: pressSQL.fecha_modificacion,
             cliente_info: {
@@ -178,10 +192,11 @@ presionesBotonPanicoCtl.getPanicButtonPressById = async (req, res) => {
             `SELECT 
                 p.id, 
                 p.clienteId, 
-                p.ubicacionesClienteId,  -- CORREGIDO: Usar ubicacionesClienteId en el SELECT
+                p.ubicacionesClienteId,  
                 p.marca_tiempo, 
                 p.fecha_creacion, 
                 p.fecha_modificacion,
+                p.estado,
                 c.nombre AS cliente_nombre,
                 c.correo_electronico AS cliente_correo,
                 uc.latitud AS ubicacion_latitud,
@@ -191,9 +206,9 @@ presionesBotonPanicoCtl.getPanicButtonPressById = async (req, res) => {
             JOIN 
                 clientes c ON p.clienteId = c.id
             JOIN
-                ubicaciones_clientes uc ON p.ubicacionesClienteId = uc.id -- CORREGIDO: Usar ubicacionesClienteId en el JOIN
+                ubicaciones_clientes uc ON p.ubicacionesClienteId = uc.id 
             WHERE 
-                p.id = ?`, 
+                p.id = ? AND p.estado = 'activo'`, // Asumiendo que el modelo tiene campo 'estado'
             [id]
         );
         
@@ -208,8 +223,9 @@ presionesBotonPanicoCtl.getPanicButtonPressById = async (req, res) => {
         res.status(200).json({
             id: presion.id,
             clienteId: presion.clienteId,
-            ubicacionesClienteId: presion.ubicacionesClienteId, // CORREGIDO: Usar ubicacionesClienteId
+            ubicacionesClienteId: presion.ubicacionesClienteId, 
             marca_tiempo: presion.marca_tiempo,
+            estado: presion.estado,
             fecha_creacion: presion.fecha_creacion,
             fecha_modificacion: presion.fecha_modificacion,
             cliente_info: {
@@ -234,17 +250,19 @@ presionesBotonPanicoCtl.getPanicButtonPressById = async (req, res) => {
 presionesBotonPanicoCtl.updatePanicButtonPress = async (req, res) => {
     const logger = getLogger(req);
     const { id } = req.params;
-    const { marca_tiempo } = req.body; // Solo permitimos actualizar la marca_tiempo si es necesario
+    const { marca_tiempo, estado } = req.body; // Añadido 'estado' para borrado lógico si el modelo lo tiene
     logger.info(`[PRESION_BOTON_PANICO] Solicitud de actualización de presión con ID: ${id}`);
 
     try {
-        // Verificar si la presión existe
-        const [existingPressSQL] = await sql.promise().query("SELECT * FROM presiones_boton_panicos WHERE id = ?", [id]);
+        // Verificar si la presión existe y está activa
+        const [existingPressSQL] = await sql.promise().query("SELECT * FROM presiones_boton_panicos WHERE id = ? AND estado = 'activo'", [id]);
         if (existingPressSQL.length === 0) {
             logger.warn(`[PRESION_BOTON_PANICO] Presión del botón de pánico no encontrada para actualizar con ID: ${id}`);
             return res.status(404).json({ error: 'Presión del botón de pánico no encontrada para actualizar.' });
         }
         
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Preparar datos para SQL
         const camposSQL = [];
         const valoresSQL = [];
@@ -253,11 +271,19 @@ presionesBotonPanicoCtl.updatePanicButtonPress = async (req, res) => {
             camposSQL.push('marca_tiempo = ?');
             valoresSQL.push(marca_tiempo);
         }
+        if (estado !== undefined) { // Si el campo estado existe en el modelo y se quiere actualizar
+            camposSQL.push('estado = ?');
+            valoresSQL.push(estado);
+        }
 
         if (camposSQL.length === 0) {
             logger.warn(`[PRESION_BOTON_PANICO] No se proporcionaron campos para actualizar la presión con ID: ${id}.`);
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
+
+        // Siempre actualizar fecha_modificacion en SQL
+        camposSQL.push('fecha_modificacion = ?');
+        valoresSQL.push(now);
 
         valoresSQL.push(id); // Para el WHERE
         const consultaSQL = `UPDATE presiones_boton_panicos SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
@@ -274,10 +300,11 @@ presionesBotonPanicoCtl.updatePanicButtonPress = async (req, res) => {
             `SELECT 
                 p.id, 
                 p.clienteId, 
-                p.ubicacionesClienteId,  -- CORREGIDO: Usar ubicacionesClienteId en el SELECT
+                p.ubicacionesClienteId,  
                 p.marca_tiempo, 
                 p.fecha_creacion, 
                 p.fecha_modificacion,
+                p.estado,
                 c.nombre AS cliente_nombre,
                 c.correo_electronico AS cliente_correo,
                 uc.latitud AS ubicacion_latitud,
@@ -287,7 +314,7 @@ presionesBotonPanicoCtl.updatePanicButtonPress = async (req, res) => {
             JOIN 
                 clientes c ON p.clienteId = c.id
             JOIN
-                ubicaciones_clientes uc ON p.ubicacionesClienteId = uc.id -- CORREGIDO: Usar ubicacionesClienteId en el JOIN
+                ubicaciones_clientes uc ON p.ubicacionesClienteId = uc.id 
             WHERE 
                 p.id = ?`, 
             [id]
@@ -299,8 +326,9 @@ presionesBotonPanicoCtl.updatePanicButtonPress = async (req, res) => {
             presion: {
                 id: updatedPress.id,
                 clienteId: updatedPress.clienteId,
-                ubicacionesClienteId: updatedPress.ubicacionesClienteId, // CORREGIDO: Usar ubicacionesClienteId
+                ubicacionesClienteId: updatedPress.ubicacionesClienteId, 
                 marca_tiempo: updatedPress.marca_tiempo,
+                estado: updatedPress.estado,
                 fecha_creacion: updatedPress.fecha_creacion,
                 fecha_modificacion: updatedPress.fecha_modificacion,
                 cliente_info: {
@@ -316,7 +344,7 @@ presionesBotonPanicoCtl.updatePanicButtonPress = async (req, res) => {
 
     } catch (error) {
         console.error('Error al actualizar la presión del botón de pánico:', error.message);
-        res.status(500).json({ error: 'Error interno del servidor al actualizar la presión del botón de pánico.' });
+        res.status(500).json({ error: 'Error interno del servidor al actualizar el botón de pánico.' });
     }
 };
 
@@ -331,23 +359,29 @@ presionesBotonPanicoCtl.deletePanicButtonPress = async (req, res) => {
     logger.info(`[PRESION_BOTON_PANICO] Solicitud de eliminación de presión con ID: ${id}`);
 
     try {
-        // Verificar si la presión existe
-        const [existingPressSQL] = await sql.promise().query("SELECT id FROM presiones_boton_panicos WHERE id = ?", [id]);
+        // Verificar si la presión existe y está activa (si tiene campo estado)
+        // Si el modelo de presiones_boton_panicos tiene un campo 'estado', se usa borrado lógico.
+        // De lo contrario, se procede con la eliminación física.
+        const [existingPressSQL] = await sql.promise().query("SELECT * FROM presiones_boton_panicos WHERE id = ?", [id]);
         if (existingPressSQL.length === 0) {
             logger.warn(`[PRESION_BOTON_PANICO] Presión del botón de pánico no encontrada con ID: ${id}.`);
             return res.status(404).json({ error: 'Presión del botón de pánico no encontrada.' });
         }
 
-        // Eliminar físicamente el registro (si no hay campo 'estado' en el modelo)
-        // Si tu modelo presiones_boton_panico.model.js tiene un campo 'estado',
-        // esta lógica debería cambiarse a un borrado lógico (UPDATE estado = 'eliminado').
-        await sql.promise().query("DELETE FROM presiones_boton_panicos WHERE id = ?", [id]);
+        // Asumiendo que presiones_boton_panicos.model.js tiene un campo 'estado'
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const [resultadoSQL] = await sql.promise().query("UPDATE presiones_boton_panicos SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
-        logger.info(`[PRESION_BOTON_PANICO] Presión del botón de pánico eliminada físicamente: id=${id}.`);
-        res.status(200).json({ message: 'Presión del botón de pánico eliminada correctamente.' });
+        if (resultadoSQL.affectedRows === 0) {
+            logger.error(`[PRESION_BOTON_PANICO] No se pudo marcar como eliminado la presión del botón de pánico: id=${id}.`);
+            return res.status(500).json({ error: 'No se pudo eliminar la presión del botón de pánico.' });
+        }
+
+        logger.info(`[PRESION_BOTON_PANICO] Presión del botón de pánico marcada como eliminada: id=${id}.`);
+        res.status(200).json({ message: 'Presión del botón de pánico marcada como eliminado correctamente.' });
     } catch (error) {
-        console.error('Error al eliminar la presión del botón de pánico:', error.message);
-        res.status(500).json({ error: 'Error interno del servidor al eliminar la presión del botón de pánico.' });
+        console.error('Error al borrar la presión del botón de pánico:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor al borrar el botón de pánico.' });
     }
 };
 

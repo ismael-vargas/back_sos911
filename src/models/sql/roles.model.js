@@ -10,7 +10,6 @@ const rol = (sequelize, type) => {
         nombre: {
             type: type.STRING,
             allowNull: false, 
-            unique: true,
             comment: 'Nombre de rol' 
         },
         estado: type.STRING, 

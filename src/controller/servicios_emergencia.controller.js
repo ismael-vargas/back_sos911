@@ -25,7 +25,7 @@ function getLogger(req) {
 // 1. CREAR UN NUEVO SERVICIO DE EMERGENCIA
 serviciosEmergenciaCtl.createEmergencyService = async (req, res) => {
     const logger = getLogger(req);
-    const { nombre, descripcion, telefono, estado, usuarioId } = req.body; // Cambiado a usuarioId para consistencia
+    const { nombre, descripcion, telefono, estado, usuarioId } = req.body;
 
     logger.info(`[SERVICIOS_EMERGENCIA] Solicitud de creación: nombre=${nombre}, usuarioId=${usuarioId}`);
 
@@ -35,6 +35,16 @@ serviciosEmergenciaCtl.createEmergencyService = async (req, res) => {
             logger.warn('[SERVICIOS_EMERGENCIA] Creación fallida: campos obligatorios faltantes.');
             return res.status(400).json({ message: 'Nombre, teléfono y usuarioId son obligatorios.' });
         }
+
+        // Validar que el usuarioId exista y esté activo en la tabla de usuarios
+        const [existingUserSQL] = await sql.promise().query("SELECT id FROM usuarios WHERE id = ? AND estado = 'activo'", [usuarioId]);
+        if (existingUserSQL.length === 0) {
+            logger.warn(`[SERVICIOS_EMERGENCIA] Creación fallida: El usuario con ID ${usuarioId} no existe o no está activo.`);
+            return res.status(400).json({ message: 'El usuario asociado no existe o no está activo.' });
+        }
+        logger.info(`[SERVICIOS_EMERGENCIA] Usuario con ID ${usuarioId} verificado.`);
+
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
 
         // Cifrar los campos sensibles para SQL
         const nombreCifrado = cifrarDato(nombre);
@@ -51,21 +61,27 @@ serviciosEmergenciaCtl.createEmergencyService = async (req, res) => {
             return res.status(409).json({ message: 'El servicio de emergencia ya está registrado con ese nombre para este usuario.' });
         }
 
-        // Crear servicio en la base de datos SQL
-        const [resultadoSQL] = await sql.promise().query(
-            "INSERT INTO servicios_emergencia (nombre, telefono, estado, usuarioId, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [nombreCifrado, telefonoCifrado, estado || 'activo', usuarioId]
-        );
-        const idServicioEmergenciaSql = resultadoSQL.insertId; // Obtener el ID insertado
-        logger.info(`[SERVICIOS_EMERGENCIA] Servicio SQL creado exitosamente con ID: ${idServicioEmergenciaSql}`);
+        // Crear servicio en la base de datos SQL usando ORM (orm.servicios_emergencia.create())
+        // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
+        const nuevoServicioSQL = {
+            nombre: nombreCifrado,
+            telefono: telefonoCifrado,
+            estado: estado || 'activo',
+            usuarioId: usuarioId,
+            fecha_creacion: now,
+        };
+        const servicioGuardadoSQL = await orm.servicios_emergencia.create(nuevoServicioSQL); // Usando ORM para crear
+        const idServicioEmergenciaSql = servicioGuardadoSQL.id; // Obtener el ID insertado por ORM
+        logger.info(`[SERVICIOS_EMERGENCIA] Servicio SQL creado exitosamente con ID: ${idServicioEmergenciaSql} usando ORM.`);
 
         // Crear documento en la base de datos MongoDB
-        const nuevoServicioMongo = { 
+        // fecha_creacion se establece, fecha_modificacion no se incluye en la creación inicial
+        await mongo.ServicioEmergencia.create({ 
             idServicioEmergenciaSql, 
             descripcion: descripcion || '', // La descripción es específica de Mongo
-            estado: estado || 'activo' // Sincronizar estado con SQL
-        };
-        await mongo.ServicioEmergencia.create(nuevoServicioMongo);
+            estado: estado || 'activo', // Sincronizar estado con SQL
+            fecha_creacion: now // Establecer fecha_creacion para Mongo
+        });
         logger.info(`[SERVICIOS_EMERGENCIA] Servicio Mongo creado exitosamente para ID SQL: ${idServicioEmergenciaSql}`);
 
         res.status(201).json({ 
@@ -74,7 +90,7 @@ serviciosEmergenciaCtl.createEmergencyService = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(`[SERVICIOS_EMERGENCIA] Error al crear el servicio: ${error.message}`, error);
+        logger.error(`[SERVICIOS_EMERGENCIA] Error al crear el servicio: ${error.message}`, error);
         res.status(500).json({ error: 'Error interno del servidor al crear el servicio de emergencia.' });
     }
 };
@@ -111,7 +127,11 @@ serviciosEmergenciaCtl.getAllEmergencyServices = async (req, res) => {
         
         const serviciosCompletos = await Promise.all(
             serviciosSQL.map(async (serviceSQL) => {
-                const servicioMongo = await mongo.ServicioEmergencia.findOne({ idServicioEmergenciaSql: serviceSQL.id });
+                let servicioMongo = null;
+                // SOLO si se encuentra un registro en SQL, intentamos buscar en Mongo
+                if (serviceSQL) {
+                    servicioMongo = await mongo.ServicioEmergencia.findOne({ idServicioEmergenciaSql: serviceSQL.id });
+                }
                 return {
                     id: serviceSQL.id,
                     nombre: safeDecrypt(serviceSQL.nombre), // Descifrar nombre
@@ -125,7 +145,7 @@ serviciosEmergenciaCtl.getAllEmergencyServices = async (req, res) => {
                     fecha_modificacion_mongo: servicioMongo?.fecha_modificacion || null,
                     usuario_info: {
                         nombre: safeDecrypt(serviceSQL.usuario_nombre),
-                        correo_electronico: safeDecrypt(serviceSQL.usuario_correo)
+                        correo_electronico: safeDecrypt(serviceSQL.correo_usuario)
                     }
                 };
             })
@@ -133,7 +153,7 @@ serviciosEmergenciaCtl.getAllEmergencyServices = async (req, res) => {
         logger.info(`[SERVICIOS_EMERGENCIA] Se devolvieron ${serviciosCompletos.length} servicios.`);
         res.status(200).json(serviciosCompletos);
     } catch (error) {
-        console.error('Error al obtener todos los servicios de emergencia:', error);
+        logger.error('Error al obtener todos los servicios de emergencia:', error);
         res.status(500).json({ error: 'Error interno del servidor al obtener servicios de emergencia.' });
     }
 };
@@ -174,14 +194,17 @@ serviciosEmergenciaCtl.getEmergencyServiceById = async (req, res) => {
         const serviceSQL = serviciosSQL[0];
         logger.info(`[SERVICIOS_EMERGENCIA] Servicio SQL encontrado con ID: ${id}`);
 
-        // Obtener documento de MongoDB
-        const servicioMongo = await mongo.ServicioEmergencia.findOne({ idServicioEmergenciaSql: id });
+        let servicioMongo = null;
+        // SOLO si se encuentra un registro en SQL, intentamos buscar en Mongo
+        if (serviceSQL) {
+            servicioMongo = await mongo.ServicioEmergencia.findOne({ idServicioEmergenciaSql: id });
+        }
         logger.info(`[SERVICIOS_EMERGENCIA] Servicio Mongo encontrado para ID SQL: ${id}`);
 
         const servicioCompleto = {
             id: serviceSQL.id,
             nombre: safeDecrypt(serviceSQL.nombre), // Descifrar nombre
-            telefono: safeDecrypt(serviceSQL.telefono), // Descifrar teléfono
+            telefono: safeDecrypt(service.telefono), // Descifrar teléfono
             estado: serviceSQL.estado,
             usuarioId: serviceSQL.usuarioId,
             descripcion: servicioMongo?.descripcion || '', // Descripción de Mongo
@@ -191,13 +214,13 @@ serviciosEmergenciaCtl.getEmergencyServiceById = async (req, res) => {
             fecha_modificacion_mongo: servicioMongo?.fecha_modificacion || null,
             usuario_info: {
                 nombre: safeDecrypt(serviceSQL.usuario_nombre),
-                correo_electronico: safeDecrypt(serviceSQL.usuario_correo)
+                correo_electronico: safeDecrypt(serviceSQL.correo_usuario)
             }
         };
         res.status(200).json(servicioCompleto);
     } catch (error) {
-        console.error('Error al obtener el servicio de emergencia:', error);
-        res.status(500).json({ error: 'Error interno del servidor al obtener el servicio de emergencia.' });
+        logger.error('Error al obtener el servicio de emergencia:', error);
+        res.status(500).json({ error: 'Error interno del servidor al obtener servicios de emergencia.' });
     }
 };
 
@@ -205,7 +228,8 @@ serviciosEmergenciaCtl.getEmergencyServiceById = async (req, res) => {
 serviciosEmergenciaCtl.updateEmergencyService = async (req, res) => {
     const logger = getLogger(req);
     const { id } = req.params;
-    const { nombre, descripcion, telefono, estado } = req.body; // No permitimos cambiar usuarioId en la actualización
+    const { nombre, descripcion, telefono, estado, usuarioId } = req.body; // Añadido usuarioId para posible validación si se cambia
+
     logger.info(`[SERVICIOS_EMERGENCIA] Solicitud de actualización de servicio con ID: ${id}`);
 
     try {
@@ -217,6 +241,18 @@ serviciosEmergenciaCtl.updateEmergencyService = async (req, res) => {
         }
         const serviceSQL = serviciosSQL[0];
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
+        // Validar que el nuevo usuarioId (si se proporciona) exista y esté activo
+        if (usuarioId !== undefined && usuarioId !== serviceSQL.usuarioId) {
+            const [newExistingUserSQL] = await sql.promise().query("SELECT id FROM usuarios WHERE id = ? AND estado = 'activo'", [usuarioId]);
+            if (newExistingUserSQL.length === 0) {
+                logger.warn(`[SERVICIOS_EMERGENCIA] Actualización fallida: El nuevo usuario con ID ${usuarioId} no existe o no está activo.`);
+                return res.status(400).json({ message: 'El nuevo usuario asociado no existe o no está activo.' });
+            }
+            logger.info(`[SERVICIOS_EMERGENCIA] Nuevo usuario con ID ${usuarioId} verificado para actualización.`);
+        }
+
         // Preparar datos para SQL (solo los que no son undefined)
         const camposSQL = [];
         const valoresSQL = [];
@@ -224,9 +260,10 @@ serviciosEmergenciaCtl.updateEmergencyService = async (req, res) => {
         if (nombre !== undefined) {
             const nombreCifrado = cifrarDato(nombre);
             // Opcional: Verificar si el nuevo nombre ya existe para otro servicio activo del MISMO usuario
+            const targetUsuarioId = usuarioId !== undefined ? usuarioId : serviceSQL.usuarioId; // Usar el nuevo ID si se cambia, sino el original
             const [existingServiceWithNewName] = await sql.promise().query(
                 "SELECT id FROM servicios_emergencia WHERE usuarioId = ? AND nombre = ? AND id != ? AND estado = 'activo'",
-                [serviceSQL.usuarioId, nombreCifrado, id]
+                [targetUsuarioId, nombreCifrado, id]
             );
             if (existingServiceWithNewName.length > 0) {
                 logger.warn(`[SERVICIOS_EMERGENCIA] Actualización fallida: El nuevo nombre de servicio "${nombre}" ya está registrado para este usuario.`);
@@ -242,6 +279,10 @@ serviciosEmergenciaCtl.updateEmergencyService = async (req, res) => {
         if (estado !== undefined) {
             camposSQL.push('estado = ?');
             valoresSQL.push(estado);
+        }
+        if (usuarioId !== undefined) { // Permitir cambiar el usuarioId si se valida
+            camposSQL.push('usuarioId = ?');
+            valoresSQL.push(usuarioId);
         }
 
         // Solo actualizar SQL si hay campos para actualizar
@@ -263,9 +304,12 @@ serviciosEmergenciaCtl.updateEmergencyService = async (req, res) => {
         // Replicar el estado si se actualiza en SQL
         if (estado !== undefined) updateDataMongo.estado = estado;
 
+        // Siempre actualizar fecha_modificacion en Mongo
+        updateDataMongo.fecha_modificacion = now;
+
         // Realizar actualización en MongoDB
         if (Object.keys(updateDataMongo).length > 0) {
-            await mongo.ServicioEmergencia.updateOne({ idServicioEmergenciaSql: id }, { $set: updateDataMongo, $currentDate: { fecha_modificacion: true } });
+            await mongo.ServicioEmergencia.updateOne({ idServicioEmergenciaSql: id }, { $set: updateDataMongo });
             logger.info(`[SERVICIOS_EMERGENCIA] Servicio Mongo actualizado para ID SQL: ${id}`);
         }
         
@@ -301,13 +345,13 @@ serviciosEmergenciaCtl.updateEmergencyService = async (req, res) => {
                 descripcion: updatedServiceMongo?.descripcion || '',
                 usuario_info: {
                     nombre: safeDecrypt(updatedService.usuario_nombre),
-                    correo_electronico: safeDecrypt(updatedService.usuario_correo)
+                    correo_electronico: safeDecrypt(updatedService.correo_usuario)
                 }
             }
         });
 
     } catch (error) {
-        console.error('Error al actualizar el servicio de emergencia:', error);
+        logger.error('Error al actualizar el servicio de emergencia:', error);
         res.status(500).json({ error: 'Error interno del servidor al actualizar el servicio de emergencia.' });
     }
 };
@@ -319,8 +363,10 @@ serviciosEmergenciaCtl.deleteEmergencyService = async (req, res) => {
     logger.info(`[SERVICIOS_EMERGENCIA] Solicitud de eliminación lógica de servicio con ID: ${id}`);
 
     try {
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // SQL directo para actualizar estado a 'eliminado'
-        const [resultadoSQL] = await sql.promise().query("UPDATE servicios_emergencia SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ? AND estado = 'activo'", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE servicios_emergencia SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ? AND estado = 'activo'", [now, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.warn(`[SERVICIOS_EMERGENCIA] Servicio no encontrado o ya eliminado con ID: ${id}`);
@@ -331,13 +377,13 @@ serviciosEmergenciaCtl.deleteEmergencyService = async (req, res) => {
         // Actualizar estado a 'eliminado' en MongoDB
         await mongo.ServicioEmergencia.updateOne(
             { idServicioEmergenciaSql: id }, 
-            { $set: { estado: 'eliminado' }, $currentDate: { fecha_modificacion: true } }
+            { $set: { estado: 'eliminado', fecha_modificacion: now } }
         );
         logger.info(`[SERVICIOS_EMERGENCIA] Servicio Mongo marcado como eliminado para ID SQL: ${id}`);
         
         res.status(200).json({ message: 'Servicio de emergencia marcado como eliminado exitosamente.' });
     } catch (error) {
-        console.error('Error al eliminar el servicio de emergencia:', error);
+        logger.error('Error al eliminar el servicio de emergencia:', error);
         res.status(500).json({ error: 'Error interno del servidor al eliminar el servicio de emergencia.' });
     }
 };

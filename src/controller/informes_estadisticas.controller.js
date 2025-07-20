@@ -42,28 +42,30 @@ informesCtl.createReport = async (req, res) => {
     }
 
     try {
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Verificar si la presión del botón de pánico existe en SQL
-        const [existingPresionSQL] = await sql.promise().query("SELECT id FROM presiones_boton_panicos WHERE id = ?", [presionesBotonPanicoId]);
+        const [existingPresionSQL] = await sql.promise().query("SELECT id FROM presiones_boton_panicos WHERE id = ? AND estado = 'activo'", [presionesBotonPanicoId]);
         if (existingPresionSQL.length === 0) {
             logger.warn(`[INFORMES_ESTADISTICAS] Presión del botón de pánico no encontrada con ID: ${presionesBotonPanicoId}.`);
-            return res.status(404).json({ error: 'Presión del botón de pánico no encontrada.' });
+            return res.status(404).json({ error: 'Presión del botón de pánico no encontrada o inactiva.' });
         }
 
-        // Crear el nuevo informe de estadísticas usando SQL directo
-        const [resultadoSQL] = await sql.promise().query(
-            "INSERT INTO informes_estadisticas (presionesBotonPanicoId, numero_notificaciones, numero_respuestas, evaluaciones_SOS, evaluaciones_911, evaluaciones_innecesaria, estado, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [
-                presionesBotonPanicoId,
-                numero_notificaciones || 0,
-                numero_respuestas || 0,
-                evaluaciones_SOS || 0,
-                evaluaciones_911 || 0,
-                evaluaciones_innecesaria || 0,
-                estado || 'activo'
-            ]
-        );
-        const newReportId = resultadoSQL.insertId;
-        logger.info(`[INFORMES_ESTADISTICAS] Informe creado exitosamente con ID: ${newReportId}.`);
+        // Crear el nuevo informe de estadísticas usando ORM (orm.informes_estadisticas.create())
+        // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
+        const nuevoInformeSQL = {
+            presionesBotonPanicoId: presionesBotonPanicoId,
+            numero_notificaciones: numero_notificaciones || 0,
+            numero_respuestas: numero_respuestas || 0,
+            evaluaciones_SOS: evaluaciones_SOS || 0,
+            evaluaciones_911: evaluaciones_911 || 0,
+            evaluaciones_innecesaria: evaluaciones_innecesaria || 0,
+            estado: estado || 'activo',
+            fecha_creacion: now,
+        };
+        const informeGuardadoSQL = await orm.informes_estadisticas.create(nuevoInformeSQL); // Usando ORM para crear
+        const newReportId = informeGuardadoSQL.id; // Obtener el ID insertado por ORM
+        logger.info(`[INFORMES_ESTADISTICAS] Informe creado exitosamente con ID: ${newReportId} usando ORM.`);
 
         // Obtener el informe recién creado para la respuesta
         const [createdReportSQL] = await sql.promise().query(
@@ -274,6 +276,8 @@ informesCtl.updateReport = async (req, res) => {
             return res.status(404).json({ error: 'Informe no encontrado o inactivo para actualizar.' });
         }
         
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Preparar datos para SQL
         const camposSQL = [];
         const valoresSQL = [];

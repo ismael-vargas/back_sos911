@@ -36,6 +36,8 @@ evaluacionesSituacionesCtl.createSituationEvaluation = async (req, res) => {
     }
 
     try {
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Verificar si la notificación existe
         const [existingNotificacionSQL] = await sql.promise().query("SELECT id FROM notificaciones WHERE id = ? AND estado != 'eliminado'", [notificacioneId]);
         if (existingNotificacionSQL.length === 0) {
@@ -46,15 +48,26 @@ evaluacionesSituacionesCtl.createSituationEvaluation = async (req, res) => {
         // Cifrar el detalle si existe
         const detalleCifrado = detalle ? cifrarDato(detalle) : null;
 
-        // Crear la nueva evaluación usando SQL directo
-        const [resultadoSQL] = await sql.promise().query(
-            // Usar notificacioneId en el INSERT
-            "INSERT INTO evaluaciones_situaciones (notificacioneId, evaluacion, detalle, estado, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [notificacioneId, evaluacion, detalleCifrado, estado || 'activo'] // Usar detalleCifrado
-        );
+        // Crear la nueva evaluación usando ORM (como usuario.controller.js)
+        // CORREGIDO: Se cambió 'orm.evaluaciones_situaciones' a 'orm.evaluaciones_situacion' para coincidir con la exportación del ORM
+        const nuevaEvaluacion = await orm.evaluaciones_situacion.create({
+            notificacioneId: notificacioneId,
+            evaluacion: evaluacion,
+            detalle: detalleCifrado,
+            estado: estado || 'activo',
+            fecha_creacion: now,
+        });
         
-        const newEvaluationId = resultadoSQL.insertId;
+        const newEvaluationId = nuevaEvaluacion.id; // Obtener el ID insertado por ORM
         logger.info(`[EVALUACIONES_SITUACIONES] Evaluación creada exitosamente con ID: ${newEvaluationId}.`);
+
+        // AHORA: Incrementar el contador de 'respuesta' en la notificación asociada
+        await sql.promise().query(
+            "UPDATE notificaciones SET respuesta = IFNULL(respuesta, 0) + 1, fecha_modificacion = ? WHERE id = ?",
+            [now, notificacioneId]
+        );
+        logger.info(`[EVALUACIONES_SITUACIONES] Contador de respuesta de notificación ${notificacioneId} incrementado.`);
+
 
         // Obtener la evaluación recién creada
         const [createdEvaluationSQL] = await sql.promise().query(
@@ -94,7 +107,7 @@ evaluacionesSituacionesCtl.createSituationEvaluation = async (req, res) => {
                 detalle: safeDecrypt(createdEvaluation.detalle), // Descifrar detalle
                 estado: createdEvaluation.estado,
                 fecha_creacion: createdEvaluation.fecha_creacion,
-                fecha_modificacion: createdEvaluation.fecha_modificacion,
+                fecha_modificacion: createdEvaluation.fecha_modificacion, // Puede ser null si no se ha modificado
                 notificacion_info: {
                     estado: createdEvaluation.notificacion_estado
                 },
@@ -259,6 +272,8 @@ evaluacionesSituacionesCtl.updateSituationEvaluation = async (req, res) => {
             return res.status(404).json({ error: 'Evaluación no encontrada o inactiva para actualizar.' });
         }
         
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Preparar datos para SQL
         const camposSQL = [];
         const valoresSQL = [];
@@ -281,8 +296,12 @@ evaluacionesSituacionesCtl.updateSituationEvaluation = async (req, res) => {
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
 
+        // Siempre actualizar fecha_modificacion en SQL
+        camposSQL.push('fecha_modificacion = ?');
+        valoresSQL.push(now);
+
         valoresSQL.push(id); // Para el WHERE
-        const consultaSQL = `UPDATE evaluaciones_situaciones SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
+        const consultaSQL = `UPDATE evaluaciones_situaciones SET ${camposSQL.join(', ')} WHERE id = ?`;
         const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
         
         if (resultadoSQLUpdate.affectedRows === 0) {

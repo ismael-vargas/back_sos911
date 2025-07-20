@@ -23,15 +23,12 @@ function getLogger(req) {
 // 1. CREAR UN NUEVO NÚMERO DE USUARIO (POST /usuarios_numeros/crear)
 usuarioNumeroCtl.createUserNumber = async (req, res) => {
     const logger = getLogger(req);
-    // Cambiamos 'usuario_id' a 'usuarioId' para que coincida con la columna de la DB (camelCase)
     let { nombre, numero, usuarioId } = req.body; 
-    logger.info(`[USUARIOS_NUMEROS] Intento de registro: nombre=${nombre}, numero=${numero}, usuarioId=${usuarioId}`); // Log actualizado
+    logger.info(`[USUARIOS_NUMEROS] Intento de registro: nombre=${nombre}, numero=${numero}, usuarioId=${usuarioId}`);
 
-    // Validar que los campos obligatorios estén presentes
-    // Ahora validamos 'usuarioId'
     if (!nombre || !numero || !usuarioId) { 
         logger.warn('[USUARIOS_NUMEROS] Registro fallido: campos obligatorios faltantes');
-        return res.status(400).json({ message: 'Faltan campos obligatorios: nombre, numero y usuarioId.' }); // Mensaje actualizado
+        return res.status(400).json({ message: 'Faltan campos obligatorios: nombre, numero y usuarioId.' });
     }
 
     try {
@@ -39,30 +36,37 @@ usuarioNumeroCtl.createUserNumber = async (req, res) => {
         const nombreCif = cifrarDato(nombre);
         const numeroCif = cifrarDato(numero);
 
+        // Verificar si el usuarioId existe y está activo
+        const [existingUser] = await sql.promise().query("SELECT id FROM usuarios WHERE id = ? AND estado = 'activo'", [usuarioId]);
+        if (existingUser.length === 0) {
+            logger.warn(`[USUARIOS_NUMEROS] Creación fallida: usuario no existe o está inactivo (usuarioId=${usuarioId})`);
+            return res.status(400).json({ message: 'El usuario asociado no existe o no está activo.' });
+        }
+
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Usar ORM para la creación
+        // Se establece fecha_creacion, y fecha_modificacion no se incluye en la creación inicial.
         const nuevoUsuarioNumero = await orm.usuario_numero.create({
             nombre: nombreCif,
             numero: numeroCif,
-            usuarioId, // <--- ¡USAMOS 'usuarioId' aquí para que coincida con la DB!
-            estado: 'activo' // Asegurar estado inicial
+            usuarioId,
+            estado: 'activo',
+            fecha_creacion: now, // Se añade la fecha de creación
+            // fecha_modificacion no se establece aquí, se actualizará en métodos de actualización/eliminación
         });
 
-        // Recargar el objeto desde la base de datos para obtener los valores reales
-        // de fecha_creacion y fecha_modificacion generados por MySQL,
-        // y asegurar que usuarioId se incluya en el objeto toJSON().
-        // Seleccionamos explícitamente usuarioId para asegurarnos de que se cargue.
-        const usuarioNumeroRecargado = await orm.usuario_numero.findByPk(nuevoUsuarioNumero.id, {
-            attributes: ['id', 'nombre', 'numero', 'estado', 'usuarioId', 'fecha_creacion', 'fecha_modificacion'] // <--- ¡USAMOS 'usuarioId' aquí!
-        });
-
-        logger.info(`[USUARIOS_NUMEROS] Registro exitoso: id=${usuarioNumeroRecargado.id}, usuarioId=${usuarioId}`); // Log actualizado
+        logger.info(`[USUARIOS_NUMEROS] Registro exitoso: id=${nuevoUsuarioNumero.id}, usuarioId=${usuarioId}`);
         res.status(201).json({
             message: 'Registro exitoso',
             usuarioNumero: {
-                ...usuarioNumeroRecargado.toJSON(), // Usar el objeto recargado
-                nombre: safeDecrypt(usuarioNumeroRecargado.nombre),
-                numero: safeDecrypt(usuarioNumeroRecargado.numero),
-                usuarioId: usuarioNumeroRecargado.usuarioId // <--- ¡USAMOS 'usuarioId' aquí en la respuesta!
+                id: nuevoUsuarioNumero.id,
+                nombre: safeDecrypt(nuevoUsuarioNumero.nombre),
+                numero: safeDecrypt(nuevoUsuarioNumero.numero),
+                estado: nuevoUsuarioNumero.estado,
+                usuarioId: nuevoUsuarioNumero.usuarioId,
+                fecha_creacion: nuevoUsuarioNumero.fecha_creacion,
+                fecha_modificacion: nuevoUsuarioNumero.fecha_modificacion // Puede ser null si no se ha modificado
             }
         });
     } catch (error) {
@@ -74,42 +78,45 @@ usuarioNumeroCtl.createUserNumber = async (req, res) => {
 // 2. OBTENER TODOS LOS NÚMEROS DE USUARIO (GET /usuarios_numeros/listar)
 usuarioNumeroCtl.getAllUserNumbers = async (req, res) => {
     const logger = getLogger(req);
-    logger.info('[USUARIOS_NUMEROS] Solicitud de listado de usuarios_numeros');
+    const incluirEliminados = req.query.incluirEliminados === 'true'; // Añadido para consistencia
+    logger.info(`[USUARIOS_NUMEROS] Solicitud de listado de usuarios_numeros (incluirEliminados: ${incluirEliminados})`);
     try {
-        // Usar SQL directo para obtener usuarios_numeros y unirse con usuarios
-        // Seleccionamos 'un.usuarioId' para que coincida con el nombre de la columna en la DB
-        const [usuariosNumerosSQL] = await sql.promise().query(
-            `SELECT 
-                un.id, 
-                un.nombre, 
-                un.numero, 
-                un.estado, 
-                un.usuarioId, -- <--- ¡USAMOS 'usuarioId' aquí en la query SQL!
-                u.nombre AS nombre_usuario_asociado,
-                u.correo_electronico AS correo_usuario_asociado,
-                un.fecha_creacion,
-                un.fecha_modificacion
-            FROM 
-                usuarios_numeros un
-            JOIN 
-                usuarios u ON un.usuarioId = u.id -- <--- ¡USAMOS 'usuarioId' aquí en el JOIN!
-            WHERE 
-                un.estado = 'activo'`
-        );
+        let querySQL = `SELECT 
+                            un.id, 
+                            un.nombre, 
+                            un.numero, 
+                            un.estado, 
+                            un.usuarioId, 
+                            u.nombre AS nombre_usuario_asociado,
+                            u.correo_electronico AS correo_usuario_asociado,
+                            un.fecha_creacion,
+                            un.fecha_modificacion
+                        FROM 
+                            usuarios_numeros un
+                        JOIN 
+                            usuarios u ON un.usuarioId = u.id`;
         
-        // Descifrar los campos sensibles antes de enviar
+        const params = [];
+        if (!incluirEliminados) {
+            querySQL += ` WHERE un.estado = 'activo'`;
+        }
+        querySQL += ` ORDER BY un.fecha_creacion DESC`; // Ordenar para consistencia
+
+        const [usuariosNumerosSQL] = await sql.promise().query(querySQL, params);
+        
         const usuariosNumerosCompletos = usuariosNumerosSQL.map(numSQL => ({
             id: numSQL.id,
             nombre: safeDecrypt(numSQL.nombre),
             numero: safeDecrypt(numSQL.numero),
             estado: numSQL.estado,
-            usuarioId: numSQL.usuarioId, // <--- ¡USAMOS 'usuarioId' aquí en la respuesta!
+            usuarioId: numSQL.usuarioId,
             nombre_usuario_asociado: safeDecrypt(numSQL.nombre_usuario_asociado),
             correo_usuario_asociado: safeDecrypt(numSQL.correo_usuario_asociado),
             fecha_creacion: numSQL.fecha_creacion,
             fecha_modificacion: numSQL.fecha_modificacion
         }));
 
+        logger.info(`[USUARIOS_NUMEROS] Se devolvieron ${usuariosNumerosCompletos.length} números de usuario.`);
         res.status(200).json(usuariosNumerosCompletos);
     } catch (error) {
         logger.error(`[USUARIOS_NUMEROS] Error al obtener los usuariosNumeros: ${error.message}`);
@@ -123,15 +130,13 @@ usuarioNumeroCtl.getUserNumberById = async (req, res) => {
     const { id } = req.params;
     logger.info(`[USUARIOS_NUMEROS] Solicitud de usuario_numero por ID: ${id}`);
     try {
-        // Usar SQL directo para obtener el usuario_numero por ID y unirse con usuarios
-        // Seleccionamos 'un.usuarioId' para que coincida con el nombre de la columna en la DB
         const [usuarioNumeroSQL] = await sql.promise().query(
             `SELECT 
                 un.id, 
                 un.nombre, 
                 un.numero, 
                 un.estado, 
-                un.usuarioId, -- <--- ¡USAMOS 'usuarioId' aquí en la query SQL!
+                un.usuarioId, 
                 u.nombre AS nombre_usuario_asociado,
                 u.correo_electronico AS correo_usuario_asociado,
                 un.fecha_creacion,
@@ -139,7 +144,7 @@ usuarioNumeroCtl.getUserNumberById = async (req, res) => {
             FROM 
                 usuarios_numeros un
             JOIN 
-                usuarios u ON un.usuarioId = u.id -- <--- ¡USAMOS 'usuarioId' aquí en el JOIN!
+                usuarios u ON un.usuarioId = u.id 
             WHERE 
                 un.id = ? AND un.estado = 'activo'`, 
             [id]
@@ -156,7 +161,7 @@ usuarioNumeroCtl.getUserNumberById = async (req, res) => {
             nombre: safeDecrypt(numSQL.nombre),
             numero: safeDecrypt(numSQL.numero),
             estado: numSQL.estado,
-            usuarioId: numSQL.usuarioId, // <--- ¡USAMOS 'usuarioId' aquí en la respuesta!
+            usuarioId: numSQL.usuarioId,
             nombre_usuario_asociado: safeDecrypt(numSQL.nombre_usuario_asociado),
             correo_usuario_asociado: safeDecrypt(numSQL.correo_usuario_asociado),
             fecha_creacion: numSQL.fecha_creacion,
@@ -179,11 +184,13 @@ usuarioNumeroCtl.updateUserNumber = async (req, res) => {
 
     try {
         // Verificar existencia y estado actual
-        const [existingNum] = await sql.promise().query("SELECT * FROM usuarios_numeros WHERE id = ?", [id]);
+        const [existingNum] = await sql.promise().query("SELECT * FROM usuarios_numeros WHERE id = ? AND estado = 'activo'", [id]); // Solo actualizar si está activo
         if (existingNum.length === 0) {
-            logger.warn(`[USUARIOS_NUMEROS] Usuario_numero no encontrado para actualizar: id=${id}`);
-            return res.status(404).json({ error: 'Número de usuario no encontrado.' });
+            logger.warn(`[USUARIOS_NUMEROS] Usuario_numero no encontrado o inactivo para actualizar: id=${id}`);
+            return res.status(404).json({ error: 'Número de usuario no encontrado o inactivo.' });
         }
+
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
 
         // Preparar campos y valores para la actualización SQL
         const campos = [];
@@ -206,6 +213,10 @@ usuarioNumeroCtl.updateUserNumber = async (req, res) => {
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
 
+        // Siempre actualizar fecha_modificacion en SQL
+        campos.push('fecha_modificacion = ?');
+        valores.push(now);
+
         valores.push(id); // Añadir el ID para la cláusula WHERE
         const consultaSQL = `UPDATE usuarios_numeros SET ${campos.join(', ')} WHERE id = ?`;
         const [resultado] = await sql.promise().query(consultaSQL, valores);
@@ -226,7 +237,7 @@ usuarioNumeroCtl.updateUserNumber = async (req, res) => {
                 nombre: safeDecrypt(numActualizado.nombre),
                 numero: safeDecrypt(numActualizado.numero),
                 estado: numActualizado.estado,
-                usuarioId: numActualizado.usuarioId, // <--- Incluir 'usuarioId' en la respuesta
+                usuarioId: numActualizado.usuarioId,
                 fecha_creacion: numActualizado.fecha_creacion,
                 fecha_modificacion: numActualizado.fecha_modificacion
             }
@@ -244,14 +255,16 @@ usuarioNumeroCtl.deleteUserNumber = async (req, res) => {
     logger.info(`[USUARIOS_NUMEROS] Eliminación de usuario_numero: id=${id}`);
     try {
         // Verificar existencia y estado
-        const [existingNum] = await sql.promise().query("SELECT * FROM usuarios_numeros WHERE id = ?", [id]);
+        const [existingNum] = await sql.promise().query("SELECT * FROM usuarios_numeros WHERE id = ? AND estado = 'activo'", [id]); // Solo eliminar si está activo
         if (existingNum.length === 0 || existingNum[0].estado === 'eliminado') {
             logger.warn(`[USUARIOS_NUMEROS] Usuario_numero no encontrado o ya eliminado: id=${id}`);
             return res.status(404).json({ error: 'Número de usuario no encontrado o ya eliminado.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Marcar como eliminado en SQL directo
-        const [resultado] = await sql.promise().query("UPDATE usuarios_numeros SET estado = 'eliminado' WHERE id = ?", [id]);
+        const [resultado] = await sql.promise().query("UPDATE usuarios_numeros SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
         if (resultado.affectedRows === 0) {
             logger.error(`[USUARIOS_NUMEROS] No se pudo marcar como eliminado el usuario_numero: id=${id}`);

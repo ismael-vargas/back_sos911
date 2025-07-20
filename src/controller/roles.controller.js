@@ -23,44 +23,43 @@ function getLogger(req) {
 // 1. CREAR UN NUEVO ROL (POST /roles/crear)
 rolCtl.createRole = async (req, res) => {
     const logger = getLogger(req);
-    let { usuarioId, nombre } = req.body; 
-    logger.info(`[ROL] Intento de registro: usuarioId=${usuarioId}, nombre=${nombre}`);
+    let { nombre } = req.body; // Solo se necesita el nombre del rol para crear el rol
+    logger.info(`[ROL] Intento de registro de rol: nombre=${nombre}`);
 
-    if (!usuarioId || !nombre) {
-        logger.warn('[ROL] Registro fallido: campos obligatorios faltantes');
-        return res.status(400).json({ message: 'Faltan campos obligatorios: usuarioId y nombre.' });
+    if (!nombre) {
+        logger.warn('[ROL] Registro fallido: campo "nombre" obligatorio faltante.');
+        return res.status(400).json({ message: 'El campo "nombre" es obligatorio para crear un rol.' });
     }
 
     try {
-        const [existingUsers] = await sql.promise().query("SELECT id FROM usuarios WHERE id = ? AND estado = 'activo'", [usuarioId]);
-        if (existingUsers.length === 0) {
-            logger.warn(`[ROL] Registro fallido: usuario no existe o está inactivo (usuarioId=${usuarioId})`);
-            return res.status(400).json({ message: 'El usuario asociado no existe o no está activo.' });
+        // Validación de unicidad para el nombre del rol al crear
+        const [existingRoles] = await sql.promise().query("SELECT nombre FROM roles WHERE estado = 'activo'");
+        const isRoleNameTaken = existingRoles.some(rol => safeDecrypt(rol.nombre) === nombre);
+
+        if (isRoleNameTaken) {
+            logger.warn(`[ROL] Registro fallido: El nombre de rol "${nombre}" ya existe.`);
+            return res.status(409).json({ message: 'El nombre de rol ya está registrado.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
         const nombreCif = cifrarDato(nombre);
 
-        // 1. Crear el rol
+        // Crear el rol usando ORM
         const nuevoRol = await orm.rol.create({
-            nombre: nombreCif
+            nombre: nombreCif,
+            estado: 'activo', // Asegurar estado inicial
+            fecha_creacion: now, // Se añade la fecha de creación
         });
 
-        // 2. Crear la relación usando los nombres correctos de columnas
-        await orm.usuarios_roles.create({
-            usuarioId: usuarioId,  // Columna correcta
-            roleId: nuevoRol.id    // Columna correcta (NO rolId)
-        });
-
-        logger.info(`[ROL] Registro exitoso: id=${nuevoRol.id}, usuarioId=${usuarioId}`);
+        logger.info(`[ROL] Registro exitoso: id=${nuevoRol.id}, nombre=${nombre}`);
         res.status(201).json({
             message: 'Rol registrado exitosamente.',
             rol: {
                 id: nuevoRol.id,
                 nombre: safeDecrypt(nuevoRol.nombre),
                 estado: nuevoRol.estado,
-                usuarioId: usuarioId,
                 fecha_creacion: nuevoRol.fecha_creacion,
-                fecha_modificacion: nuevoRol.fecha_modificacion
+                fecha_modificacion: nuevoRol.fecha_modificacion // Será null inicialmente
             }
         });
     } catch (error) {
@@ -76,17 +75,14 @@ rolCtl.getRoles = async (req, res) => {
     logger.info(`[ROL] Solicitud de listado de roles (incluirEliminados: ${incluirEliminados})`);
 
     try {
-        let querySQL = `SELECT r.id, r.nombre, r.estado, r.fecha_creacion, r.fecha_modificacion, 
-                               ur.usuarioId,
-                               u.nombre AS nombre_usuario_asociado, u.correo_electronico AS correo_usuario_asociado
-                        FROM roles r
-                        LEFT JOIN usuarios_roles ur ON r.id = ur.roleId
-                        LEFT JOIN usuarios u ON ur.usuarioId = u.id`;
+        let querySQL = `SELECT r.id, r.nombre, r.estado, r.fecha_creacion, r.fecha_modificacion
+                        FROM roles r`;
         
         const params = [];
         if (!incluirEliminados) {
             querySQL += ` WHERE r.estado = 'activo'`;
         }
+        querySQL += ` ORDER BY r.fecha_creacion DESC`; // Ordenar para consistencia
 
         const [rolesSQL] = await sql.promise().query(querySQL, params);
         
@@ -96,9 +92,7 @@ rolCtl.getRoles = async (req, res) => {
             estado: rolSQL.estado,
             fecha_creacion: rolSQL.fecha_creacion,
             fecha_modificacion: rolSQL.fecha_modificacion,
-            usuarioId: rolSQL.usuarioId,
-            nombre_usuario_asociado: rolSQL.nombre_usuario_asociado ? safeDecrypt(rolSQL.nombre_usuario_asociado) : null,
-            correo_usuario_asociado: rolSQL.correo_usuario_asociado ? safeDecrypt(rolSQL.correo_usuario_asociado) : null
+            // Ya no se incluyen datos de usuario asociado directamente aquí
         }));
 
         res.status(200).json(rolesCompletos);
@@ -121,14 +115,9 @@ rolCtl.getRolById = async (req, res) => {
                 r.nombre, 
                 r.estado, 
                 r.fecha_creacion, 
-                r.fecha_modificacion,
-                ur.usuarioId,
-                u.nombre AS nombre_usuario_asociado, 
-                u.correo_electronico AS correo_usuario_asociado
+                r.fecha_modificacion
             FROM 
                 roles r
-            LEFT JOIN usuarios_roles ur ON r.id = ur.roleId
-            LEFT JOIN usuarios u ON ur.usuarioId = u.id
             WHERE 
                 r.id = ? AND r.estado = 'activo'`, 
             [id]
@@ -144,11 +133,9 @@ rolCtl.getRolById = async (req, res) => {
             id: rolData.id,
             nombre: safeDecrypt(rolData.nombre),
             estado: rolData.estado,
-            usuarioId: rolData.usuarioId,
             fecha_creacion: rolData.fecha_creacion,
             fecha_modificacion: rolData.fecha_modificacion,
-            nombre_usuario_asociado: rolData.nombre_usuario_asociado ? safeDecrypt(rolData.nombre_usuario_asociado) : null,
-            correo_usuario_asociado: rolData.correo_usuario_asociado ? safeDecrypt(rolData.correo_usuario_asociado) : null
+            // Ya no se incluyen datos de usuario asociado directamente aquí
         };
 
         res.status(200).json(rolCompleto);
@@ -162,22 +149,32 @@ rolCtl.getRolById = async (req, res) => {
 rolCtl.updateRol = async (req, res) => {
     const logger = getLogger(req);
     const { id } = req.params;
-    const { nombre, estado } = req.body; // No se permite cambiar usuarioId en update
+    const { nombre, estado } = req.body; 
     logger.info(`[ROL] Actualización de rol: id=${id}`);
 
     try {
         // Verificar existencia y estado actual
-        const [existingRol] = await sql.promise().query("SELECT * FROM roles WHERE id = ?", [id]);
+        const [existingRol] = await sql.promise().query("SELECT * FROM roles WHERE id = ? AND estado = 'activo'", [id]); 
         if (existingRol.length === 0) {
-            logger.warn(`[ROL] Rol no encontrado para actualizar: id=${id}`);
-            return res.status(404).json({ error: 'Rol no encontrado.' });
+            logger.warn(`[ROL] Rol no encontrado o inactivo para actualizar: id=${id}`);
+            return res.status(404).json({ error: 'Rol no encontrado o inactivo.' });
         }
+
+        const now = new Date().toISOString(); 
 
         // Preparar campos y valores para la actualización SQL
         const campos = [];
         const valores = [];
 
         if (nombre !== undefined) {
+            // Validación de unicidad para el nombre del rol al actualizar
+            const [allOtherRolesSQL] = await sql.promise().query("SELECT id, nombre FROM roles WHERE id != ? AND estado = 'activo'", [id]);
+            const existingRoleWithNewName = allOtherRolesSQL.find(rol => safeDecrypt(rol.nombre) === nombre);
+
+            if (existingRoleWithNewName) {
+                logger.warn(`[ROL] Actualización fallida: El nuevo nombre de rol "${nombre}" ya está registrado por otro rol.`);
+                return res.status(409).json({ message: 'El nuevo nombre de rol ya está registrado por otro rol.' });
+            }
             campos.push('nombre = ?');
             valores.push(cifrarDato(nombre));
         }
@@ -190,7 +187,11 @@ rolCtl.updateRol = async (req, res) => {
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
 
-        valores.push(id); // Añadir el ID para la cláusula WHERE
+        // Siempre actualizar fecha_modificacion en SQL
+        campos.push('fecha_modificacion = ?');
+        valores.push(now);
+
+        valores.push(id); 
         const consultaSQL = `UPDATE roles SET ${campos.join(', ')} WHERE id = ?`;
         const [resultado] = await sql.promise().query(consultaSQL, valores);
 
@@ -209,7 +210,6 @@ rolCtl.updateRol = async (req, res) => {
                 id: rolActualizado.id,
                 nombre: safeDecrypt(rolActualizado.nombre),
                 estado: rolActualizado.estado,
-                usuarioId: rolActualizado.usuarioId, // Incluir usuarioId en la respuesta
                 fecha_creacion: rolActualizado.fecha_creacion,
                 fecha_modificacion: rolActualizado.fecha_modificacion
             }
@@ -227,14 +227,16 @@ rolCtl.deleteRol = async (req, res) => {
     logger.info(`[ROL] Eliminación de rol: id=${id}`);
     try {
         // Verificar existencia y estado
-        const [existingRol] = await sql.promise().query("SELECT * FROM roles WHERE id = ?", [id]);
+        const [existingRol] = await sql.promise().query("SELECT * FROM roles WHERE id = ? AND estado = 'activo'", [id]); 
         if (existingRol.length === 0 || existingRol[0].estado === 'eliminado') {
             logger.warn(`[ROL] Rol no encontrado o ya eliminado: id=${id}`);
             return res.status(404).json({ error: 'Rol no encontrado o ya eliminado.' });
         }
 
+        const now = new Date().toISOString(); 
+
         // Marcar como eliminado en SQL directo
-        const [resultado] = await sql.promise().query("UPDATE roles SET estado = 'eliminado' WHERE id = ?", [id]);
+        const [resultado] = await sql.promise().query("UPDATE roles SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
         if (resultado.affectedRows === 0) {
             logger.error(`[ROL] No se pudo marcar como eliminado el rol: id=${id}`);

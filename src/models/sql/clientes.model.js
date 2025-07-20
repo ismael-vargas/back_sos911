@@ -15,12 +15,10 @@ const cliente = (sequelize, type) => { // Cambiado DataTypes a type
         correo_electronico: {
             type: type.STRING, // Cambiado DataTypes a type
             allowNull: false,
-            unique: true, 
             comment: 'Correo electrónico del cliente'
         },
         cedula_identidad: {
             type: type.STRING, // Cambiado DataTypes a type
-            unique: true, 
             comment: 'Cédula de identidad del cliente'
         },
         numero_ayudas: type.INTEGER, // Simplificado a tipo INTEGER

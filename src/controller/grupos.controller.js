@@ -37,6 +37,7 @@ gruposCtl.createGroup = async (req, res) => {
             return res.status(400).json({ message: 'El clienteId y el nombre del grupo son requeridos.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
         const nombreCifrado = cifrarDato(nombre);
 
         // Verificar si el grupo ya existe por nombre cifrado y clienteId (usando SQL directo)
@@ -51,19 +52,25 @@ gruposCtl.createGroup = async (req, res) => {
             return res.status(409).json({ message: 'Ya tienes un grupo con ese nombre registrado.' });
         }
 
-        // Crear grupo en la base de datos SQL
-        const [resultadoSQL] = await sql.promise().query(
-            "INSERT INTO grupos (clienteId, nombre, estado, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [clienteId, nombreCifrado, estado || 'activo']
-        );
-        const idGrupoSql = resultadoSQL.insertId; // Obtener el ID insertado
+        // Crear grupo en la base de datos SQL usando ORM (orm.grupos.create())
+        const nuevoGrupoSQL = {
+            clienteId: clienteId,
+            nombre: nombreCifrado,
+            estado: estado || 'activo',
+            fecha_creacion: now, // Se añade la fecha de creación
+            // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
+        };
+        const grupoGuardadoSQL = await orm.grupos.create(nuevoGrupoSQL);
+        const idGrupoSql = grupoGuardadoSQL.id; // Obtener el ID insertado por ORM
         logger.info(`[GRUPOS] Grupo SQL creado exitosamente con ID: ${idGrupoSql} para clienteId: ${clienteId}`);
 
         // Crear documento en la base de datos MongoDB
+        // fecha_creacion se establece, fecha_modificacion no se incluye en la creación inicial
         const nuevoGrupoMongo = { 
             idGrupoSql, 
             descripcion: descripcion || '', // La descripción es específica de Mongo
-            estado: estado || 'activo' // Sincronizar estado con SQL
+            estado: estado || 'activo', // Sincronizar estado con SQL
+            fecha_creacion: now // Establecer fecha_creacion para Mongo
         };
         await mongo.Grupo.create(nuevoGrupoMongo);
         logger.info(`[GRUPOS] Grupo Mongo creado exitosamente para ID SQL: ${idGrupoSql}`);
@@ -74,7 +81,7 @@ gruposCtl.createGroup = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(`[GRUPOS] Error al crear el grupo: ${error.message}`, error);
+        logger.error(`[GRUPOS] Error al crear el grupo: ${error.message}`, error);
         res.status(500).json({ error: 'Error interno del servidor al crear el grupo.' });
     }
 };
@@ -110,7 +117,11 @@ gruposCtl.getAllGroups = async (req, res) => {
         
         const gruposCompletos = await Promise.all(
             gruposSQL.map(async (groupSQL) => {
-                const grupoMongo = await mongo.Grupo.findOne({ idGrupoSql: groupSQL.id });
+                let grupoMongo = null;
+                // SOLO si se encuentra un registro en SQL, intentamos buscar en Mongo
+                if (groupSQL) {
+                    grupoMongo = await mongo.Grupo.findOne({ idGrupoSql: groupSQL.id });
+                }
                 return {
                     id: groupSQL.id,
                     clienteId: groupSQL.clienteId,
@@ -131,7 +142,7 @@ gruposCtl.getAllGroups = async (req, res) => {
         logger.info(`[GRUPOS] Se devolvieron ${gruposCompletos.length} grupos.`);
         res.status(200).json(gruposCompletos);
     } catch (error) {
-        console.error('Error al obtener todos los grupos:', error);
+        logger.error('Error al obtener todos los grupos:', error);
         res.status(500).json({ error: 'Error interno del servidor al obtener grupos.' });
     }
 };
@@ -171,8 +182,11 @@ gruposCtl.getGroupById = async (req, res) => {
         const groupSQL = gruposSQL[0];
         logger.info(`[GRUPOS] Grupo SQL encontrado con ID: ${id}`);
 
-        // Obtener documento de MongoDB
-        const grupoMongo = await mongo.Grupo.findOne({ idGrupoSql: id });
+        let grupoMongo = null;
+        // SOLO si se encuentra un registro en SQL, intentamos buscar en Mongo
+        if (groupSQL) {
+            grupoMongo = await mongo.Grupo.findOne({ idGrupoSql: id });
+        }
         logger.info(`[GRUPOS] Grupo Mongo encontrado para ID SQL: ${id}`);
 
         const grupoCompleto = {
@@ -192,7 +206,7 @@ gruposCtl.getGroupById = async (req, res) => {
         };
         res.status(200).json(grupoCompleto);
     } catch (error) {
-        console.error('Error al obtener el grupo:', error);
+        logger.error('Error al obtener el grupo:', error);
         res.status(500).json({ error: 'Error interno del servidor al obtener el grupo.' });
     }
 };
@@ -213,6 +227,8 @@ gruposCtl.updateGroup = async (req, res) => {
             return res.status(404).json({ error: 'Grupo no encontrado o eliminado para actualizar.' });
         }
         const groupSQL = gruposSQL[0];
+
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
 
         // Preparar datos para SQL (solo los que no son undefined)
         const camposSQL = [];
@@ -256,9 +272,12 @@ gruposCtl.updateGroup = async (req, res) => {
         // Replicar el estado si se actualiza en SQL
         if (estado !== undefined) updateDataMongo.estado = estado;
 
+        // Siempre actualizar fecha_modificacion en Mongo
+        updateDataMongo.fecha_modificacion = now;
+
         // Realizar actualización en MongoDB
         if (Object.keys(updateDataMongo).length > 0) {
-            await mongo.Grupo.updateOne({ idGrupoSql: id }, { $set: updateDataMongo, $currentDate: { fecha_modificacion: true } });
+            await mongo.Grupo.updateOne({ idGrupoSql: id }, { $set: updateDataMongo });
             logger.info(`[GRUPOS] Grupo Mongo actualizado para ID SQL: ${id}`);
         }
         
@@ -298,7 +317,7 @@ gruposCtl.updateGroup = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al actualizar el grupo:', error);
+        logger.error('Error al actualizar el grupo:', error);
         res.status(500).json({ error: 'Error interno del servidor al actualizar el grupo.' });
     }
 };
@@ -310,8 +329,10 @@ gruposCtl.deleteGroup = async (req, res) => {
     logger.info(`[GRUPOS] Solicitud de eliminación lógica de grupo con ID: ${id}`);
 
     try {
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // SQL directo para actualizar estado a 'eliminado'
-        const [resultadoSQL] = await sql.promise().query("UPDATE grupos SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ? AND estado = 'activo'", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE grupos SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ? AND estado = 'activo'", [now, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.warn(`[GRUPOS] Grupo no encontrado o ya eliminado con ID: ${id}`);
@@ -322,13 +343,13 @@ gruposCtl.deleteGroup = async (req, res) => {
         // Actualizar estado a 'eliminado' en MongoDB
         await mongo.Grupo.updateOne(
             { idGrupoSql: id }, 
-            { $set: { estado: 'eliminado' }, $currentDate: { fecha_modificacion: true } }
+            { $set: { estado: 'eliminado', fecha_modificacion: now } }
         );
         logger.info(`[GRUPOS] Grupo Mongo marcado como eliminado para ID SQL: ${id}`);
         
         res.status(200).json({ message: 'Grupo marcado como eliminado exitosamente.' });
     } catch (error) {
-        console.error('Error al eliminar el grupo:', error);
+        logger.error('Error al eliminar el grupo:', error);
         res.status(500).json({ error: 'Error interno del servidor al eliminar el grupo.' });
     }
 };

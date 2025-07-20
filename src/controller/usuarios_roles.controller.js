@@ -53,10 +53,14 @@ usuarioRolesCtl.assignRoleToUser = async (req, res) => {
             return res.status(400).json({ message: 'Esta relación usuario-rol ya existe.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Crear la relación usando ORM
         const nuevaRelacion = await orm.usuarios_roles.create({
             usuarioId: usuarioId,
-            roleId: roleId
+            roleId: roleId,
+            estado: 'activo', // Asegurar estado inicial
+            fecha_creacion: now, // Se añade la fecha de creación
         });
 
         logger.info(`[USUARIO-ROL] Asignación exitosa: id=${nuevaRelacion.id}, usuarioId=${usuarioId}, roleId=${roleId}`);
@@ -68,7 +72,7 @@ usuarioRolesCtl.assignRoleToUser = async (req, res) => {
                 roleId: nuevaRelacion.roleId,
                 estado: nuevaRelacion.estado,
                 fecha_creacion: nuevaRelacion.fecha_creacion,
-                fecha_modificacion: nuevaRelacion.fecha_modificacion
+                fecha_modificacion: nuevaRelacion.fecha_modificacion // Puede ser null si no se ha modificado
             }
         });
     } catch (error) {
@@ -95,6 +99,7 @@ usuarioRolesCtl.getAllUserRoles = async (req, res) => {
         if (!incluirEliminados) {
             querySQL += ` WHERE ur.estado = 'activo'`;
         }
+        querySQL += ` ORDER BY ur.fecha_creacion DESC`; // Ordenar para consistencia
 
         const [relacionesSQL] = await sql.promise().query(querySQL, params);
         
@@ -169,11 +174,13 @@ usuarioRolesCtl.updateUserRole = async (req, res) => {
 
     try {
         // Verificar existencia
-        const [existingRelation] = await sql.promise().query("SELECT * FROM usuarios_roles WHERE id = ?", [id]);
+        const [existingRelation] = await sql.promise().query("SELECT * FROM usuarios_roles WHERE id = ? AND estado = 'activo'", [id]); 
         if (existingRelation.length === 0) {
-            logger.warn(`[USUARIO-ROL] Relación no encontrada para actualizar: id=${id}`);
-            return res.status(404).json({ error: 'Relación no encontrada.' });
+            logger.warn(`[USUARIO-ROL] Relación no encontrada o inactiva para actualizar: id=${id}`);
+            return res.status(404).json({ error: 'Relación no encontrada o inactiva.' });
         }
+
+        const now = new Date().toISOString(); 
 
         // Preparar campos para actualización
         const campos = [];
@@ -208,6 +215,10 @@ usuarioRolesCtl.updateUserRole = async (req, res) => {
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
 
+        // Siempre actualizar fecha_modificacion en SQL
+        campos.push('fecha_modificacion = ?');
+        valores.push(now);
+
         valores.push(id);
         const consultaSQL = `UPDATE usuarios_roles SET ${campos.join(', ')} WHERE id = ?`;
         const [resultado] = await sql.promise().query(consultaSQL, valores);
@@ -233,14 +244,16 @@ usuarioRolesCtl.deleteUserRole = async (req, res) => {
 
     try {
         // Verificar existencia y estado
-        const [existingRelation] = await sql.promise().query("SELECT * FROM usuarios_roles WHERE id = ?", [id]);
+        const [existingRelation] = await sql.promise().query("SELECT * FROM usuarios_roles WHERE id = ? AND estado = 'activo'", [id]); 
         if (existingRelation.length === 0 || existingRelation[0].estado === 'eliminado') {
             logger.warn(`[USUARIO-ROL] Relación no encontrada o ya eliminada: id=${id}`);
             return res.status(404).json({ error: 'Relación no encontrada o ya eliminada.' });
         }
 
+        const now = new Date().toISOString(); 
+
         // Marcar como eliminado
-        const [resultado] = await sql.promise().query("UPDATE usuarios_roles SET estado = 'eliminado' WHERE id = ?", [id]);
+        const [resultado] = await sql.promise().query("UPDATE usuarios_roles SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
         if (resultado.affectedRows === 0) {
             logger.error(`[USUARIO-ROL] No se pudo marcar como eliminada la relación: id=${id}`);

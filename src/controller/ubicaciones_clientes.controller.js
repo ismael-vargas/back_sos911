@@ -34,6 +34,8 @@ ubicacionClienteCtl.createClientLocation = async (req, res) => {
     }
 
     try {
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+
         // Verificar si el cliente existe en SQL
         const [existingClienteSQL] = await sql.promise().query("SELECT id FROM clientes WHERE id = ? AND estado = 'activo'", [clienteId]);
         if (existingClienteSQL.length === 0) {
@@ -41,13 +43,19 @@ ubicacionClienteCtl.createClientLocation = async (req, res) => {
             return res.status(404).json({ error: 'Cliente no encontrado o inactivo.' });
         }
 
-        // Crear la nueva ubicación usando SQL directo
-        const [resultadoSQL] = await sql.promise().query(
-            "INSERT INTO ubicaciones_clientes (clienteId, latitud, longitud, marca_tiempo, estado, fecha_creacion, fecha_modificacion) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
-            [clienteId, latitud, longitud, marca_tiempo || null, estado || 'activo'] // marca_tiempo puede ser nulo, estado por defecto 'activo'
-        );
-        const newLocationId = resultadoSQL.insertId;
-        logger.info(`[UBICACIONES_CLIENTES] Ubicación creada exitosamente con ID: ${newLocationId}.`);
+        // Crear la nueva ubicación usando ORM (orm.ubicacion_cliente.create())
+        // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
+        const nuevaUbicacionSQL = {
+            clienteId: clienteId,
+            latitud: latitud,
+            longitud: longitud,
+            marca_tiempo: marca_tiempo || now, // Usa marca_tiempo del body o la hora actual
+            estado: estado || 'activo',
+            fecha_creacion: now, // Se añade la fecha de creación
+        };
+        const ubicacionGuardadaSQL = await orm.ubicacion_cliente.create(nuevaUbicacionSQL); // Usando ORM para crear
+        const newLocationId = ubicacionGuardadaSQL.id; // Obtener el ID insertado por ORM
+        logger.info(`[UBICACIONES_CLIENTES] Ubicación creada exitosamente con ID: ${newLocationId} usando ORM.`);
 
         // Obtener la ubicación recién creada para la respuesta
         const [createdLocationSQL] = await sql.promise().query(
@@ -82,7 +90,7 @@ ubicacionClienteCtl.createClientLocation = async (req, res) => {
                 marca_tiempo: createdLocation.marca_tiempo,
                 estado: createdLocation.estado,
                 fecha_creacion: createdLocation.fecha_creacion,
-                fecha_modificacion: createdLocation.fecha_modificacion,
+                fecha_modificacion: createdLocation.fecha_modificacion, // Puede ser null si no se ha modificado
                 cliente_info: {
                     nombre: safeDecrypt(createdLocation.cliente_nombre),
                     correo_electronico: safeDecrypt(createdLocation.cliente_correo)
@@ -221,6 +229,8 @@ ubicacionClienteCtl.updateClientLocation = async (req, res) => {
             return res.status(404).json({ error: 'Ubicación no encontrada o inactiva para actualizar.' });
         }
         
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Preparar datos para SQL
         const camposSQL = [];
         const valoresSQL = [];
@@ -246,6 +256,10 @@ ubicacionClienteCtl.updateClientLocation = async (req, res) => {
             logger.warn(`[UBICACIONES_CLIENTES] No se proporcionaron campos para actualizar la ubicación con ID: ${id}.`);
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
+
+        // Siempre actualizar fecha_modificacion en SQL
+        camposSQL.push('fecha_modificacion = ?');
+        valoresSQL.push(now);
 
         valoresSQL.push(id); // Para el WHERE
         const consultaSQL = `UPDATE ubicaciones_clientes SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
@@ -315,11 +329,13 @@ ubicacionClienteCtl.deleteClientLocation = async (req, res) => {
         const [existingLocationSQL] = await sql.promise().query("SELECT id FROM ubicaciones_clientes WHERE id = ? AND estado = 'activo'", [id]);
         if (existingLocationSQL.length === 0) {
             logger.warn(`[UBICACIONES_CLIENTES] Ubicación no encontrada o ya eliminada con ID: ${id}`);
-            return res.status(404).json({ error: 'Ubicación no encontrada o ya estaba eliminada.' });
+            return res.status(404).json({ error: 'Ubicación no encontrada o ya estaba eliminado.' });
         }
 
+        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE ubicaciones_clientes SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE ubicaciones_clientes SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[UBICACIONES_CLIENTES] No se pudo marcar como eliminado la ubicación con ID: ${id}.`);
