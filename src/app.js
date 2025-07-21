@@ -29,7 +29,7 @@ require('./lib/passport');
 const app = express();
 
 // ==================== CONFIGURACIÓN BÁSICA ====================
-app.set('port', process.env.PORT || 9000); // Usar tu puerto 9000 como predeterminado
+app.set('port', process.env.PORT || 1000); // Usar tu puerto 9000 como predeterminado
 
 // Configuración CORS correcta para CSRF (REEMPLAZADO)
 const allowedOrigins = [
