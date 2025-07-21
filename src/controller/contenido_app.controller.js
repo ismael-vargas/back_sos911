@@ -17,6 +17,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -44,7 +55,9 @@ contenidoAppCtl.getContent = async (req, res) => {
 
         if (!contenidoSql) {
             logger.info('[CONTENIDO_APP] No se encontró contenido SQL, creando registro por defecto.');
-            const now = new Date().toISOString();
+            const now = new Date();
+            // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+            const formattedNow = formatLocalDateTime(now);
             // Usar ORM para crear el registro por defecto en SQL
             // CORREGIDO: Se cambió 'orm.contenido_apps' a 'orm.contenido_app' para coincidir con la exportación del ORM
             const nuevoContenidoSQL = await orm.contenido_app.create({
@@ -53,7 +66,7 @@ contenidoAppCtl.getContent = async (req, res) => {
                 fontFamily: 'Open Sans',
                 mainTitle: 'Un toque para tu seguridad',
                 estado: 'activo',
-                fecha_creacion: now,
+                fecha_creacion: formattedNow, // (hora local formateada)
             });
             contenidoSql = nuevoContenidoSQL; // El ORM devuelve el objeto creado
         }
@@ -62,7 +75,9 @@ contenidoAppCtl.getContent = async (req, res) => {
 
         if (!contenidoMongo) {
             logger.info('[CONTENIDO_APP] No se encontró contenido Mongo, creando registro por defecto.');
-            const now = new Date().toISOString();
+            const now = new Date();
+            // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+            const formattedNow = formatLocalDateTime(now);
             // Crear con campos individuales por defecto
             contenidoMongo = await mongo.ContenidoApp.create({
                 idContenidoAppSql: String(contenidoSql.id),
@@ -77,7 +92,7 @@ contenidoAppCtl.getContent = async (req, res) => {
                 visionContent: 'Contenido por defecto de visión.',
                 logoApp: 'https://placehold.co/150x50/cccccc/ffffff?text=LogoApp',
                 estado: 'activo',
-                fecha_creacion: now
+                fecha_creacion: formattedNow // (hora local formateada)
             });
         }
 
@@ -136,7 +151,9 @@ contenidoAppCtl.createInitialContent = async (req, res) => {
             return res.status(409).json({ message: 'La configuración de contenido global ya existe. Utilice PUT para actualizar.' });
         }
 
-        const now = new Date().toISOString();
+        const now = new Date();
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Crear registro en SQL usando ORM (como usuario.controller.js)
         // CORREGIDO: Se cambió 'orm.contenido_apps' a 'orm.contenido_app' para coincidir con la exportación del ORM
@@ -146,7 +163,7 @@ contenidoAppCtl.createInitialContent = async (req, res) => {
             fontFamily: fontFamily || 'Open Sans', 
             mainTitle: mainTitle || 'Un toque para tu seguridad', 
             estado: estado || 'activo',
-            fecha_creacion: now
+            fecha_creacion: formattedNow // (hora local formateada)
         });
         const idContenidoAppSql = nuevoContenidoSQL.id; // Obtener el ID insertado por ORM
         logger.info(`[CONTENIDO_APP] Contenido SQL creado exitosamente con ID: ${idContenidoAppSql}`);
@@ -165,7 +182,7 @@ contenidoAppCtl.createInitialContent = async (req, res) => {
             visionContent: visionContent || 'Contenido por defecto de visión.',
             logoApp: logoApp || 'https://placehold.co/150x50/cccccc/ffffff?text=LogoApp',
             estado: estado || 'activo',
-            fecha_creacion: now
+            fecha_creacion: formattedNow // (hora local formateada)
         });
         logger.info(`[CONTENIDO_APP] Contenido Mongo creado exitosamente para ID SQL: ${idContenidoAppSql}`);
 
@@ -197,7 +214,9 @@ contenidoAppCtl.updateContent = async (req, res) => {
             return res.status(404).json({ message: 'Contenido no encontrado para actualizar. Considere usar POST /crear primero.' });
         }
 
-        const now = new Date().toISOString();
+        const now = new Date();
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar datos para SQL
         const camposSql = [];
@@ -211,8 +230,8 @@ contenidoAppCtl.updateContent = async (req, res) => {
         // Actualizar registro en SQL
         if (camposSql.length > 0) {
             await sql.promise().query(
-                `UPDATE contenido_apps SET ${camposSql.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`, 
-                [...valoresSql, contenidoSql.id]
+                `UPDATE contenido_apps SET ${camposSql.join(', ')}, fecha_modificacion = ? WHERE id = ?`, // CAMBIO: Usar formattedNow
+                [...valoresSql, formattedNow, contenidoSql.id] // CAMBIO: Pasar formattedNow
             );
             logger.info(`[CONTENIDO_APP] Contenido SQL actualizado para ID: ${contenidoSql.id}`);
         }
@@ -231,7 +250,7 @@ contenidoAppCtl.updateContent = async (req, res) => {
         if (logoApp !== undefined) updateDataMongo.logoApp = logoApp;
         if (estado !== undefined) updateDataMongo.estado = estado;
 
-        updateDataMongo.fecha_modificacion = now;
+        updateDataMongo.fecha_modificacion = formattedNow; // CAMBIO: Usar formattedNow
 
         if (Object.keys(updateDataMongo).length > 0) {
             await mongo.ContenidoApp.findOneAndUpdate(
@@ -267,17 +286,19 @@ contenidoAppCtl.changeStatus = async (req, res) => {
             return res.status(404).json({ message: 'Contenido no encontrado.' });
         }
 
-        const now = new Date().toISOString();
+        const now = new Date();
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         await sql.promise().query(
             "UPDATE contenido_apps SET estado = ?, fecha_modificacion = ? WHERE id = ?",
-            [estado, now, contenidoSql.id]
+            [estado, formattedNow, contenidoSql.id] // CAMBIO: Usar formattedNow
         );
         logger.info(`[CONTENIDO_APP] Estado SQL actualizado a "${estado}" para ID: ${contenidoSql.id}`);
 
         await mongo.ContenidoApp.updateOne(
             { idContenidoAppSql: String(contenidoSql.id) },
-            { $set: { estado: estado, fecha_modificacion: now } }
+            { $set: { estado: estado, fecha_modificacion: formattedNow } } // CAMBIO: Usar formattedNow
         );
         logger.info(`[CONTENIDO_APP] Estado Mongo actualizado a "${estado}" para ID SQL: ${contenidoSql.id}`);
         

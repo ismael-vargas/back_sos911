@@ -1,5 +1,5 @@
 // Importa los modelos de ambas bases de datos (ORM y SQL directo) y las utilidades
-const orm = require('../Database/dataBase.orm'); // Para Sequelize (ORM)
+const orm = require('../Database/dataBase.orm'); // Para Sequelize (SQL)
 const sql = require('../Database/dataBase.sql'); // MySQL directo
 const { cifrarDato, descifrarDato } = require('../lib/encrypDates'); // Utilidades de cifrado/descifrado
 
@@ -13,6 +13,17 @@ function safeDecrypt(data) {
         console.error('Error al descifrar datos de usuario_numero:', error.message);
         return '';
     }
+}
+
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 // --- Utilidad para obtener el logger desde req.app (mantenido de tu original) ---
@@ -43,7 +54,9 @@ usuarioNumeroCtl.createUserNumber = async (req, res) => {
             return res.status(400).json({ message: 'El usuario asociado no existe o no está activo.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Usar ORM para la creación
         // Se establece fecha_creacion, y fecha_modificacion no se incluye en la creación inicial.
@@ -52,7 +65,7 @@ usuarioNumeroCtl.createUserNumber = async (req, res) => {
             numero: numeroCif,
             usuarioId,
             estado: 'activo',
-            fecha_creacion: now, // Se añade la fecha de creación
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
             // fecha_modificacion no se establece aquí, se actualizará en métodos de actualización/eliminación
         });
 
@@ -79,7 +92,7 @@ usuarioNumeroCtl.createUserNumber = async (req, res) => {
 usuarioNumeroCtl.getAllUserNumbers = async (req, res) => {
     const logger = getLogger(req);
     const incluirEliminados = req.query.incluirEliminados === 'true'; // Añadido para consistencia
-    logger.info(`[USUARIOS_NUMEROS] Solicitud de listado de usuarios_numeros (incluirEliminados: ${incluirEliminados})`);
+    logger.info(`[USUARIOS_NUMEROS] Solicitud de listado de usuarios_numeros (incluirEliminados: ${incluirEliminados}).`);
     try {
         let querySQL = `SELECT 
                             un.id, 
@@ -190,7 +203,9 @@ usuarioNumeroCtl.updateUserNumber = async (req, res) => {
             return res.status(404).json({ error: 'Número de usuario no encontrado o inactivo.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar campos y valores para la actualización SQL
         const campos = [];
@@ -215,7 +230,7 @@ usuarioNumeroCtl.updateUserNumber = async (req, res) => {
 
         // Siempre actualizar fecha_modificacion en SQL
         campos.push('fecha_modificacion = ?');
-        valores.push(now);
+        valores.push(formattedNow);
 
         valores.push(id); // Añadir el ID para la cláusula WHERE
         const consultaSQL = `UPDATE usuarios_numeros SET ${campos.join(', ')} WHERE id = ?`;
@@ -261,10 +276,12 @@ usuarioNumeroCtl.deleteUserNumber = async (req, res) => {
             return res.status(404).json({ error: 'Número de usuario no encontrado o ya eliminado.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Marcar como eliminado en SQL directo
-        const [resultado] = await sql.promise().query("UPDATE usuarios_numeros SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
+        const [resultado] = await sql.promise().query("UPDATE usuarios_numeros SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
         if (resultado.affectedRows === 0) {
             logger.error(`[USUARIOS_NUMEROS] No se pudo marcar como eliminado el usuario_numero: id=${id}`);

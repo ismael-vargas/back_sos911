@@ -17,6 +17,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -116,7 +127,9 @@ paginaCtl.createPagina = async (req, res) => {
         }
 
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Cifrar nombrePagina y descripcionPagina antes de guardar en SQL
         const nombrePaginaCifrado = cifrarDato(nombrePagina);
@@ -128,7 +141,7 @@ paginaCtl.createPagina = async (req, res) => {
             nombrePagina: nombrePaginaCifrado,
             descripcionPagina: descripcionPaginaCifrada,
             estado: 'activo',
-            fecha_creacion: now,
+            fecha_creacion: formattedNow, // (hora local formateada)
         };
         const paginaGuardadaSQL = await orm.pagina.create(nuevoPaginaSQL); // Usando ORM para crear
         const idPaginaSql = paginaGuardadaSQL.id; // Obtener el ID insertado por ORM
@@ -142,7 +155,7 @@ paginaCtl.createPagina = async (req, res) => {
             vision,
             logoUrl,
             estado: 'activo', // Estado inicial
-            fecha_creacion: now // Establecer fecha_creacion para Mongo
+            fecha_creacion: formattedNow // Establecer fecha_creacion para Mongo (hora local formateada)
         });
         logger.info(`[PAGINA] Documento Mongo de contenido de página creado exitosamente para ID SQL: ${idPaginaSql}`);
 
@@ -174,7 +187,9 @@ paginaCtl.updatePagina = async (req, res) => {
         }
         logger.info(`[PAGINA] Configuración SQL encontrada para actualizar. ID: ${id}`);
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar datos para SQL (solo los que no son undefined)
         const camposSql = [];
@@ -203,8 +218,8 @@ paginaCtl.updatePagina = async (req, res) => {
         // Actualizar registro en SQL usando SQL directo
         if (camposSql.length > 0) {
             valoresSql.push(id); // Para el WHERE
-            const consultaSQL = `UPDATE paginas SET ${camposSql.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
-            const [resultadoSql] = await sql.promise().query(consultaSQL, valoresSql);
+            const consultaSQL = `UPDATE paginas SET ${camposSql.join(', ')}, fecha_modificacion = ? WHERE id = ?`; // CAMBIO: Usar formattedNow
+            const [resultadoSql] = await sql.promise().query(consultaSQL, [...valoresSql, formattedNow, id]); // CAMBIO: Pasar formattedNow
             if (resultadoSql.affectedRows === 0) {
                 logger.warn(`[PAGINA] No se pudo actualizar la página SQL con ID: ${id}.`);
             } else {
@@ -220,7 +235,7 @@ paginaCtl.updatePagina = async (req, res) => {
         if (estado !== undefined) datosParaMongo.estado = estado; // También actualizar estado en Mongo
 
         // Siempre actualizar fecha_modificacion en Mongo
-        datosParaMongo.fecha_modificacion = now;
+        datosParaMongo.fecha_modificacion = formattedNow; // CAMBIO: Usar formattedNow
 
         // Actualizar o crear registro en MongoDB (upsert)
         await mongo.ContenidoPagina.findOneAndUpdate(
@@ -252,10 +267,12 @@ paginaCtl.deletePagina = async (req, res) => {
         }
         logger.info(`[PAGINA] Configuración SQL encontrada para eliminación. ID: ${id}`);
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Marcar como eliminado en SQL usando SQL directo
-        const [resultadoSql] = await sql.promise().query("UPDATE paginas SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
+        const [resultadoSql] = await sql.promise().query("UPDATE paginas SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
         if (resultadoSql.affectedRows === 0) {
             logger.warn(`[PAGINA] No se pudo marcar como eliminado en SQL (posiblemente ya eliminado o ID incorrecto). ID: ${id}`);
@@ -266,7 +283,7 @@ paginaCtl.deletePagina = async (req, res) => {
         // Marcar como eliminado en MongoDB
         await mongo.ContenidoPagina.updateOne(
             { idPaginaSql: String(id) },
-            { $set: { estado: 'eliminado', fecha_modificacion: now } }
+            { $set: { estado: 'eliminado', fecha_modificacion: formattedNow } }
         );
         logger.info(`[PAGINA] Documento Mongo de contenido de página marcado como eliminado para ID SQL: ${id}`);
 

@@ -15,6 +15,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -34,7 +45,9 @@ notificacionesCtl.createNotification = async (req, res) => {
     }
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Verificar si la presión del botón de pánico existe en SQL
         const [existingPresionSQL] = await sql.promise().query("SELECT id FROM presiones_boton_panicos WHERE id = ? AND estado = 'activo'", [presionesBotonPanicoId]);
@@ -59,7 +72,7 @@ notificacionesCtl.createNotification = async (req, res) => {
             recibido: 0,
             respuesta: 0,
             estado: estado || 'pendiente',
-            fecha_creacion: now,
+            fecha_creacion: formattedNow, // (hora local formateada)
         };
         const notificacionGuardadaSQL = await orm.notificaciones.create(nuevaNotificacionSQL); // Usando ORM para crear
         const newNotificationId = notificacionGuardadaSQL.id; // Obtener el ID insertado por ORM
@@ -161,7 +174,7 @@ notificacionesCtl.getAllNotifications = async (req, res) => {
             fecha_creacion: notifSQL.fecha_creacion,
             fecha_modificacion: notifSQL.fecha_modificacion,
             presion_info: {
-                marca_tiempo: notifSQL.presion_marca_tiempo
+                marca_tiempo: notifSQL.marca_tiempo
             },
             cliente_info: {
                 nombre: safeDecrypt(notifSQL.cliente_nombre),
@@ -255,7 +268,9 @@ notificacionesCtl.updateNotification = async (req, res) => {
             return res.status(404).json({ error: 'Notificación no encontrada o eliminada para actualizar.' });
         }
         
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar datos para SQL
         const camposSQL = [];
@@ -297,7 +312,7 @@ notificacionesCtl.updateNotification = async (req, res) => {
 
         // Siempre actualizar fecha_modificacion en SQL
         camposSQL.push('fecha_modificacion = ?');
-        valoresSQL.push(now);
+        valoresSQL.push(formattedNow);
 
         valoresSQL.push(id); // Para el WHERE
         const consultaSQL = `UPDATE notificaciones SET ${camposSQL.join(', ')} WHERE id = ?`;
@@ -376,10 +391,12 @@ notificacionesCtl.deleteNotification = async (req, res) => {
             return res.status(404).json({ error: 'Notificación no encontrada o ya estaba eliminada.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE notificaciones SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE notificaciones SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[NOTIFICACIONES] No se pudo marcar como eliminado la notificación con ID: ${id}.`);

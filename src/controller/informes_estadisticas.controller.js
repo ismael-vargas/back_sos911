@@ -15,6 +15,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -42,7 +53,9 @@ informesCtl.createReport = async (req, res) => {
     }
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Verificar si la presión del botón de pánico existe en SQL
         const [existingPresionSQL] = await sql.promise().query("SELECT id FROM presiones_boton_panicos WHERE id = ? AND estado = 'activo'", [presionesBotonPanicoId]);
@@ -61,7 +74,7 @@ informesCtl.createReport = async (req, res) => {
             evaluaciones_911: evaluaciones_911 || 0,
             evaluaciones_innecesaria: evaluaciones_innecesaria || 0,
             estado: estado || 'activo',
-            fecha_creacion: now,
+            fecha_creacion: formattedNow, // (hora local formateada)
         };
         const informeGuardadoSQL = await orm.informes_estadisticas.create(nuevoInformeSQL); // Usando ORM para crear
         const newReportId = informeGuardadoSQL.id; // Obtener el ID insertado por ORM
@@ -276,7 +289,9 @@ informesCtl.updateReport = async (req, res) => {
             return res.status(404).json({ error: 'Informe no encontrado o inactivo para actualizar.' });
         }
         
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar datos para SQL
         const camposSQL = [];
@@ -313,8 +328,8 @@ informesCtl.updateReport = async (req, res) => {
         }
 
         valoresSQL.push(id); // Para el WHERE
-        const consultaSQL = `UPDATE informes_estadisticas SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
-        const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
+        const consultaSQL = `UPDATE informes_estadisticas SET ${camposSQL.join(', ')}, fecha_modificacion = ? WHERE id = ?`; // CAMBIO: Usar formattedNow
+        const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, [...valoresSQL, formattedNow, id]); // CAMBIO: Pasar formattedNow
         
         if (resultadoSQLUpdate.affectedRows === 0) {
             logger.warn(`[INFORMES_ESTADISTICAS] No se pudo actualizar el informe SQL con ID: ${id}.`);
@@ -393,8 +408,12 @@ informesCtl.deleteReport = async (req, res) => {
             return res.status(404).json({ error: 'Informe no encontrado o ya estaba eliminado.' });
         }
 
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
+
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE informes_estadisticas SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE informes_estadisticas SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[INFORMES_ESTADISTICAS] No se pudo marcar como eliminado el informe con ID: ${id}.`);

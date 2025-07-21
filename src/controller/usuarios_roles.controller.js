@@ -15,6 +15,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // --- Utilidad para obtener el logger desde req.app ---
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -53,14 +64,16 @@ usuarioRolesCtl.assignRoleToUser = async (req, res) => {
             return res.status(400).json({ message: 'Esta relación usuario-rol ya existe.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Crear la relación usando ORM
         const nuevaRelacion = await orm.usuarios_roles.create({
             usuarioId: usuarioId,
             roleId: roleId,
             estado: 'activo', // Asegurar estado inicial
-            fecha_creacion: now, // Se añade la fecha de creación
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
         });
 
         logger.info(`[USUARIO-ROL] Asignación exitosa: id=${nuevaRelacion.id}, usuarioId=${usuarioId}, roleId=${roleId}`);
@@ -180,7 +193,9 @@ usuarioRolesCtl.updateUserRole = async (req, res) => {
             return res.status(404).json({ error: 'Relación no encontrada o inactiva.' });
         }
 
-        const now = new Date().toISOString(); 
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar campos para actualización
         const campos = [];
@@ -217,7 +232,7 @@ usuarioRolesCtl.updateUserRole = async (req, res) => {
 
         // Siempre actualizar fecha_modificacion en SQL
         campos.push('fecha_modificacion = ?');
-        valores.push(now);
+        valores.push(formattedNow);
 
         valores.push(id);
         const consultaSQL = `UPDATE usuarios_roles SET ${campos.join(', ')} WHERE id = ?`;
@@ -250,10 +265,12 @@ usuarioRolesCtl.deleteUserRole = async (req, res) => {
             return res.status(404).json({ error: 'Relación no encontrada o ya eliminada.' });
         }
 
-        const now = new Date().toISOString(); 
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Marcar como eliminado
-        const [resultado] = await sql.promise().query("UPDATE usuarios_roles SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
+        const [resultado] = await sql.promise().query("UPDATE usuarios_roles SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
         if (resultado.affectedRows === 0) {
             logger.error(`[USUARIO-ROL] No se pudo marcar como eliminada la relación: id=${id}`);

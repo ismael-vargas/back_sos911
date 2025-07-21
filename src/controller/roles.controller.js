@@ -15,6 +15,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // --- Utilidad para obtener el logger desde req.app ---
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -41,14 +52,18 @@ rolCtl.createRole = async (req, res) => {
             return res.status(409).json({ message: 'El nombre de rol ya está registrado.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
-        const nombreCif = cifrarDato(nombre);
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
+        
+        // CORREGIDO: Definir nombreCif antes de usarlo
+        const nombreCif = cifrarDato(nombre); 
 
         // Crear el rol usando ORM
         const nuevoRol = await orm.rol.create({
             nombre: nombreCif,
             estado: 'activo', // Asegurar estado inicial
-            fecha_creacion: now, // Se añade la fecha de creación
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
         });
 
         logger.info(`[ROL] Registro exitoso: id=${nuevoRol.id}, nombre=${nombre}`);
@@ -160,7 +175,9 @@ rolCtl.updateRol = async (req, res) => {
             return res.status(404).json({ error: 'Rol no encontrado o inactivo.' });
         }
 
-        const now = new Date().toISOString(); 
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar campos y valores para la actualización SQL
         const campos = [];
@@ -189,7 +206,7 @@ rolCtl.updateRol = async (req, res) => {
 
         // Siempre actualizar fecha_modificacion en SQL
         campos.push('fecha_modificacion = ?');
-        valores.push(now);
+        valores.push(formattedNow);
 
         valores.push(id); 
         const consultaSQL = `UPDATE roles SET ${campos.join(', ')} WHERE id = ?`;
@@ -233,10 +250,12 @@ rolCtl.deleteRol = async (req, res) => {
             return res.status(404).json({ error: 'Rol no encontrado o ya eliminado.' });
         }
 
-        const now = new Date().toISOString(); 
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Marcar como eliminado en SQL directo
-        const [resultado] = await sql.promise().query("UPDATE roles SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
+        const [resultado] = await sql.promise().query("UPDATE roles SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
         if (resultado.affectedRows === 0) {
             logger.error(`[ROL] No se pudo marcar como eliminado el rol: id=${id}`);

@@ -17,6 +17,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -37,7 +48,9 @@ gruposCtl.createGroup = async (req, res) => {
             return res.status(400).json({ message: 'El clienteId y el nombre del grupo son requeridos.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
         const nombreCifrado = cifrarDato(nombre);
 
         // Verificar si el grupo ya existe por nombre cifrado y clienteId (usando SQL directo)
@@ -57,7 +70,7 @@ gruposCtl.createGroup = async (req, res) => {
             clienteId: clienteId,
             nombre: nombreCifrado,
             estado: estado || 'activo',
-            fecha_creacion: now, // Se añade la fecha de creación
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
             // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
         };
         const grupoGuardadoSQL = await orm.grupos.create(nuevoGrupoSQL);
@@ -70,7 +83,7 @@ gruposCtl.createGroup = async (req, res) => {
             idGrupoSql, 
             descripcion: descripcion || '', // La descripción es específica de Mongo
             estado: estado || 'activo', // Sincronizar estado con SQL
-            fecha_creacion: now // Establecer fecha_creacion para Mongo
+            fecha_creacion: formattedNow // Establecer fecha_creacion para Mongo (hora local formateada)
         };
         await mongo.Grupo.create(nuevoGrupoMongo);
         logger.info(`[GRUPOS] Grupo Mongo creado exitosamente para ID SQL: ${idGrupoSql}`);
@@ -228,7 +241,9 @@ gruposCtl.updateGroup = async (req, res) => {
         }
         const groupSQL = gruposSQL[0];
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar datos para SQL (solo los que no son undefined)
         const camposSQL = [];
@@ -256,8 +271,8 @@ gruposCtl.updateGroup = async (req, res) => {
         // Solo actualizar SQL si hay campos para actualizar
         if (camposSQL.length > 0) {
             valoresSQL.push(id); // Para el WHERE
-            const consultaSQL = `UPDATE grupos SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
-            const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
+            const consultaSQL = `UPDATE grupos SET ${camposSQL.join(', ')}, fecha_modificacion = ? WHERE id = ?`; // CAMBIO: Usar formattedNow
+            const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, [...valoresSQL, formattedNow, id]); // CAMBIO: Pasar formattedNow
             
             if (resultadoSQLUpdate.affectedRows === 0) {
                 logger.warn(`[GRUPOS] No se pudo actualizar el grupo SQL con ID: ${id}.`);
@@ -273,7 +288,7 @@ gruposCtl.updateGroup = async (req, res) => {
         if (estado !== undefined) updateDataMongo.estado = estado;
 
         // Siempre actualizar fecha_modificacion en Mongo
-        updateDataMongo.fecha_modificacion = now;
+        updateDataMongo.fecha_modificacion = formattedNow; // CAMBIO: Usar formattedNow
 
         // Realizar actualización en MongoDB
         if (Object.keys(updateDataMongo).length > 0) {
@@ -329,10 +344,12 @@ gruposCtl.deleteGroup = async (req, res) => {
     logger.info(`[GRUPOS] Solicitud de eliminación lógica de grupo con ID: ${id}`);
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // SQL directo para actualizar estado a 'eliminado'
-        const [resultadoSQL] = await sql.promise().query("UPDATE grupos SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ? AND estado = 'activo'", [now, id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE grupos SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ? AND estado = 'activo'", [formattedNow, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.warn(`[GRUPOS] Grupo no encontrado o ya eliminado con ID: ${id}`);
@@ -343,7 +360,7 @@ gruposCtl.deleteGroup = async (req, res) => {
         // Actualizar estado a 'eliminado' en MongoDB
         await mongo.Grupo.updateOne(
             { idGrupoSql: id }, 
-            { $set: { estado: 'eliminado', fecha_modificacion: now } }
+            { $set: { estado: 'eliminado', fecha_modificacion: formattedNow } }
         );
         logger.info(`[GRUPOS] Grupo Mongo marcado como eliminado para ID SQL: ${id}`);
         

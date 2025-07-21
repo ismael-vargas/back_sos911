@@ -17,6 +17,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -44,7 +55,9 @@ serviciosEmergenciaCtl.createEmergencyService = async (req, res) => {
         }
         logger.info(`[SERVICIOS_EMERGENCIA] Usuario con ID ${usuarioId} verificado.`);
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Cifrar los campos sensibles para SQL
         const nombreCifrado = cifrarDato(nombre);
@@ -68,7 +81,7 @@ serviciosEmergenciaCtl.createEmergencyService = async (req, res) => {
             telefono: telefonoCifrado,
             estado: estado || 'activo',
             usuarioId: usuarioId,
-            fecha_creacion: now,
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
         };
         const servicioGuardadoSQL = await orm.servicios_emergencia.create(nuevoServicioSQL); // Usando ORM para crear
         const idServicioEmergenciaSql = servicioGuardadoSQL.id; // Obtener el ID insertado por ORM
@@ -80,7 +93,7 @@ serviciosEmergenciaCtl.createEmergencyService = async (req, res) => {
             idServicioEmergenciaSql, 
             descripcion: descripcion || '', // La descripción es específica de Mongo
             estado: estado || 'activo', // Sincronizar estado con SQL
-            fecha_creacion: now // Establecer fecha_creacion para Mongo
+            fecha_creacion: formattedNow // Establecer fecha_creacion para Mongo (hora local formateada)
         });
         logger.info(`[SERVICIOS_EMERGENCIA] Servicio Mongo creado exitosamente para ID SQL: ${idServicioEmergenciaSql}`);
 
@@ -204,7 +217,7 @@ serviciosEmergenciaCtl.getEmergencyServiceById = async (req, res) => {
         const servicioCompleto = {
             id: serviceSQL.id,
             nombre: safeDecrypt(serviceSQL.nombre), // Descifrar nombre
-            telefono: safeDecrypt(service.telefono), // Descifrar teléfono
+            telefono: safeDecrypt(serviceSQL.telefono), // Descifrar teléfono // CORREGIDO: Usar serviceSQL.telefono
             estado: serviceSQL.estado,
             usuarioId: serviceSQL.usuarioId,
             descripcion: servicioMongo?.descripcion || '', // Descripción de Mongo
@@ -241,7 +254,9 @@ serviciosEmergenciaCtl.updateEmergencyService = async (req, res) => {
         }
         const serviceSQL = serviciosSQL[0];
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Validar que el nuevo usuarioId (si se proporciona) exista y esté activo
         if (usuarioId !== undefined && usuarioId !== serviceSQL.usuarioId) {
@@ -288,8 +303,8 @@ serviciosEmergenciaCtl.updateEmergencyService = async (req, res) => {
         // Solo actualizar SQL si hay campos para actualizar
         if (camposSQL.length > 0) {
             valoresSQL.push(id); // Para el WHERE
-            const consultaSQL = `UPDATE servicios_emergencia SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
-            const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
+            const consultaSQL = `UPDATE servicios_emergencia SET ${camposSQL.join(', ')}, fecha_modificacion = ? WHERE id = ?`; // CAMBIO: Usar formattedNow
+            const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, [...valoresSQL, formattedNow, id]); // CAMBIO: Pasar formattedNow
             
             if (resultadoSQLUpdate.affectedRows === 0) {
                 logger.warn(`[SERVICIOS_EMERGENCIA] No se pudo actualizar el servicio SQL con ID: ${id}.`);
@@ -305,7 +320,7 @@ serviciosEmergenciaCtl.updateEmergencyService = async (req, res) => {
         if (estado !== undefined) updateDataMongo.estado = estado;
 
         // Siempre actualizar fecha_modificacion en Mongo
-        updateDataMongo.fecha_modificacion = now;
+        updateDataMongo.fecha_modificacion = formattedNow; // CAMBIO: Usar formattedNow
 
         // Realizar actualización en MongoDB
         if (Object.keys(updateDataMongo).length > 0) {
@@ -363,10 +378,12 @@ serviciosEmergenciaCtl.deleteEmergencyService = async (req, res) => {
     logger.info(`[SERVICIOS_EMERGENCIA] Solicitud de eliminación lógica de servicio con ID: ${id}`);
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // SQL directo para actualizar estado a 'eliminado'
-        const [resultadoSQL] = await sql.promise().query("UPDATE servicios_emergencia SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ? AND estado = 'activo'", [now, id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE servicios_emergencia SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ? AND estado = 'activo'", [formattedNow, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.warn(`[SERVICIOS_EMERGENCIA] Servicio no encontrado o ya eliminado con ID: ${id}`);
@@ -377,7 +394,7 @@ serviciosEmergenciaCtl.deleteEmergencyService = async (req, res) => {
         // Actualizar estado a 'eliminado' en MongoDB
         await mongo.ServicioEmergencia.updateOne(
             { idServicioEmergenciaSql: id }, 
-            { $set: { estado: 'eliminado', fecha_modificacion: now } }
+            { $set: { estado: 'eliminado', fecha_modificacion: formattedNow } }
         );
         logger.info(`[SERVICIOS_EMERGENCIA] Servicio Mongo marcado como eliminado para ID SQL: ${id}`);
         

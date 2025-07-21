@@ -15,6 +15,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -34,7 +45,9 @@ dispositivosCtl.createDevice = async (req, res) => {
             return res.status(400).json({ message: 'Todos los campos obligatorios son requeridos (clienteId, token_dispositivo, tipo_dispositivo, modelo_dispositivo).' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Cifrar los campos sensibles
         const tokenCifrado = cifrarDato(token_dispositivo);
@@ -59,7 +72,7 @@ dispositivosCtl.createDevice = async (req, res) => {
             tipo_dispositivo: tipoCifrado,
             modelo_dispositivo: modeloCifrado,
             estado: estado || 'activo',
-            fecha_creacion: now, // Se añade la fecha de creación
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
             // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
         };
         const dispositivoGuardado = await orm.dispositivos.create(nuevoDispositivo);
@@ -196,7 +209,9 @@ dispositivosCtl.updateDevice = async (req, res) => {
         }
         const dispositivoExistente = existingDeviceSQL[0];
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar datos para SQL (solo los que no son undefined)
         const camposSQL = [];
@@ -226,7 +241,7 @@ dispositivosCtl.updateDevice = async (req, res) => {
 
         // Siempre actualizar fecha_modificacion en SQL
         camposSQL.push('fecha_modificacion = ?');
-        valoresSQL.push(now);
+        valoresSQL.push(formattedNow); // CAMBIO: Usar formattedNow
 
         valoresSQL.push(id); // Para el WHERE
         const consultaSQL = `UPDATE dispositivos SET ${camposSQL.join(', ')} WHERE id = ?`;
@@ -276,10 +291,12 @@ dispositivosCtl.deleteDevice = async (req, res) => {
             return res.status(404).json({ error: 'Dispositivo no encontrado o ya estaba eliminado.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE dispositivos SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE dispositivos SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[DISPOSITIVO] No se pudo marcar como eliminado el dispositivo con ID: ${id}.`);

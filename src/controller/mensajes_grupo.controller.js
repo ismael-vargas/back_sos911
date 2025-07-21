@@ -17,6 +17,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -36,7 +47,9 @@ mensajesGrupoCtl.createGroupMessage = async (req, res) => {
     }
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Opcional: Verificar si el grupo y el cliente existen en SQL antes de crear el mensaje
         // Esto asegura la integridad referencial si los IDs de SQL son importantes.
@@ -57,10 +70,10 @@ mensajesGrupoCtl.createGroupMessage = async (req, res) => {
             grupoId,
             clienteId,
             mensaje,
-            fecha_envio: now, // Se genera en el servidor
+            fecha_envio: formattedNow, // Se genera en el servidor (hora local formateada)
             estado: 'activo', // Estado por defecto
             tipo_mensaje: tipo_mensaje || 'texto', // Guardar tipo de mensaje en Mongo también
-            fecha_creacion: now // Se añade la fecha de creación para Mongo
+            fecha_creacion: formattedNow // Se añade la fecha de creación para Mongo (hora local formateada)
         };
         const mensajeGuardadoMongo = await mongo.MensajeGrupo.create(nuevoMensajeMongo);
         logger.info(`[MENSAJES_GRUPO] Mensaje creado exitosamente en Mongo: _id=${mensajeGuardadoMongo._id}`);
@@ -73,19 +86,19 @@ mensajesGrupoCtl.createGroupMessage = async (req, res) => {
             clienteId: clienteId,
             mongoMessageId: mensajeGuardadoMongo._id.toString(), // Convertir ObjectId a String
             tipo_mensaje: tipo_mensaje || 'texto',
-            fecha_envio: now, // Usar la misma fecha de envío para SQL y Mongo si es posible
+            fecha_envio: formattedNow, // Usar la misma fecha de envío para SQL y Mongo (hora local formateada)
             estado: 'activo',
-            fecha_creacion: now, // Se añade la fecha de creación para SQL
+            fecha_creacion: formattedNow, // Se añade la fecha de creación para SQL (hora local formateada)
         };
         await orm.mensajes_grupo.create(nuevoMensajeGrupoSQL); // Usando ORM para crear
         logger.info(`[MENSAJES_GRUPO] Metadatos del mensaje guardados en SQL para Mongo _id: ${mensajeGuardadoMongo._id} usando ORM.`);
 
         // Opcional: Actualizar metadatos en la tabla 'grupos' de SQL (ej. ultimo_mensaje_fecha, total_mensajes)
         // Esto asume que tienes las columnas 'ultimo_mensaje_fecha' y 'total_mensajes' en tu tabla 'grupos'
-        // FIX: Usar IFNULL para manejar el caso donde total_mensajes es NULL
+        // FIX: Se pasan los 3 parámetros correctamente para los 3 placeholders de la consulta
         await sql.promise().query(
-            "UPDATE grupos SET ultimo_mensaje_fecha = ?, total_mensajes = IFNULL(total_mensajes, 0) + 1, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?",
-            [now, grupoId] 
+            "UPDATE grupos SET ultimo_mensaje_fecha = ?, total_mensajes = IFNULL(total_mensajes, 0) + 1, fecha_modificacion = ? WHERE id = ?", 
+            [formattedNow, formattedNow, grupoId] // CORREGIDO: Pasar los 3 valores: ultimo_mensaje_fecha, fecha_modificacion, id
         );
         logger.info(`[MENSAJES_GRUPO] Metadatos del grupo ${grupoId} actualizados en SQL.`);
 
@@ -177,13 +190,15 @@ mensajesGrupoCtl.updateGroupMessage = async (req, res) => {
     }
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         const updateDataMongo = {};
         if (mensaje !== undefined) updateDataMongo.mensaje = mensaje;
         if (estado !== undefined) updateDataMongo.estado = estado;
         if (tipo_mensaje !== undefined) updateDataMongo.tipo_mensaje = tipo_mensaje;
-        updateDataMongo.fecha_modificacion = now; // Actualizar fecha de modificación en Mongo
+        updateDataMongo.fecha_modificacion = formattedNow; // Actualizar fecha de modificación en Mongo (hora local formateada)
 
         const resultMongo = await mongo.MensajeGrupo.updateOne(
             { _id: id, estado: 'activo' }, // Solo actualiza si está activo
@@ -200,7 +215,7 @@ mensajesGrupoCtl.updateGroupMessage = async (req, res) => {
         if (estado !== undefined) {
             await sql.promise().query(
                 "UPDATE mensajes_grupos SET estado = ?, fecha_modificacion = ? WHERE mongoMessageId = ?", // CORREGIDO: plural
-                [estado, now, id] // Usar 'now' para fecha_modificacion
+                [estado, formattedNow, id] // Usar 'formattedNow' para fecha_modificacion
             );
             logger.info(`[MENSAJES_GRUPO] Estado del metadato del mensaje en SQL actualizado para Mongo _id: ${id}.`);
         }
@@ -235,12 +250,14 @@ mensajesGrupoCtl.deleteGroupMessage = async (req, res) => {
     logger.info(`[MENSAJES_GRUPO] Solicitud de eliminación lógica de mensaje con ID: ${id}`);
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Marcar como eliminado en MongoDB
         const resultMongo = await mongo.MensajeGrupo.updateOne(
             { _id: id, estado: 'activo' }, // Solo marca como eliminado si está activo
-            { $set: { estado: 'eliminado', fecha_modificacion: now } }
+            { $set: { estado: 'eliminado', fecha_modificacion: formattedNow } }
         );
 
         if (resultMongo.matchedCount === 0) {
@@ -252,7 +269,7 @@ mensajesGrupoCtl.deleteGroupMessage = async (req, res) => {
         // Marcar como eliminado en el registro de metadatos SQL
         const [resultadoSQL] = await sql.promise().query(
             "UPDATE mensajes_grupos SET estado = 'eliminado', fecha_modificacion = ? WHERE mongoMessageId = ?", // CORREGIDO: plural
-            [now, id] // Usar 'now' para fecha_modificacion
+            [formattedNow, id] // Usar 'formattedNow' para fecha_modificacion
         );
         
         if (resultadoSQL.affectedRows === 0) {

@@ -16,6 +16,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // --- CRUD de Usuarios ---
 usersCtl.createUser = async (req, res) => {
     const { nombre, correo_electronico, cedula_identidad, contrasena, fecha_nacimiento, direccion, estado } = req.body; // Se añade 'estado' al destructuring
@@ -38,7 +49,9 @@ usersCtl.createUser = async (req, res) => {
 
         // La contraseña ahora se cifrará con la función 'cifrarDato' para que sea descifrable
         const contrasena_cifrada = cifrarDato(contrasena); 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         const nuevoUsuarioSQL = {
             nombre: cifrarDato(nombre),
@@ -46,7 +59,7 @@ usersCtl.createUser = async (req, res) => {
             cedula_identidad: cifrarDato(cedula_identidad), 
             contrasena_hash: contrasena_cifrada, // Se usa la contraseña cifrada con crypto
             estado: estado || 'activo', // Se cambia el estado por defecto a 'activo'
-            fecha_creacion: now, // Se añade la fecha de creación
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
         };
         const usuarioGuardadoSQL = await orm.usuario.create(nuevoUsuarioSQL);
         const idUsuarioSql = usuarioGuardadoSQL.id;
@@ -56,7 +69,7 @@ usersCtl.createUser = async (req, res) => {
             fecha_nacimiento, 
             direccion, 
             estado: estado || 'activo', // Se asegura que el estado también se guarde en Mongo con el nuevo valor por defecto
-            fecha_creacion: now, // Se añade la fecha de creación para Mongo
+            fecha_creacion: formattedNow, // Se añade la fecha de creación para Mongo (hora local formateada)
         };
         await mongo.Usuario.create(nuevoUsuarioMongo);
         res.status(201).json({ message: 'Usuario registrado exitosamente.' });
@@ -78,9 +91,6 @@ usersCtl.getAllUsers = async (req, res) => {
                 // SOLO si se encuentra un usuario en SQL, intentamos buscar en Mongo
                 if (userSQL) { 
                     usuarioMongo = await mongo.Usuario.findOne({ idUsuarioSql: userSQL.id });
-                    // Opcional: Si el profesor quiere un control más estricto,
-                    // se podría añadir un 'if' aquí para verificar el estado en Mongo también,
-                    // por ejemplo: if (usuarioMongo && usuarioMongo.estado !== 'bloqueado')
                 }
 
                 return {
@@ -91,8 +101,8 @@ usersCtl.getAllUsers = async (req, res) => {
                     estado: userSQL.estado,
                     fecha_nacimiento: usuarioMongo ? usuarioMongo.fecha_nacimiento : null,
                     direccion: usuarioMongo ? usuarioMongo.direccion : null,
-                    fecha_creacion: userSQL.fecha_creacion, // Se añade la fecha de creación de SQL
-                    fecha_modificacion: userSQL.fecha_modificacion, // Se añade la fecha de modificación de SQL
+                    fecha_creacion: userSQL.fecha_creacion, 
+                    fecha_modificacion: userSQL.fecha_modificacion, 
                 };
             })
         );
@@ -124,7 +134,6 @@ usersCtl.getUserById = async (req, res) => {
         if (usuarioSQL) {
             usuarioMongo = await mongo.Usuario.findOne({ idUsuarioSql: idUsuario });
             // Opcional: Si el profesor quiere un control más estricto,
-            // se podría añadir un 'if' aquí para verificar el estado en Mongo también.
         }
 
         const usuarioCompleto = {
@@ -135,8 +144,8 @@ usersCtl.getUserById = async (req, res) => {
             estado: usuarioSQL.estado,
             fecha_nacimiento: usuarioMongo?.fecha_nacimiento || null,
             direccion: usuarioMongo?.direccion || null,
-            fecha_creacion: usuarioSQL.fecha_creacion, // Se añade la fecha de creación de SQL
-            fecha_modificacion: usuarioSQL.fecha_modificacion, // Se añade la fecha de modificación de SQL
+            fecha_creacion: usuarioSQL.fecha_creacion, 
+            fecha_modificacion: usuarioSQL.fecha_modificacion, 
         };
         res.status(200).json(usuarioCompleto);
     } catch (error) {
@@ -155,7 +164,9 @@ usersCtl.updateUser = async (req, res) => {
         // Preparar datos para SQL (solo los que no son undefined)
         const campos = [];
         const valores = [];
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         if (nombre) {
             campos.push('nombre = ?');
@@ -163,7 +174,7 @@ usersCtl.updateUser = async (req, res) => {
         }
         if (correo_electronico) {
             campos.push('correo_electronico = ?');
-            valores.push(cifrarDato(correo_electronico));
+            valores.push(cifrarDato(correo_electronico)); 
         }
         if (cedula_identidad) {
             campos.push('cedula_identidad = ?');
@@ -174,9 +185,9 @@ usersCtl.updateUser = async (req, res) => {
             valores.push(estado);
         }
         
-        // Siempre actualizar fecha_modificacion en SQL
+        // Siempre actualizar fecha_modificacion en SQL (hora local formateada)
         campos.push('fecha_modificacion = ?');
-        valores.push(now);
+        valores.push(formattedNow);
 
         if (campos.length > 0) {
             valores.push(idUsuario); // Para el WHERE, usando el ID del usuario logueado o del parámetro
@@ -198,8 +209,8 @@ usersCtl.updateUser = async (req, res) => {
             datosParaMongo.direccion = cifrarDato(datosParaMongo.direccion);
         }
         
-        // Siempre actualizar fecha_modificacion en Mongo
-        datosParaMongo.fecha_modificacion = now;
+        // Siempre actualizar fecha_modificacion en Mongo (hora local formateada)
+        datosParaMongo.fecha_modificacion = formattedNow;
 
         await mongo.Usuario.updateOne({ idUsuarioSql: idUsuario }, { $set: datosParaMongo });
         
@@ -216,16 +227,19 @@ usersCtl.deleteUser = async (req, res) => {
     // De lo contrario, se usa req.params.id para buscar por ID (ej. por un administrador)
     const idUsuario = req.user ? req.user.id : req.params.id; 
     try {
-        const now = new Date().toISOString();
-        // SQL directo para actualizar estado a 'eliminado'
-        const [resultado] = await sql.promise().query("UPDATE usuarios SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, idUsuario]);
+        const now = new Date();
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
+
+        // SQL directo para actualizar estado a 'eliminado' (hora local formateada)
+        const [resultado] = await sql.promise().query("UPDATE usuarios SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, idUsuario]);
         
         if (resultado.affectedRows === 0) {
             return res.status(404).json({ error: 'Usuario no encontrado.' });
         }
         
-        // Actualizar MongoDB
-        await mongo.Usuario.updateOne({ idUsuarioSql: idUsuario }, { $set: { estado: 'eliminado', fecha_modificacion: now } });
+        // Actualizar MongoDB (hora local formateada)
+        await mongo.Usuario.updateOne({ idUsuarioSql: idUsuario }, { $set: { estado: 'eliminado', fecha_modificacion: formattedNow } });
         
         res.status(200).json({ message: 'Usuario marcado como eliminado.' });
     } catch (error) {
@@ -269,14 +283,16 @@ usersCtl.registerPreferences = async (req, res) => {
     const idUsuario = req.user ? req.user.id : req.params.id; 
     const { tema, sidebarMinimizado } = req.body;
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // CORREGIDO: Se usa 'orm.preferencias' en singular y se añaden 'estado' y 'fecha_creacion'
         const nuevaPreferenciaSQL = { 
             tema, 
             usuarioId: idUsuario,
             estado: 'activo', // Asegurar que el estado se guarde
-            fecha_creacion: now, // Asegurar que la fecha de creación se guarde
+            fecha_creacion: formattedNow, // Asegurar que la fecha de creación se guarde (hora local formateada)
         }; 
         const preferenciaGuardadaSQL = await orm.preferencias.create(nuevaPreferenciaSQL);
         const idPreferenciaSql = preferenciaGuardadaSQL.id;
@@ -286,7 +302,7 @@ usersCtl.registerPreferences = async (req, res) => {
             idPreferenciaSql, 
             sidebarMinimizado,
             estado: 'activo', // Asegurar que el estado se guarde en Mongo
-            fecha_creacion: now, // Asegurar que la fecha de creación se guarde en Mongo
+            fecha_creacion: formattedNow, // Asegurar que la fecha de creación se guarde en Mongo (hora local formateada)
         };
         await mongo.Preferencias.create(nuevaPreferenciaMongo);
         
@@ -355,15 +371,17 @@ usersCtl.updatePreferences = async (req, res) => {
         }
         
         const preferenciaSQL = preferenciasSQL[0];
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
         
         // SQL directo para actualizar tema
-        await sql.promise().query("UPDATE preferencias SET tema = ?, fecha_modificacion = ? WHERE id = ?", [tema, now, preferenciaSQL.id]);
+        await sql.promise().query("UPDATE preferencias SET tema = ?, fecha_modificacion = ? WHERE id = ?", [tema, formattedNow, preferenciaSQL.id]);
         
         // CORREGIDO: Se usa 'mongo.Preferencias' con mayúscula
         await mongo.Preferencias.updateOne(
             { idPreferenciaSql: preferenciaSQL.id },
-            { $set: { sidebarMinimizado, fecha_modificacion: now } }
+            { $set: { sidebarMinimizado, fecha_modificacion: formattedNow } }
         );
         
         res.status(200).json({ message: 'Preferencias actualizadas.' });
@@ -387,15 +405,17 @@ usersCtl.deletePreferences = async (req, res) => {
         }
         
         const preferenciaSQL = preferenciasSQL[0];
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
         
         // SQL directo para marcar como eliminado
-        await sql.promise().query("UPDATE preferencias SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, preferenciaSQL.id]);
+        await sql.promise().query("UPDATE preferencias SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, preferenciaSQL.id]);
         
         // CORREGIDO: Se usa 'mongo.Preferencias' con mayúscula
         await mongo.Preferencias.updateOne(
             { idPreferenciaSql: preferenciaSQL.id },
-            { $set: { estado: 'eliminado', fecha_modificacion: now } }
+            { $set: { estado: 'eliminado', fecha_modificacion: formattedNow } }
         );
         
         res.status(200).json({ message: 'Preferencias marcadas como eliminadas.' });

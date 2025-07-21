@@ -15,6 +15,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -36,7 +47,9 @@ evaluacionesSituacionesCtl.createSituationEvaluation = async (req, res) => {
     }
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Verificar si la notificación existe
         const [existingNotificacionSQL] = await sql.promise().query("SELECT id FROM notificaciones WHERE id = ? AND estado != 'eliminado'", [notificacioneId]);
@@ -55,7 +68,7 @@ evaluacionesSituacionesCtl.createSituationEvaluation = async (req, res) => {
             evaluacion: evaluacion,
             detalle: detalleCifrado,
             estado: estado || 'activo',
-            fecha_creacion: now,
+            fecha_creacion: formattedNow, // (hora local formateada)
         });
         
         const newEvaluationId = nuevaEvaluacion.id; // Obtener el ID insertado por ORM
@@ -64,7 +77,7 @@ evaluacionesSituacionesCtl.createSituationEvaluation = async (req, res) => {
         // AHORA: Incrementar el contador de 'respuesta' en la notificación asociada
         await sql.promise().query(
             "UPDATE notificaciones SET respuesta = IFNULL(respuesta, 0) + 1, fecha_modificacion = ? WHERE id = ?",
-            [now, notificacioneId]
+            [formattedNow, notificacioneId] // Usar formattedNow
         );
         logger.info(`[EVALUACIONES_SITUACIONES] Contador de respuesta de notificación ${notificacioneId} incrementado.`);
 
@@ -112,7 +125,7 @@ evaluacionesSituacionesCtl.createSituationEvaluation = async (req, res) => {
                     estado: createdEvaluation.notificacion_estado
                 },
                 presion_info: {
-                    marca_tiempo: createdEvaluation.presion_marca_tiempo
+                    marca_tiempo: createdEvaluation.marca_tiempo
                 },
                 cliente_info: {
                     nombre: safeDecrypt(createdEvaluation.cliente_nombre),
@@ -226,7 +239,7 @@ evaluacionesSituacionesCtl.getSituationEvaluationById = async (req, res) => {
         
         if (evaluacionSQL.length === 0) {
             logger.warn(`[EVALUACIONES_SITUACIONES] Evaluación no encontrada o eliminada con ID: ${id}.`);
-            return res.status(404).json({ error: 'Evaluación de situación no encontrada o eliminada.' });
+            return res.status(404).json({ error: 'Evaluación no encontrada o eliminada.' });
         }
         
         const evaluacion = evaluacionSQL[0];
@@ -244,7 +257,7 @@ evaluacionesSituacionesCtl.getSituationEvaluationById = async (req, res) => {
                 estado: evaluacion.notificacion_estado
             },
             presion_info: {
-                marca_tiempo: evaluacion.presion_marca_tiempo
+                marca_tiempo: evaluacion.marca_tiempo
             },
             cliente_info: {
                 nombre: safeDecrypt(evaluacion.cliente_nombre),
@@ -272,7 +285,9 @@ evaluacionesSituacionesCtl.updateSituationEvaluation = async (req, res) => {
             return res.status(404).json({ error: 'Evaluación no encontrada o inactiva para actualizar.' });
         }
         
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); // Obtiene la fecha y hora actual del servidor
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar datos para SQL
         const camposSQL = [];
@@ -298,7 +313,7 @@ evaluacionesSituacionesCtl.updateSituationEvaluation = async (req, res) => {
 
         // Siempre actualizar fecha_modificacion en SQL
         camposSQL.push('fecha_modificacion = ?');
-        valoresSQL.push(now);
+        valoresSQL.push(formattedNow); // Usar formattedNow
 
         valoresSQL.push(id); // Para el WHERE
         const consultaSQL = `UPDATE evaluaciones_situaciones SET ${camposSQL.join(', ')} WHERE id = ?`;
@@ -352,7 +367,7 @@ evaluacionesSituacionesCtl.updateSituationEvaluation = async (req, res) => {
                     estado: updatedEvaluation.notificacion_estado
                 },
                 presion_info: {
-                    marca_tiempo: updatedEvaluation.presion_marca_tiempo
+                    marca_tiempo: updatedEvaluation.marca_tiempo
                 },
                 cliente_info: {
                     nombre: safeDecrypt(updatedEvaluation.cliente_nombre),
@@ -360,7 +375,6 @@ evaluacionesSituacionesCtl.updateSituationEvaluation = async (req, res) => {
                 }
             }
         });
-
     } catch (error) {
         console.error('Error al actualizar la evaluación de situación:', error.message);
         res.status(500).json({ error: 'Error interno del servidor al actualizar la evaluación de situación.' });
@@ -381,8 +395,12 @@ evaluacionesSituacionesCtl.deleteSituationEvaluation = async (req, res) => {
             return res.status(404).json({ error: 'Evaluación no encontrada o ya estaba eliminada.' });
         }
 
+        const now = new Date(); // Obtiene la fecha y hora actual del servidor
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
+
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE evaluaciones_situaciones SET estado = 'eliminado', fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?", [id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE evaluaciones_situaciones SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[EVALUACIONES_SITUACIONES] No se pudo marcar como eliminado la evaluación con ID: ${id}.`);

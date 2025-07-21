@@ -17,16 +17,21 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger (manteniendo lo que ya tenías)
 function getLogger(req) {
   return req.app && req.app.get ? req.app.get('logger') : console;
 }
-
-// Función para hashear el correo (ya no se usará para la DB, pero se mantiene si es necesario para otros fines)
-// Esta función no se usa para almacenar en DB, ya que el correo se cifra.
-// function hashCorreo(correo) {
-//     return CryptoJS.SHA256(correo).toString(CryptoJS.enc.Hex);
-// }
 
 // --- CRUD de Clientes ---
 
@@ -44,7 +49,9 @@ clientesCtl.createClient = async (req, res) => {
             return res.status(400).json({ message: 'Todos los campos obligatorios son requeridos (nombre, correo_electronico, cedula_identidad, contrasena, direccion).' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // **Validación de unicidad para correo_electronico y cedula_identidad**
         // Obtener todos los clientes para verificar unicidad (descifrando y comparando)
@@ -76,7 +83,7 @@ clientesCtl.createClient = async (req, res) => {
             contrasena_hash: contrasenaCifrada, // Usar la contraseña cifrada
             numero_ayudas: 0,
             estado: 'activo',
-            fecha_creacion: now, // Se añade la fecha de creación
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
             // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
         };
         const clienteGuardadoSQL = await orm.cliente.create(nuevoClienteSQL);
@@ -90,7 +97,7 @@ clientesCtl.createClient = async (req, res) => {
             fecha_nacimiento, 
             direccion: cifrarDato(direccion), // Cifrar dirección en Mongo
             estado: 'activo', // Estado por defecto
-            fecha_creacion: now // Se añade la fecha de creación para Mongo
+            fecha_creacion: formattedNow // Se añade la fecha de creación para Mongo (hora local formateada)
         };
         await mongo.Cliente.create(nuevoClienteMongo);
         logger.info(`[CLIENTE] Cliente Mongo creado exitosamente para ID SQL: ${idClienteSql}`);
@@ -105,7 +112,7 @@ clientesCtl.createClient = async (req, res) => {
                 try {
                     const deviceIdDescifrado = descifrarDato(disp.token_dispositivo);
                     if (deviceIdDescifrado === deviceId) {
-                        await sql.promise().query("UPDATE dispositivos SET estado = 'inactivo', fecha_modificacion = ? WHERE id = ?", [now, disp.id]); // Usar 'now'
+                        await sql.promise().query("UPDATE dispositivos SET estado = 'inactivo', fecha_modificacion = ? WHERE id = ?", [formattedNow, disp.id]); // Usar 'formattedNow'
                         logger.info(`[DISPOSITIVO] Dispositivo previamente activo desactivado: clienteId=${disp.clienteId}, deviceId=${deviceId}`);
                     }
                 } catch (error) {
@@ -120,7 +127,7 @@ clientesCtl.createClient = async (req, res) => {
                 tipo_dispositivo: cifrarDato(tipo_dispositivo),
                 modelo_dispositivo: cifrarDato(modelo_dispositivo),
                 estado: 'activo',
-                fecha_creacion: now, // Se añade la fecha de creación
+                fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
                 // fecha_modificacion NO se incluye en la creación
             };
             await orm.dispositivos.create(nuevoDispositivo);
@@ -244,7 +251,13 @@ clientesCtl.updateClient = async (req, res) => {
         }
         const clienteSQL = clientesSQL[0];
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
+
+        // Validar que el nuevo usuarioId (si se proporciona) exista y esté activo
+        // (Esta lógica no existe en clientes, pero se mantiene la estructura de validación)
+        // if (usuarioId !== undefined && usuarioId !== serviceSQL.usuarioId) { ... }
 
         // Preparar datos para SQL (solo los que no son undefined)
         const camposSQL = [];
@@ -297,7 +310,7 @@ clientesCtl.updateClient = async (req, res) => {
         if (camposSQL.length > 0) {
             // Siempre actualizar fecha_modificacion en SQL
             camposSQL.push('fecha_modificacion = ?');
-            valoresSQL.push(now);
+            valoresSQL.push(formattedNow); // CAMBIO: Usar formattedNow
 
             valoresSQL.push(idCliente); // Para el WHERE
             const consultaSQL = `UPDATE clientes SET ${camposSQL.join(', ')} WHERE id = ?`;
@@ -318,7 +331,7 @@ clientesCtl.updateClient = async (req, res) => {
         if (estado !== undefined) updateDataMongo.estado = estado;
 
         // Siempre actualizar fecha_modificacion en Mongo
-        updateDataMongo.fecha_modificacion = now;
+        updateDataMongo.fecha_modificacion = formattedNow; // CAMBIO: Usar formattedNow
 
         // Realizar actualización en MongoDB
         if (Object.keys(updateDataMongo).length > 0) {
@@ -360,10 +373,12 @@ clientesCtl.deleteClient = async (req, res) => {
     logger.info(`[CLIENTE] Solicitud de eliminación lógica de cliente con ID: ${idCliente}`);
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // SQL directo para actualizar estado a 'eliminado'
-        const [resultadoSQL] = await sql.promise().query("UPDATE clientes SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ? AND estado = 'activo'", [now, idCliente]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE clientes SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ? AND estado = 'activo'", [formattedNow, idCliente]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.warn(`[CLIENTE] Cliente no encontrado o ya eliminado con ID: ${idCliente}`);
@@ -374,7 +389,7 @@ clientesCtl.deleteClient = async (req, res) => {
         // Actualizar estado a 'eliminado' en MongoDB
         await mongo.Cliente.updateOne(
             { idClienteSql: idCliente }, 
-            { $set: { estado: 'eliminado', fecha_modificacion: now } }
+            { $set: { estado: 'eliminado', fecha_modificacion: formattedNow } }
         );
         logger.info(`[CLIENTE] Cliente Mongo marcado como eliminado para ID SQL: ${idCliente}`);
         
@@ -415,7 +430,9 @@ clientesCtl.loginClient = async (req, res) => {
         }
         logger.info(`[CLIENTE] Contraseña verificada para cliente ID: ${clienteSQL.id}.`);
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Lógica de registro/actualización de dispositivo (adaptada de tu código original y usando SQL directo)
         if (deviceId && tipo_dispositivo && modelo_dispositivo) {
@@ -426,32 +443,32 @@ clientesCtl.loginClient = async (req, res) => {
 
             // Obtener todos los dispositivos y buscar coincidencias
             const [allDevicesSQL] = await sql.promise().query("SELECT * FROM dispositivos");
-            for (const dev of allDevicesSQL) {
+            for (const disp of allDevicesSQL) {
                 try {
-                    const decryptedDeviceId = descifrarDato(dev.token_dispositivo);
+                    const decryptedDeviceId = descifrarDato(disp.token_dispositivo);
                     if (decryptedDeviceId === deviceId) {
-                        if (dev.clienteId === clienteSQL.id) {
-                            dispositivoDelCliente = dev;
-                        } else if (dev.estado === 'activo') {
-                            dispositivoDeOtroClienteActivo = dev;
+                        if (disp.clienteId === clienteSQL.id) {
+                            dispositivoDelCliente = disp;
+                        } else if (disp.estado === 'activo') {
+                            dispositivoDeOtroClienteActivo = disp;
                         }
                     }
                 } catch (decryptionError) {
-                    logger.error(`[DISPOSITIVO] Error al descifrar un token de dispositivo: ${decryptionError.message}`);
+                    logger.error(`[DISPOSITIVO] Error al descifrar token_dispositivo durante device-login: ${decryptionError.message}`);
                 }
             }
 
             // 1. Desactivar el dispositivo si pertenece a otro cliente y está activo
             if (dispositivoDeOtroClienteActivo) {
                 logger.warn(`[DISPOSITIVO] Dispositivo "${deviceId}" ya estaba activo para otro cliente (${dispositivoDeOtroClienteActivo.clienteId}). Desactivándolo.`);
-                await sql.promise().query("UPDATE dispositivos SET estado = 'inactivo', fecha_modificacion = ? WHERE id = ?", [now, dispositivoDeOtroClienteActivo.id]);
+                await sql.promise().query("UPDATE dispositivos SET estado = 'inactivo', fecha_modificacion = ? WHERE id = ?", [formattedNow, dispositivoDeOtroClienteActivo.id]);
             }
 
             // 2. Activar o crear el dispositivo para el cliente actual
             if (dispositivoDelCliente) {
                 if (dispositivoDelCliente.estado === 'inactivo') {
                     logger.info(`[DISPOSITIVO] Reactivando dispositivo para cliente ${clienteSQL.id}.`);
-                    await sql.promise().query("UPDATE dispositivos SET estado = 'activo', fecha_modificacion = ? WHERE id = ?", [now, dispositivoDelCliente.id]);
+                    await sql.promise().query("UPDATE dispositivos SET estado = 'activo', fecha_modificacion = ? WHERE id = ?", [formattedNow, dispositivoDelCliente.id]);
                 } else {
                     logger.info(`[DISPOSITIVO] Dispositivo ya activo para cliente ${clienteSQL.id}.`);
                 }
@@ -461,7 +478,7 @@ clientesCtl.loginClient = async (req, res) => {
                 // fecha_modificacion NO se incluye en la creación, se actualizará en modificaciones
                 await sql.promise().query(
                     "INSERT INTO dispositivos (clienteId, token_dispositivo, tipo_dispositivo, modelo_dispositivo, estado, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?)",
-                    [clienteSQL.id, cifrarDato(deviceId), cifrarDato(tipo_dispositivo), cifrarDato(modelo_dispositivo), 'activo', now]
+                    [clienteSQL.id, cifrarDato(deviceId), cifrarDato(tipo_dispositivo), cifrarDato(modelo_dispositivo), 'activo', formattedNow]
                 );
             }
         } else {

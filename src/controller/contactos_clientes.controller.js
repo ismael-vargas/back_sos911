@@ -15,6 +15,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -34,7 +45,9 @@ contactosClientesCtl.createClientContact = async (req, res) => {
     }
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Verificar si el cliente existe en SQL
         const [existingClienteSQL] = await sql.promise().query("SELECT id FROM clientes WHERE id = ? AND estado = 'activo'", [clienteId]);
@@ -76,7 +89,7 @@ contactosClientesCtl.createClientContact = async (req, res) => {
             contactosEmergenciaId: contactosEmergenciaId,
             notificacioneId: notificacioneId,
             estado: estado || 'activo',
-            fecha_creacion: now,
+            fecha_creacion: formattedNow, // (hora local formateada)
         });
         const newContactClientId = nuevaRelacion.id; // Obtener el ID insertado por ORM
         logger.info(`[CONTACTOS_CLIENTES] Contacto de cliente creado exitosamente con ID: ${newContactClientId}.`);
@@ -84,7 +97,7 @@ contactosClientesCtl.createClientContact = async (req, res) => {
         // AHORA: Incrementar el contador de 'recibido' en la notificación asociada
         await sql.promise().query(
             "UPDATE notificaciones SET recibido = IFNULL(recibido, 0) + 1, fecha_modificacion = ? WHERE id = ?",
-            [now, notificacioneId]
+            [formattedNow, notificacioneId] // Usar formattedNow
         );
         logger.info(`[CONTACTOS_CLIENTES] Contador de recibido de notificación ${notificacioneId} incrementado.`);
 

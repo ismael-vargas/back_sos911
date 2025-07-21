@@ -15,6 +15,17 @@ function safeDecrypt(data) {
     }
 }
 
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // Utilidad para obtener el logger
 function getLogger(req) {
     return req.app && req.app.get ? req.app.get('logger') : console;
@@ -39,7 +50,9 @@ contactosEmergenciasCtl.createEmergencyContact = async (req, res) => {
             return res.status(400).json({ message: 'Los campos clienteId, nombre y número/teléfono son requeridos.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Cifrar los datos sensibles
         const nombreCifrado = cifrarDato(nombre);
@@ -58,14 +71,13 @@ contactosEmergenciasCtl.createEmergencyContact = async (req, res) => {
         }
 
         // Crear el nuevo contacto usando ORM (como usuario.controller.js)
-        // CORREGIDO: Se cambió 'orm.contactos_emergencias' a 'orm.contactos_emergencia' para coincidir con la exportación del ORM
         const nuevoContacto = await orm.contactos_emergencia.create({
             clienteId: clienteId,
             nombre: nombreCifrado,
             descripcion: descripcionCifrada,
             telefono: telefonoCifrado,
             estado: estado || 'activo',
-            fecha_creacion: now,
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
         });
 
         const newContactId = nuevoContacto.id; // Obtener el ID insertado por ORM
@@ -238,7 +250,9 @@ contactosEmergenciasCtl.updateEmergencyContact = async (req, res) => {
         }
         const contactoExistente = existingContactSQL[0];
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar datos para SQL (solo los que no son undefined)
         const camposSQL = [];
@@ -268,7 +282,7 @@ contactosEmergenciasCtl.updateEmergencyContact = async (req, res) => {
 
         // Siempre actualizar fecha_modificacion en SQL
         camposSQL.push('fecha_modificacion = ?');
-        valoresSQL.push(now);
+        valoresSQL.push(formattedNow);
 
         valoresSQL.push(id); // Para el WHERE
         const consultaSQL = `UPDATE contactos_emergencias SET ${camposSQL.join(', ')} WHERE id = ?`;
@@ -318,10 +332,12 @@ contactosEmergenciasCtl.deleteEmergencyContact = async (req, res) => {
             return res.status(404).json({ error: 'Contacto de emergencia no encontrado o ya estaba eliminado.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE contactos_emergencias SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE contactos_emergencias SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[CONTACTOS_EMERGENCIA] No se pudo marcar como eliminado el contacto con ID: ${id}.`);

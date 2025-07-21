@@ -1,5 +1,5 @@
 // Importa los modelos y utilidades necesarias
-const orm = require('../Database/dataBase.orm'); // Para Sequelize (ORM) - Necesario para relaciones
+const orm = require('../Database/dataBase.orm'); // Para Sequelize (SQL) - Necesario para relaciones
 const sql = require('../Database/dataBase.sql'); // MySQL directo
 const { cifrarDato, descifrarDato } = require('../lib/encrypDates'); // Se mantiene por consistencia
 
@@ -13,6 +13,17 @@ function safeDecrypt(data) {
         console.error('Error al descifrar datos:', error.message);
         return '';
     }
+}
+
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 // Utilidad para obtener el logger
@@ -34,7 +45,9 @@ ubicacionClienteCtl.createClientLocation = async (req, res) => {
     }
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Verificar si el cliente existe en SQL
         const [existingClienteSQL] = await sql.promise().query("SELECT id FROM clientes WHERE id = ? AND estado = 'activo'", [clienteId]);
@@ -49,9 +62,9 @@ ubicacionClienteCtl.createClientLocation = async (req, res) => {
             clienteId: clienteId,
             latitud: latitud,
             longitud: longitud,
-            marca_tiempo: marca_tiempo || now, // Usa marca_tiempo del body o la hora actual
+            marca_tiempo: marca_tiempo || formattedNow, // Usa marca_tiempo del body o la hora actual formateada
             estado: estado || 'activo',
-            fecha_creacion: now, // Se añade la fecha de creación
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
         };
         const ubicacionGuardadaSQL = await orm.ubicacion_cliente.create(nuevaUbicacionSQL); // Usando ORM para crear
         const newLocationId = ubicacionGuardadaSQL.id; // Obtener el ID insertado por ORM
@@ -229,7 +242,9 @@ ubicacionClienteCtl.updateClientLocation = async (req, res) => {
             return res.status(404).json({ error: 'Ubicación no encontrada o inactiva para actualizar.' });
         }
         
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar datos para SQL
         const camposSQL = [];
@@ -245,7 +260,7 @@ ubicacionClienteCtl.updateClientLocation = async (req, res) => {
         }
         if (marca_tiempo !== undefined) {
             camposSQL.push('marca_tiempo = ?');
-            valoresSQL.push(marca_tiempo);
+            valoresSQL.push(marca_tiempo); // Asumiendo que marca_tiempo del body ya viene formateado o es un string
         }
         if (estado !== undefined) {
             camposSQL.push('estado = ?');
@@ -259,10 +274,11 @@ ubicacionClienteCtl.updateClientLocation = async (req, res) => {
 
         // Siempre actualizar fecha_modificacion en SQL
         camposSQL.push('fecha_modificacion = ?');
-        valoresSQL.push(now);
+        valoresSQL.push(formattedNow); // CAMBIO: Usar formattedNow
 
         valoresSQL.push(id); // Para el WHERE
-        const consultaSQL = `UPDATE ubicaciones_clientes SET ${camposSQL.join(', ')}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
+        // CAMBIO: Se corrigió la consulta SQL para usar el placeholder correcto para fecha_modificacion
+        const consultaSQL = `UPDATE ubicaciones_clientes SET ${camposSQL.join(', ')} WHERE id = ?`;
         const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
         
         if (resultadoSQLUpdate.affectedRows === 0) {
@@ -332,10 +348,12 @@ ubicacionClienteCtl.deleteClientLocation = async (req, res) => {
             return res.status(404).json({ error: 'Ubicación no encontrada o ya estaba eliminado.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE ubicaciones_clientes SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
+        const [resultadoSQL] = await sql.promise().query("UPDATE ubicaciones_clientes SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
         if (resultadoSQL.affectedRows === 0) {
             logger.error(`[UBICACIONES_CLIENTES] No se pudo marcar como eliminado la ubicación con ID: ${id}.`);

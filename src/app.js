@@ -59,7 +59,7 @@ if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir, { recursive: true });
 }
 
-// CONFIGURACIÓN DE LOGGING (ÚNICA Y MEJORADA) - RESTAURADA A LA VERSIÓN DEL USUARIO
+// CONFIGURACIÓN DE LOGGING (ÚNICA Y MEJORADA)
 const logger = winston.createLogger({
   levels: {
     error: 0,
@@ -72,7 +72,7 @@ const logger = winston.createLogger({
   },
   level: 'debug', // Nivel por defecto para el logger
   format: winston.format.combine(
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), // Mantiene el formato de hora local para los logs de Winston
     winston.format.errors({ stack: true }),
     winston.format.splat(),
     winston.format.printf(info => {
@@ -110,18 +110,17 @@ console.warn = (...args) => logger.warn(args.join(' '));
 console.error = (...args) => logger.error(args.join(' '));
 console.debug = (...args) => logger.debug(args.join(' '));
 
-// Configurar Morgan para logging HTTP
-app.use(morgan(function (tokens, req, res) {
-  const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
-  const method = tokens.method(req, res);
-  const url = tokens.url(req, res);
-  const status = tokens.status(req, res);
-  const responseTime = tokens["response-time"](req, res);
-  const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress || req.ip;
-  const agent = req.headers["user-agent"];
-  return `[${timestamp}] [INFO]: [${method}] ${url} ${status} ${responseTime} ms - IP: ${ip} - Agent: ${agent}`;
-}, { stream: { write: message => logger.info(message.trim()) } }
-));
+// 3. Configurar Morgan para usar Winston
+const morganFormat = process.env.NODE_ENV === 'production' ? 'combined' : 'dev';
+app.use(morgan(morganFormat, {
+    stream: {
+        write: (message) => {
+            // Eliminar saltos de línea innecesarios
+            const cleanedMessage = message.replace(/\n$/, '');
+            logger.info(cleanedMessage);
+        }
+    }
+}));
 
 // Añadir el logger a la app para acceso global en controladores
 app.set('logger', logger);

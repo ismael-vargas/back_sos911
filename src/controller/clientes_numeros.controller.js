@@ -1,5 +1,5 @@
 // Importa los modelos de ambas bases de datos (ORM y SQL directo) y las utilidades
-const orm = require('../Database/dataBase.orm'); // Para Sequelize (ORM) - Necesario para la relación y el modelo
+const orm = require('../Database/dataBase.orm'); // Para Sequelize (SQL) - Necesario para la relación y el modelo
 const sql = require('../Database/dataBase.sql'); // MySQL directo
 const { cifrarDato, descifrarDato } = require('../lib/encrypDates'); // Utilidades de cifrado/descifrado
 
@@ -13,6 +13,17 @@ function safeDecrypt(data) {
         console.error('Error al descifrar datos de clientes_numeros:', error.message);
         return '';
     }
+}
+
+// Función para formatear una fecha a 'YYYY-MM-DD HH:mm:ss'
+function formatLocalDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 // --- Utilidad para obtener el logger desde req.app ---
@@ -34,11 +45,20 @@ clientesNumerosCtl.createClientNumber = async (req, res) => {
     }
 
     try {
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual en formato ISO
-
         // Cifrar los campos sensibles antes de guardar
         const nombreCif = cifrarDato(nombre);
         const numeroCif = cifrarDato(numero);
+
+        // Verificar si el clienteId existe y está activo
+        const [existingClient] = await sql.promise().query("SELECT id FROM clientes WHERE id = ? AND estado = 'activo'", [clienteId]);
+        if (existingClient.length === 0) {
+            logger.warn(`[CLIENTES_NUMEROS] Creación fallida: cliente no existe o está inactivo (clienteId=${clienteId})`);
+            return res.status(400).json({ message: 'El cliente asociado no existe o no está activo.' });
+        }
+
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Verificar si ya existe el mismo número cifrado para el mismo cliente (usando SQL directo)
         const [existingNumSQL] = await sql.promise().query(
@@ -56,7 +76,7 @@ clientesNumerosCtl.createClientNumber = async (req, res) => {
             nombre: nombreCif,
             numero: numeroCif,
             estado: 'activo',
-            fecha_creacion: now,
+            fecha_creacion: formattedNow, // Se añade la fecha de creación (hora local formateada)
         });
         const newClientNumberId = nuevoNumeroCliente.id; // Obtener el ID insertado por ORM
         logger.info(`[CLIENTES_NUMEROS] Registro exitoso con ID: ${newClientNumberId}, clienteId=${clienteId}`);
@@ -183,47 +203,48 @@ clientesNumerosCtl.updateClientNumber = async (req, res) => {
         }
         const numExistente = existingNumSQL[0];
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Preparar campos y valores para la actualización SQL
-        const camposSQL = [];
-        const valoresSQL = [];
+        const campos = [];
+        const valores = [];
 
         if (nombre !== undefined) {
-            camposSQL.push('nombre = ?');
-            valoresSQL.push(cifrarDato(nombre));
+            campos.push('nombre = ?');
+            valores.push(cifrarDato(nombre));
         }
         if (numero !== undefined) {
-            camposSQL.push('numero = ?');
-            valoresSQL.push(cifrarDato(numero));
+            campos.push('numero = ?');
+            valores.push(cifrarDato(numero));
         }
         if (estado !== undefined) {
-            camposSQL.push('estado = ?');
-            valoresSQL.push(estado);
+            campos.push('estado = ?');
+            valores.push(estado);
         }
 
-        if (camposSQL.length === 0) {
-            logger.warn(`[CLIENTES_NUMEROS] No se proporcionaron campos para actualizar el número de cliente con ID: ${id}.`);
+        if (campos.length === 0) {
             return res.status(400).json({ message: 'No se proporcionaron campos para actualizar.' });
         }
 
         // Siempre actualizar fecha_modificacion en SQL
-        camposSQL.push('fecha_modificacion = ?');
-        valoresSQL.push(now);
+        campos.push('fecha_modificacion = ?');
+        valores.push(formattedNow);
 
-        valoresSQL.push(id); // Añadir el ID para la cláusula WHERE
-        const consultaSQL = `UPDATE clientes_numeros SET ${camposSQL.join(', ')} WHERE id = ?`;
-        const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
+        valores.push(id); // Añadir el ID para la cláusula WHERE
+        const consultaSQL = `UPDATE clientes_numeros SET ${campos.join(', ')} WHERE id = ?`;
+        const [resultado] = await sql.promise().query(consultaSQL, valores);
 
-        if (resultadoSQLUpdate.affectedRows === 0) {
+        if (resultado.affectedRows === 0) {
             logger.warn(`[CLIENTES_NUMEROS] No se pudo actualizar el número de cliente SQL con ID: ${id}.`);
         } else {
             logger.info(`[CLIENTES_NUMEROS] Número de cliente SQL actualizado con ID: ${id}`);
         }
 
         // Obtener el registro actualizado para la respuesta
-        const [updatedNumSQL] = await sql.promise().query("SELECT * FROM clientes_numeros WHERE id = ?", [id]);
-        const numActualizado = updatedNumSQL[0];
+        const [updatedNum] = await sql.promise().query("SELECT * FROM clientes_numeros WHERE id = ?", [id]);
+        const numActualizado = updatedNum[0];
 
         res.status(200).json({
             message: 'Número de cliente actualizado correctamente.',
@@ -247,22 +268,24 @@ clientesNumerosCtl.updateClientNumber = async (req, res) => {
 clientesNumerosCtl.deleteClientNumber = async (req, res) => {
     const logger = getLogger(req);
     const { id } = req.params;
-    logger.info(`[CLIENTES_NUMEROS] Solicitud de eliminación lógica de número de cliente con ID: ${id}`);
+    logger.info(`[CLIENTES_NUMEROS] Eliminación de usuario_numero: id=${id}`);
     try {
         // Verificar existencia y estado
-        const [existingNumSQL] = await sql.promise().query("SELECT id FROM clientes_numeros WHERE id = ? AND estado = 'activo'", [id]);
-        if (existingNumSQL.length === 0) {
+        const [existingNumSQL] = await sql.promise().query("SELECT id FROM clientes_numeros WHERE id = ? AND estado = 'activo'", [id]); // Solo eliminar si está activo
+        if (existingNumSQL.length === 0 || existingNumSQL[0].estado === 'eliminado') {
             logger.warn(`[CLIENTES_NUMEROS] Número de cliente no encontrado o ya eliminado con ID: ${id}`);
-            return res.status(404).json({ error: 'Número de cliente no encontrado o ya estaba eliminado.' });
+            return res.status(404).json({ error: 'Número de cliente no encontrado o ya eliminado.' });
         }
 
-        const now = new Date().toISOString(); // Obtiene la fecha y hora actual para la modificación
+        const now = new Date(); 
+        // CAMBIO: Formatear la fecha a string 'YYYY-MM-DD HH:mm:ss' para columnas STRING
+        const formattedNow = formatLocalDateTime(now);
 
         // Marcar como eliminado en SQL directo
-        const [resultadoSQL] = await sql.promise().query("UPDATE clientes_numeros SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [now, id]);
+        const [resultado] = await sql.promise().query("UPDATE clientes_numeros SET estado = 'eliminado', fecha_modificacion = ? WHERE id = ?", [formattedNow, id]);
         
-        if (resultadoSQL.affectedRows === 0) {
-            logger.error(`[CLIENTES_NUMEROS] No se pudo marcar como eliminado el número de cliente con ID: ${id}.`);
+        if (resultado.affectedRows === 0) {
+            logger.error(`[CLIENTES_NUMEROS] No se pudo marcar como eliminado el usuario_numero: id=${id}`);
             return res.status(500).json({ error: 'No se pudo eliminar el número de cliente.' });
         }
 
