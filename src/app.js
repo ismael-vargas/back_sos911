@@ -168,6 +168,7 @@ app.use(cookieParser(
 ));
 
 // 10. Configuración de sesiones seguras
+const isProduction = process.env.NODE_ENV === 'production';
 const sessionConfig = {
     store: new MySQLStore({
         host: MYSQLHOST,
@@ -182,8 +183,8 @@ const sessionConfig = {
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Lax', // Mantener Lax para la cookie de sesión si es necesario para compatibilidad
+        secure: isProduction, // true solo en producción
+        sameSite: isProduction ? 'None' : 'Lax', // 'None' en prod, 'Lax' en dev
         maxAge: 24 * 60 * 60 * 1000
     },
     name: 'secureSessionId',
@@ -191,9 +192,8 @@ const sessionConfig = {
     unset: 'destroy'
 };
 
-if (process.env.NODE_ENV === 'production') {
+if (isProduction) {
     app.set('trust proxy', 1);
-    sessionConfig.cookie.secure = true;
 }
 
 app.use(session(sessionConfig));
@@ -221,8 +221,8 @@ app.use(fileUpload({
 const csrfProtection = csrf({
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // true en producción (HTTPS), false en desarrollo (HTTP)
-        sameSite: 'None' // CAMBIADO A 'None' para permitir cross-site en desarrollo/producción con HTTPS
+        secure: isProduction, // true solo en producción
+        sameSite: isProduction ? 'None' : 'Lax' // 'None' en prod, 'Lax' en dev
     }
 });
 
