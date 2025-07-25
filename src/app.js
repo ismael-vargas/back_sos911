@@ -206,7 +206,7 @@ const sessionConfig = {
     cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict', // Cambiado a 'Strict'
+        sameSite: 'Lax', // Cambiado a 'Strict'
         maxAge: 24 * 60 * 60 * 1000
     },
     name: 'secureSessionId',
@@ -227,7 +227,7 @@ const csrfProtection = csrf({
     cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict' // Cambiado a 'Strict'
+        sameSite: 'Lax' // Cambiado a 'Strict'
     }
 });
 
