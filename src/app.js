@@ -255,6 +255,7 @@ app.use((req, res, next) => {
     app.locals.success = req.flash('success');
     app.locals.user = req.user || null;
     // ✅ EXPONER EL TOKEN CSRF PARA EL FRONTEND
+    logger.info('token recibido',req.csrfToken)
     if (req.csrfToken) {
         res.locals.csrfToken = req.csrfToken();
     } else {
@@ -267,6 +268,7 @@ app.use((req, res, next) => {
 app.get('/csrf-token', csrfProtection, (req, res) => {
     try {
         res.apiResponse({ csrfToken: req.csrfToken() }, 200, 'CSRF token generated');
+        logger.info('CSRF token generated', { token: req.csrfToken() });
     } catch (error) {
         logger.error('Error al generar token CSRF:', error);
         res.apiError('Error al generar token CSRF', 500, { details: error.message });
