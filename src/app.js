@@ -162,30 +162,6 @@ app.use(helmet({
 // 6. Protección contra HTTP Parameter Pollution
 app.use(hpp());
 
-// 7. Limitar tamaño de payload
-app.use(express.json({ limit: '100kb' }));
-app.use(express.urlencoded({ extended: true, limit: '100kb' }));
-
-// 8. Rate limiting para prevenir ataques de fuerza bruta
-const globalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 500,
-    handler: (req, res) => {
-        logger.warn(`Rate limit exceeded for IP: ${req.ip} (Global Limiter)`);
-        res.status(429).json({
-            error: 'Too many requests, please try again later.'
-        });
-    }
-});
-app.use(globalLimiter);
-
-const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
-    message: 'Demasiados intentos de inicio de sesión desde esta IP, por favor intente nuevamente después de 15 minutos.'
-});
-app.use('/login', loginLimiter);
-
 // 9. Configuración avanzada de cookies
 app.use(cookieParser(
     process.env.COOKIE_SECRET || crypto.randomBytes(64).toString('hex')
@@ -207,7 +183,7 @@ const sessionConfig = {
     cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Lax', // Cambiado a 'Strict'
+        sameSite: 'Lax', // Mantener Lax para la cookie de sesión si es necesario para compatibilidad
         maxAge: 24 * 60 * 60 * 1000
     },
     name: 'secureSessionId',
@@ -223,14 +199,45 @@ if (process.env.NODE_ENV === 'production') {
 app.use(session(sessionConfig));
 app.use(flash());
 
+// 7. Limitar tamaño de payload (MOVIDO AQUÍ, ANTES DE fileUpload y CSRF)
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ extended: true, limit: '100kb' }));
+
+// Configurar middleware de subida de archivos (MOVIDO AQUÍ, ANTES DE CSRF)
+app.use(fileUpload({
+    createParentPath: true,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    abortOnLimit: true,
+    safeFileNames: true,
+    preserveExtension: true
+}));
+
 // 11. CSRF Protection mejorada
 const csrfProtection = csrf({
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Lax' // Cambiado a 'Strict'
+        secure: process.env.NODE_ENV === 'production', // true en producción (HTTPS), false en desarrollo (HTTP)
+        sameSite: 'None' // CAMBIADO A 'None' para permitir cross-site en desarrollo/producción con HTTPS
     }
 });
+
+// ✅ RUTA PARA OBTENER EL TOKEN CSRF DESDE EL FRONTEND
+// ¡IMPORTANTE! Esta ruta NO debe tener csrfProtection aplicado directamente como middleware de ruta.
+// El middleware csrfProtection se aplica GLOBALMENTE DESPUÉS de esta ruta.
+app.get('/csrf-token', (req, res) => { // ELIMINADO csrfProtection de aquí
+    try {
+        res.apiResponse({ csrfToken: req.csrfToken() }, 200, 'CSRF token generated');
+        logger.info('CSRF token generated', { token: req.csrfToken() });
+    } catch (error) {
+        logger.error('Error al generar token CSRF:', error);
+        res.apiError('Error al generar token CSRF', 500, { details: error.message });
+    }
+});
+
+// Aplicar CSRF protection a todas las rutas POST, PUT, DELETE, etc.
+// Es crucial que esto vaya DESPUÉS de la ruta '/csrf-token' y DESPUÉS de fileUpload
+app.use(csrfProtection);
+
 
 // Middleware para minificar HTML SOLO si el tipo de respuesta es HTML
 app.use(async (req, res, next) => {
@@ -250,60 +257,6 @@ app.use(async (req, res, next) => {
         }
         return originalSend(body);
     };
-    next();
-});
-
-// ==================== MIDDLEWARE ADICIONAL ====================
-
-// Configurar middleware de subida de archivos
-// Mover fileUpload ANTES de csrfProtection para que el body sea parseado
-app.use(fileUpload({
-    createParentPath: true,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-    abortOnLimit: true,
-    safeFileNames: true,
-    preserveExtension: true
-}));
-
-// ✅ RUTA PARA OBTENER EL TOKEN CSRF DESDE EL FRONTEND
-// Esta ruta no debe tener csrfProtection aplicado, ya que es para OBTENER el token
-app.get('/csrf-token', csrfProtection, (req, res) => {
-    try {
-        res.apiResponse({ csrfToken: req.csrfToken() }, 200, 'CSRF token generated');
-        logger.info('CSRF token generated', { token: req.csrfToken() });
-    } catch (error) {
-        logger.error('Error al generar token CSRF:', error);
-        res.apiError('Error al generar token CSRF', 500, { details: error.message });
-    }
-});
-
-// Aplicar CSRF protection a todas las rutas POST, PUT, DELETE, etc.
-// Es crucial que esto vaya DESPUÉS de la ruta '/csrf-token' y DESPUÉS de fileUpload
-app.use(csrfProtection);
-
-// Middleware para pasar datos comunes a las respuestas (incluyendo res.apiResponse/apiError)
-app.use((req, res, next) => {
-    // Tus métodos para API responses (ya los tienes, pero asegúrate que estén aquí)
-    res.apiResponse = (data, status = 200, message = 'Success') => {
-        const response = {
-            success: status >= 200 && status < 300,
-            message,
-            data
-        };
-        return res.status(status).json(response);
-    };
-    res.apiError = (message, status = 400, errors = null) => {
-        const response = {
-            success: false,
-            message,
-            errors
-        };
-        return res.status(status).json(response);
-    };
-    // Variables globales para vistas (si usas plantillas)
-    app.locals.message = req.flash('message');
-    app.locals.success = req.flash('success');
-    app.locals.user = req.user || null;
     next();
 });
 
