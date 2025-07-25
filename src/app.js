@@ -254,13 +254,12 @@ app.use((req, res, next) => {
     app.locals.message = req.flash('message');
     app.locals.success = req.flash('success');
     app.locals.user = req.user || null;
-    // ✅ EXPONER EL TOKEN CSRF PARA EL FRONTEND
-    logger.info('token recibido',req.csrfToken)
-    if (req.csrfToken) {
-        res.locals.csrfToken = req.csrfToken();
-    } else {
-        res.locals.csrfToken = null;
-    }
+    // ELIMINADO: Esta línea generaba un nuevo token en cada petición, invalidando el anterior.
+    // if (req.csrfToken) {
+    //     res.locals.csrfToken = req.csrfToken();
+    // } else {
+    //     res.locals.csrfToken = null;
+    // }
     next();
 });
 
