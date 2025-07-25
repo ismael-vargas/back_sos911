@@ -217,9 +217,11 @@ paginaCtl.updatePagina = async (req, res) => {
 
         // Actualizar registro en SQL usando SQL directo
         if (camposSql.length > 0) {
-            valoresSql.push(id); // Para el WHERE
-            const consultaSQL = `UPDATE paginas SET ${camposSql.join(', ')}, fecha_modificacion = ? WHERE id = ?`; // CAMBIO: Usar formattedNow
-            const [resultadoSql] = await sql.promise().query(consultaSQL, [...valoresSql, formattedNow, id]); // CAMBIO: Pasar formattedNow
+            camposSql.push('fecha_modificacion = ?'); // Agrega fecha_modificacion al final
+            valoresSql.push(formattedNow);            // Agrega el valor de fecha_modificacion
+            const consultaSQL = `UPDATE paginas SET ${camposSql.join(', ')} WHERE id = ?`;
+            valoresSql.push(id);                      // Agrega el id al final para el WHERE
+            const [resultadoSql] = await sql.promise().query(consultaSQL, valoresSql);
             if (resultadoSql.affectedRows === 0) {
                 logger.warn(`[PAGINA] No se pudo actualizar la página SQL con ID: ${id}.`);
             } else {

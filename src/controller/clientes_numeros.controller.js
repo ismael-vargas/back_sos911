@@ -300,17 +300,14 @@ clientesNumerosCtl.deleteClientNumber = async (req, res) => {
 // 6. Obtener todos los números activos de un cliente específico (GET /clientes_numeros/cliente/:clienteId)
 clientesNumerosCtl.getNumbersByClientId = async (req, res) => {
     const logger = getLogger(req);
-    const { clienteId } = req.params; // Usamos clienteId para el parámetro de ruta
+    const clienteId = req.params.cliente_id; // <-- Cambia aquí
     logger.info(`[CLIENTES_NUMEROS] Solicitud de números para clienteId: ${clienteId}`);
 
     try {
-        // Usar SQL directo para obtener números por clienteId
         const [numerosSQL] = await sql.promise().query(
-            "SELECT * FROM clientes_numeros WHERE clienteId = ? AND estado = 'activo' ORDER BY fecha_creacion DESC", // Ordenar para consistencia
+            "SELECT * FROM clientes_numeros WHERE clienteId = ? AND estado = 'activo' ORDER BY fecha_creacion DESC",
             [clienteId]
         );
-        
-        // Descifrar los campos antes de enviar
         const numerosDescifrados = numerosSQL.map(n => ({
             id: n.id,
             clienteId: n.clienteId,

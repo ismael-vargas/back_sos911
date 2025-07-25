@@ -66,10 +66,10 @@ usersCtl.createUser = async (req, res) => {
         
         const nuevoUsuarioMongo = { 
             idUsuarioSql, 
-            fecha_nacimiento, 
-            direccion, 
-            estado: estado || 'activo', // Se asegura que el estado también se guarde en Mongo con el nuevo valor por defecto
-            fecha_creacion: formattedNow, // Se añade la fecha de creación para Mongo (hora local formateada)
+            fecha_nacimiento: cifrarDato(fecha_nacimiento), // <-- CIFRA aquí
+            direccion: cifrarDato(direccion),               // <-- CIFRA aquí
+            estado: estado || 'activo',
+            fecha_creacion: formattedNow,
         };
         await mongo.Usuario.create(nuevoUsuarioMongo);
         res.status(201).json({ message: 'Usuario registrado exitosamente.' });
@@ -82,13 +82,11 @@ usersCtl.createUser = async (req, res) => {
 // 2. OBTENER TODOS LOS USUARIOS (Usando SQL Directo)
 usersCtl.getAllUsers = async (req, res) => {
     try {
-        // Se usa la conexión 'sql' para una consulta directa
         const [usuariosSQL] = await sql.promise().query("SELECT * FROM usuarios WHERE estado = 'activo'");
         
         const usuariosCompletos = await Promise.all(
             usuariosSQL.map(async (userSQL) => {
                 let usuarioMongo = null;
-                // SOLO si se encuentra un usuario en SQL, intentamos buscar en Mongo
                 if (userSQL) { 
                     usuarioMongo = await mongo.Usuario.findOne({ idUsuarioSql: userSQL.id });
                 }
@@ -99,8 +97,9 @@ usersCtl.getAllUsers = async (req, res) => {
                     correo_electronico: safeDecrypt(userSQL.correo_electronico),
                     cedula_identidad: safeDecrypt(userSQL.cedula_identidad),
                     estado: userSQL.estado,
-                    fecha_nacimiento: usuarioMongo ? usuarioMongo.fecha_nacimiento : null,
-                    direccion: usuarioMongo ? usuarioMongo.direccion : null,
+                    // CORRIGE AQUÍ: DESCIFRA FECHA Y DIRECCIÓN
+                    fecha_nacimiento: usuarioMongo?.fecha_nacimiento ? safeDecrypt(usuarioMongo.fecha_nacimiento) : null,
+                    direccion: usuarioMongo?.direccion ? safeDecrypt(usuarioMongo.direccion) : null,
                     fecha_creacion: userSQL.fecha_creacion, 
                     fecha_modificacion: userSQL.fecha_modificacion, 
                 };
@@ -142,8 +141,8 @@ usersCtl.getUserById = async (req, res) => {
             correo_electronico: safeDecrypt(usuarioSQL.correo_electronico),
             cedula_identidad: safeDecrypt(usuarioSQL.cedula_identidad),
             estado: usuarioSQL.estado,
-            fecha_nacimiento: usuarioMongo?.fecha_nacimiento || null,
-            direccion: usuarioMongo?.direccion || null,
+            fecha_nacimiento: usuarioMongo?.fecha_nacimiento ? safeDecrypt(usuarioMongo.fecha_nacimiento) : null,
+            direccion: usuarioMongo?.direccion ? safeDecrypt(usuarioMongo.direccion) : null, // <--- DESCIFRA AQUÍ
             fecha_creacion: usuarioSQL.fecha_creacion, 
             fecha_modificacion: usuarioSQL.fecha_modificacion, 
         };
@@ -184,7 +183,10 @@ usersCtl.updateUser = async (req, res) => {
             campos.push('estado = ?');
             valores.push(estado);
         }
-        
+        if (req.body.contrasena) {
+            campos.push('contrasena_hash = ?');
+            valores.push(cifrarDato(req.body.contrasena));
+        }
         // Siempre actualizar fecha_modificacion en SQL (hora local formateada)
         campos.push('fecha_modificacion = ?');
         valores.push(formattedNow);
@@ -204,17 +206,37 @@ usersCtl.updateUser = async (req, res) => {
         // Eliminar propiedades undefined para que no se sobrescriban con 'undefined' en Mongo
         Object.keys(datosParaMongo).forEach(key => datosParaMongo[key] === undefined && delete datosParaMongo[key]);
         
-        // Cifrar la dirección si se está actualizando y no es undefined
+        // Cifrar la dirección y la fecha de nacimiento si se están actualizando y no son undefined
         if (datosParaMongo.direccion) {
             datosParaMongo.direccion = cifrarDato(datosParaMongo.direccion);
+        }
+        if (datosParaMongo.fecha_nacimiento) {
+            datosParaMongo.fecha_nacimiento = cifrarDato(datosParaMongo.fecha_nacimiento);
         }
         
         // Siempre actualizar fecha_modificacion en Mongo (hora local formateada)
         datosParaMongo.fecha_modificacion = formattedNow;
 
         await mongo.Usuario.updateOne({ idUsuarioSql: idUsuario }, { $set: datosParaMongo });
-        
-        res.status(200).json({ message: 'Usuario actualizado correctamente.' });
+
+        // --- NUEVO: Devuelve el usuario actualizado y descifrado ---
+        const [usuariosSQL] = await sql.promise().query("SELECT * FROM usuarios WHERE id = ?", [idUsuario]);
+        const usuarioSQL = usuariosSQL[0];
+        let usuarioMongo = await mongo.Usuario.findOne({ idUsuarioSql: idUsuario });
+
+        const usuarioCompleto = {
+            id: usuarioSQL.id,
+            nombre: safeDecrypt(usuarioSQL.nombre),
+            correo_electronico: safeDecrypt(usuarioSQL.correo_electronico),
+            cedula_identidad: safeDecrypt(usuarioSQL.cedula_identidad),
+            estado: usuarioSQL.estado,
+            fecha_nacimiento: usuarioMongo?.fecha_nacimiento ? safeDecrypt(usuarioMongo.fecha_nacimiento) : null,
+            direccion: usuarioMongo?.direccion ? safeDecrypt(usuarioMongo.direccion) : null,
+            fecha_creacion: usuarioSQL.fecha_creacion,
+            fecha_modificacion: usuarioSQL.fecha_modificacion,
+        };
+
+        res.status(200).json(usuarioCompleto);
     } catch (error) {
         console.error('Error al actualizar el usuario:', error);
         res.status(500).json({ error: 'Error interno del servidor.' });
@@ -268,7 +290,12 @@ usersCtl.loginUser = async (req, res) => {
             return res.status(401).json({ message: 'Correo o contraseña incorrectos.' });
         }
         
-        res.status(200).json({ message: "Login exitoso", userId: user.id });
+        res.status(200).json({
+            message: "Login exitoso",
+            userId: user.id,
+            nombre: safeDecrypt(user.nombre),
+            correo_electronico: safeDecrypt(user.correo_electronico)
+        });
     } catch (error) {
         console.error('Error en login:', error.message);
         res.status(500).json({ message: 'Error interno del servidor.' });

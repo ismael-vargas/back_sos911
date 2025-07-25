@@ -31,10 +31,12 @@ const app = express();
 // ==================== CONFIGURACIÓN BÁSICA ====================
 app.set('port', process.env.PORT || 1000); // Usar tu puerto 9000 como predeterminado
 
-// Configuración CORS correcta para CSRF (REEMPLAZADO)
+// Configuración CORS correcta para CSRF 
 const allowedOrigins = [
-  'http://localhost:3000', // Tu frontend
-  'http://localhost:4500', // Tu backend (si accedes a él desde el mismo dominio pero diferente puerto)
+  'http://localhost:3000',         // Frontend local
+  'http://192.168.1.31:3000',      // Frontend en red local
+  'http://192.168.1.31:1000',      // Backend en red local (para pruebas móviles)
+  'http://31.97.42.126:1000',      // Producción (VPS)
   ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
 ];
 app.use(cors({
@@ -166,7 +168,7 @@ app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 // 8. Rate limiting para prevenir ataques de fuerza bruta
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 100,
+    max: 500,
     handler: (req, res) => {
         logger.warn(`Rate limit exceeded for IP: ${req.ip} (Global Limiter)`);
         res.status(429).json({
