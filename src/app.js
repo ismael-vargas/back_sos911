@@ -31,27 +31,28 @@ const app = express();
 // ==================== CONFIGURACIÓN BÁSICA ====================
 app.set('port', process.env.PORT || 1000); // Usar tu puerto 9000 como predeterminado
 
-// Configuración CORS correcta para CSRF 
+// ==================== CONFIGURACIÓN CORREGIDA ====================
+
+// 1. Configuración CORS mejorada (agregar headers CSRF)
 const allowedOrigins = [
-  'http://localhost:3000',         // Frontend local
-  'http://192.168.1.31:3000',      // Frontend en red local
-  'http://192.168.1.31:1000',      // Backend en red local (para pruebas móviles)
-  'http://31.97.42.126:1000',      // Producción (VPS)
-  'https://backsos911-production.up.railway.app', // Nueva URL de Railway
+  'http://localhost:3000',
+  'http://192.168.1.31:3000',
+  'http://192.168.1.31:1000',
+  'http://31.97.42.126:1000',
+  'https://backsos911-production.up.railway.app',
   ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
 ];
 app.use(cors({
   origin: function(origin, callback) {
-    // Permitir peticiones sin origen (como Postman) o desde orígenes permitidos
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('No permitido por CORS'));
     }
   },
-  credentials: true, // Importante para que las cookies se envíen cross-origin
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'csrf-token'] // ✅ CSRF headers permitidos
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'xsrf-token', 'x-csrf-token']
 }));
 
 // ==================== CONFIGURACIÓN DE LOGS ====================
@@ -167,41 +168,53 @@ app.use(cookieParser(
     process.env.COOKIE_SECRET || crypto.randomBytes(64).toString('hex')
 ));
 
-// 10. Configuración de sesiones seguras
+// 5. Configuración de seguridad para cookies (agregar en sessionConfig)
 const isProduction = process.env.NODE_ENV === 'production';
 const sessionConfig = {
-    store: new MySQLStore({
-        host: MYSQLHOST,
-        port: MYSQLPORT,
-        user: MYSQLUSER,
-        password: MYSQLPASSWORD,
-        database: MYSQLDATABASE,
-        createDatabaseTable: true
-    }),
-    secret: process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex'),
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: true,
-        secure: isProduction, // true solo en producción
-        sameSite: isProduction ? 'None' : 'Lax', // 'None' en prod, 'Lax' en dev
-        maxAge: 24 * 60 * 60 * 1000
-    },
-    name: 'secureSessionId',
-    rolling: true,
-    unset: 'destroy'
+  store: new MySQLStore({
+    host: MYSQLHOST,
+    port: MYSQLPORT,
+    user: MYSQLUSER,
+    password: MYSQLPASSWORD,
+    database: MYSQLDATABASE,
+    createDatabaseTable: true
+  }),
+  genid: function(req) {
+    return crypto.randomBytes(16).toString('hex'); // Generar ID de sesión seguro
+  },
+  secret: process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex'),
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'None' : 'Lax',
+    maxAge: 24 * 60 * 60 * 1000
+  },
+  name: 'secureSessionId',
+  rolling: true,
+  unset: 'destroy'
 };
-
 if (isProduction) {
-    app.set('trust proxy', 1);
+  app.set('trust proxy', 1);
 }
 
+// 2. Middleware de sesión debe ir ANTES de CSRF
 app.use(session(sessionConfig));
 app.use(flash());
-
-// Configurar passport (después de la sesión y flash, y ANTES de CSRF Protection)
 app.use(passport.initialize());
 app.use(passport.session());
+
+// 6. Middleware para asegurar inicialización de sesión
+app.use((req, res, next) => {
+  if (!req.session) {
+    req.session = {};
+  }
+  if (!req.session.secret) {
+    req.session.secret = crypto.randomBytes(32).toString('hex');
+  }
+  next();
+});
 
 
 // 7. Limitar tamaño de payload (MOVIDO AQUÍ, ANTES DE fileUpload y CSRF)
@@ -217,44 +230,35 @@ app.use(fileUpload({
     preserveExtension: true
 }));
 
-// 11. CSRF Protection mejorada
+// 3. Inicializar CSRF protection ANTES de la ruta /csrf-token
 const csrfProtection = csrf({
-    cookie: {
-        httpOnly: true,
-        secure: isProduction, // true solo en producción
-        sameSite: isProduction ? 'None' : 'Lax' // 'None' en prod, 'Lax' en dev
-    }
+  cookie: {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'None' : 'Lax'
+  }
 });
+app.use(csrfProtection); // Aplicar globalmente
 
-// ✅ RUTA PARA OBTENER EL TOKEN CSRF DESDE EL FRONTEND
-// ¡IMPORTANTE! Esta ruta NO debe tener csrfProtection aplicado directamente como middleware de ruta.
-// El middleware csrfProtection se aplica GLOBALMENTE DESPUÉS de esta ruta.
-app.get('/csrf-token', (req, res) => { // ELIMINADO csrfProtection de aquí
-    try {
-        // Añadir logging para depurar si req.session o req.session.secret no están disponibles
-        if (!req.session) {
-            logger.error('CSRF Token Generation Error: req.session is undefined.');
-            return res.apiError('Error al generar token CSRF: Sesión no disponible.', 500);
-        }
-        if (!req.session.secret) {
-            logger.error('CSRF Token Generation Error: req.session.secret is undefined. Session might not be properly initialized or secret is missing.');
-            return res.apiError('Error al generar token CSRF: Secreto de sesión no disponible.', 500);
-        }
-        
-        const csrfToken = req.csrfToken();
-        res.apiResponse({ csrfToken: csrfToken }, 200, 'CSRF token generated');
-        logger.info('CSRF token generated', { token: csrfToken });
-    } catch (error) {
-        logger.error('Error al generar token CSRF:', error);
-        // Log the full error object for more details
-        logger.error('Full CSRF token generation error object:', error); 
-        res.apiError('Error al generar token CSRF', 500, { details: error.message });
+// 4. Ahora sí la ruta /csrf-token tendrá acceso a req.csrfToken()
+app.get('/csrf-token', (req, res) => {
+  try {
+    // Verificar que la sesión esté inicializada
+    if (!req.session) {
+      logger.error('Sesión no inicializada');
+      return res.status(500).json({ error: 'Error interno del servidor' });
     }
+    const csrfToken = req.csrfToken();
+    res.json({ csrfToken });
+    logger.info('Token CSRF generado exitosamente');
+  } catch (error) {
+    logger.error('Error generando CSRF token:', error);
+    res.status(500).json({ 
+      error: 'Error generando token de seguridad',
+      details: process.env.NODE_ENV === 'development' ? error.message : null
+    });
+  }
 });
-
-// Aplicar CSRF protection a todas las rutas POST, PUT, DELETE, etc.
-// Es crucial que esto vaya DESPUÉS de la ruta '/csrf-token' y DESPUÉS de fileUpload
-app.use(csrfProtection);
 
 
 // Middleware para minificar HTML SOLO si el tipo de respuesta es HTML
