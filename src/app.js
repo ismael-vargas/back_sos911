@@ -199,6 +199,11 @@ if (process.env.NODE_ENV === 'production') {
 app.use(session(sessionConfig));
 app.use(flash());
 
+// Configurar passport (después de la sesión y flash, y ANTES de CSRF Protection)
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 // 7. Limitar tamaño de payload (MOVIDO AQUÍ, ANTES DE fileUpload y CSRF)
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));
@@ -226,10 +231,23 @@ const csrfProtection = csrf({
 // El middleware csrfProtection se aplica GLOBALMENTE DESPUÉS de esta ruta.
 app.get('/csrf-token', (req, res) => { // ELIMINADO csrfProtection de aquí
     try {
-        res.apiResponse({ csrfToken: req.csrfToken() }, 200, 'CSRF token generated');
-        logger.info('CSRF token generated', { token: req.csrfToken() });
+        // Añadir logging para depurar si req.session o req.session.secret no están disponibles
+        if (!req.session) {
+            logger.error('CSRF Token Generation Error: req.session is undefined.');
+            return res.apiError('Error al generar token CSRF: Sesión no disponible.', 500);
+        }
+        if (!req.session.secret) {
+            logger.error('CSRF Token Generation Error: req.session.secret is undefined. Session might not be properly initialized or secret is missing.');
+            return res.apiError('Error al generar token CSRF: Secreto de sesión no disponible.', 500);
+        }
+        
+        const csrfToken = req.csrfToken();
+        res.apiResponse({ csrfToken: csrfToken }, 200, 'CSRF token generated');
+        logger.info('CSRF token generated', { token: csrfToken });
     } catch (error) {
         logger.error('Error al generar token CSRF:', error);
+        // Log the full error object for more details
+        logger.error('Full CSRF token generation error object:', error); 
         res.apiError('Error al generar token CSRF', 500, { details: error.message });
     }
 });
@@ -264,9 +282,26 @@ app.use(async (req, res, next) => {
 // Middleware de compresión
 app.use(compression());
 
-// Configurar passport (después de la sesión y flash)
-app.use(passport.initialize());
-app.use(passport.session());
+
+// 8. Rate limiting para prevenir ataques de fuerza bruta (MOVIDO AQUÍ, DESPUÉS DE CSRF)
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 500,
+    handler: (req, res) => {
+        logger.warn(`Rate limit exceeded for IP: ${req.ip} (Global Limiter)`);
+        res.status(429).json({
+            error: 'Too many requests, please try again later.'
+        });
+    }
+});
+app.use(globalLimiter);
+
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: 'Demasiados intentos de inicio de sesión desde esta IP, por favor intente nuevamente después de 15 minutos.'
+});
+app.use('/login', loginLimiter);
 
 
 // ==================== RUTAS API ====================
