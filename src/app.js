@@ -37,6 +37,7 @@ const allowedOrigins = [
   'http://192.168.1.31:3000',      // Frontend en red local
   'http://192.168.1.31:1000',      // Backend en red local (para pruebas móviles)
   'http://31.97.42.126:1000',      // Producción (VPS)
+  'https://backsos911-production.up.railway.app', // Nueva URL de Railway
   ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
 ];
 app.use(cors({
@@ -231,54 +232,6 @@ const csrfProtection = csrf({
     }
 });
 
-// Middleware para pasar datos comunes a las respuestas (incluyendo res.apiResponse/apiError)
-app.use((req, res, next) => {
-    // Tus métodos para API responses (ya los tienes, pero asegúrate que estén aquí)
-    res.apiResponse = (data, status = 200, message = 'Success') => {
-        const response = {
-            success: status >= 200 && status < 300,
-            message,
-            data
-        };
-        return res.status(status).json(response);
-    };
-    res.apiError = (message, status = 400, errors = null) => {
-        const response = {
-            success: false,
-            message,
-            errors
-        };
-        return res.status(status).json(response);
-    };
-    // Variables globales para vistas (si usas plantillas)
-    app.locals.message = req.flash('message');
-    app.locals.success = req.flash('success');
-    app.locals.user = req.user || null;
-    // ELIMINADO: Esta línea generaba un nuevo token en cada petición, invalidando el anterior.
-    // if (req.csrfToken) {
-    //     res.locals.csrfToken = req.csrfToken();
-    // } else {
-    //     res.locals.csrfToken = null;
-    // }
-    next();
-});
-
-// ✅ RUTA PARA OBTENER EL TOKEN CSRF DESDE EL FRONTEND
-app.get('/csrf-token', csrfProtection, (req, res) => {
-    try {
-        res.apiResponse({ csrfToken: req.csrfToken() }, 200, 'CSRF token generated');
-        logger.info('CSRF token generated', { token: req.csrfToken() });
-    } catch (error) {
-        logger.error('Error al generar token CSRF:', error);
-        res.apiError('Error al generar token CSRF', 500, { details: error.message });
-    }
-});
-
-// Aplicar CSRF protection a todas las rutas POST, PUT, DELETE, etc.
-// Es crucial que esto vaya DESPUÉS de la ruta '/csrf-token' para que esa ruta no requiera CSRF
-app.use(csrfProtection);
-
-
 // Middleware para minificar HTML SOLO si el tipo de respuesta es HTML
 app.use(async (req, res, next) => {
     const originalSend = res.send.bind(res);
@@ -303,6 +256,7 @@ app.use(async (req, res, next) => {
 // ==================== MIDDLEWARE ADICIONAL ====================
 
 // Configurar middleware de subida de archivos
+// Mover fileUpload ANTES de csrfProtection para que el body sea parseado
 app.use(fileUpload({
     createParentPath: true,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
@@ -310,6 +264,49 @@ app.use(fileUpload({
     safeFileNames: true,
     preserveExtension: true
 }));
+
+// ✅ RUTA PARA OBTENER EL TOKEN CSRF DESDE EL FRONTEND
+// Esta ruta no debe tener csrfProtection aplicado, ya que es para OBTENER el token
+app.get('/csrf-token', csrfProtection, (req, res) => {
+    try {
+        res.apiResponse({ csrfToken: req.csrfToken() }, 200, 'CSRF token generated');
+        logger.info('CSRF token generated', { token: req.csrfToken() });
+    } catch (error) {
+        logger.error('Error al generar token CSRF:', error);
+        res.apiError('Error al generar token CSRF', 500, { details: error.message });
+    }
+});
+
+// Aplicar CSRF protection a todas las rutas POST, PUT, DELETE, etc.
+// Es crucial que esto vaya DESPUÉS de la ruta '/csrf-token' y DESPUÉS de fileUpload
+app.use(csrfProtection);
+
+// Middleware para pasar datos comunes a las respuestas (incluyendo res.apiResponse/apiError)
+app.use((req, res, next) => {
+    // Tus métodos para API responses (ya los tienes, pero asegúrate que estén aquí)
+    res.apiResponse = (data, status = 200, message = 'Success') => {
+        const response = {
+            success: status >= 200 && status < 300,
+            message,
+            data
+        };
+        return res.status(status).json(response);
+    };
+    res.apiError = (message, status = 400, errors = null) => {
+        const response = {
+            success: false,
+            message,
+            errors
+        };
+        return res.status(status).json(response);
+    };
+    // Variables globales para vistas (si usas plantillas)
+    app.locals.message = req.flash('message');
+    app.locals.success = req.flash('success');
+    app.locals.user = req.user || null;
+    next();
+});
+
 
 // Middleware de compresión
 app.use(compression());
