@@ -206,8 +206,8 @@ const sessionConfig = {
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Lax', // Cambiado a 'Strict'
+        secure: true, // Siempre true en producción
+        sameSite: 'Lax', // O 'None' si ambos son HTTPS y necesitas cross-site
         maxAge: 24 * 60 * 60 * 1000
     },
     name: 'secureSessionId',
@@ -215,20 +215,11 @@ const sessionConfig = {
     unset: 'destroy'
 };
 
-if (process.env.NODE_ENV === 'production') {
-    app.set('trust proxy', 1);
-    sessionConfig.cookie.secure = true;
-}
-
-app.use(session(sessionConfig));
-app.use(flash());
-
-// 11. CSRF Protection mejorada
 const csrfProtection = csrf({
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Lax' // Cambiado a 'Strict'
+        secure: true, // Siempre true en producción
+        sameSite: 'Lax' // O 'None' si ambos son HTTPS y necesitas cross-site
     }
 });
 
