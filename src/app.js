@@ -131,7 +131,7 @@ app.set('logger', logger);
 
 // ==================== CONFIGURACIÓN DE SEGURIDAD MEJORADA ====================
 
-// 4. Middleware de protección contra sobrecarga del servidor
+//  Middleware de protección contra sobrecarga del servidor
 app.use((req, res, next) => {
     if (toobusy()) {
         logger.warn('Server too busy!');
@@ -141,7 +141,7 @@ app.use((req, res, next) => {
     }
 });
 
-// 5. Configuración de Helmet
+//  Configuración de Helmet
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -160,15 +160,15 @@ app.use(helmet({
     crossOriginResourcePolicy: false,
 }));
 
-// 6. Protección contra HTTP Parameter Pollution
+//  Protección contra HTTP Parameter Pollution
 app.use(hpp());
 
-// 9. Configuración avanzada de cookies
+//  Configuración avanzada de cookies
 app.use(cookieParser(
     process.env.COOKIE_SECRET || crypto.randomBytes(64).toString('hex')
 ));
 
-// 5. Configuración de seguridad para cookies (agregar en sessionConfig)
+//  Configuración de seguridad para cookies (agregar en sessionConfig)
 const isProduction = process.env.NODE_ENV === 'production';
 const sessionConfig = {
   store: new MySQLStore({
@@ -199,13 +199,13 @@ if (isProduction) {
   app.set('trust proxy', 1);
 }
 
-// 2. Middleware de sesión debe ir ANTES de CSRF
+//  Middleware de sesión debe ir ANTES de CSRF
 app.use(session(sessionConfig));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-// 6. Middleware para asegurar inicialización de sesión
+//  Middleware para asegurar inicialización de sesión
 app.use((req, res, next) => {
   if (!req.session) {
     req.session = {};
@@ -217,7 +217,7 @@ app.use((req, res, next) => {
 });
 
 
-// 7. Limitar tamaño de payload (MOVIDO AQUÍ, ANTES DE fileUpload y CSRF)
+//  Limitar tamaño de payload (MOVIDO AQUÍ, ANTES DE fileUpload y CSRF)
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
@@ -230,7 +230,7 @@ app.use(fileUpload({
     preserveExtension: true
 }));
 
-// 3. Inicializar CSRF protection ANTES de la ruta /csrf-token
+//  Inicializar CSRF protection ANTES de la ruta /csrf-token
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
@@ -240,7 +240,7 @@ const csrfProtection = csrf({
 });
 app.use(csrfProtection); // Aplicar globalmente
 
-// 4. Ahora sí la ruta /csrf-token tendrá acceso a req.csrfToken()
+//  Ahora sí la ruta /csrf-token tendrá acceso a req.csrfToken()
 app.get('/csrf-token', (req, res) => {
   try {
     // Verificar que la sesión esté inicializada
@@ -287,7 +287,7 @@ app.use(async (req, res, next) => {
 app.use(compression());
 
 
-// 8. Rate limiting para prevenir ataques de fuerza bruta (MOVIDO AQUÍ, DESPUÉS DE CSRF)
+// Rate limiting para prevenir ataques de fuerza bruta (MOVIDO AQUÍ, DESPUÉS DE CSRF)
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 500,
@@ -308,6 +308,18 @@ const loginLimiter = rateLimit({
 app.use('/login', loginLimiter);
 
 
+// ==================== MIDDLEWARE GLOBAL PARA res.apiError ====================
+// Debe ir antes de las rutas y del manejo de errores
+app.use((req, res, next) => {
+  res.apiError = function (message, status = 500, errors = null) {
+    res.status(status).json({
+      message,
+      errors,
+      status
+    });
+  };
+  next();
+});
 // ==================== RUTAS API ====================
 app.use(require('./router/index.router'));
 app.use(require('./router/envio.router'));
