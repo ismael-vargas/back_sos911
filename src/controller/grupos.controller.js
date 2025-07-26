@@ -270,9 +270,11 @@ gruposCtl.updateGroup = async (req, res) => {
 
         // Solo actualizar SQL si hay campos para actualizar
         if (camposSQL.length > 0) {
-            valoresSQL.push(id); // Para el WHERE
-            const consultaSQL = `UPDATE grupos SET ${camposSQL.join(', ')}, fecha_modificacion = ? WHERE id = ?`; // CAMBIO: Usar formattedNow
-            const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, [...valoresSQL, formattedNow, id]); // CAMBIO: Pasar formattedNow
+            camposSQL.push('fecha_modificacion = ?');
+            valoresSQL.push(formattedNow);
+            valoresSQL.push(id);
+            const consultaSQL = `UPDATE grupos SET ${camposSQL.join(', ')} WHERE id = ?`;
+            const [resultadoSQLUpdate] = await sql.promise().query(consultaSQL, valoresSQL);
             
             if (resultadoSQLUpdate.affectedRows === 0) {
                 logger.warn(`[GRUPOS] No se pudo actualizar el grupo SQL con ID: ${id}.`);
