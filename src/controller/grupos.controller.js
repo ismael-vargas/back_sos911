@@ -118,7 +118,8 @@ gruposCtl.getAllGroups = async (req, res) => {
                 g.fecha_creacion, 
                 g.fecha_modificacion,
                 c.nombre AS cliente_nombre,
-                c.correo_electronico AS cliente_correo
+                c.correo_electronico AS cliente_correo,
+                (SELECT COUNT(*) FROM clientes_grupos cg WHERE cg.grupoId = g.id AND cg.estado = 'activo') AS miembros
             FROM 
                 grupos g
             JOIN 
@@ -138,9 +139,9 @@ gruposCtl.getAllGroups = async (req, res) => {
                 return {
                     id: groupSQL.id,
                     clienteId: groupSQL.clienteId,
-                    nombre: safeDecrypt(groupSQL.nombre), // Descifrar nombre
+                    nombre: safeDecrypt(groupSQL.nombre),
                     estado: groupSQL.estado,
-                    descripcion: grupoMongo?.descripcion || '', // Descripción de Mongo
+                    descripcion: grupoMongo?.descripcion || '',
                     fecha_creacion_sql: groupSQL.fecha_creacion,
                     fecha_modificacion_sql: groupSQL.fecha_modificacion,
                     fecha_creacion_mongo: grupoMongo?.fecha_creacion || null,
@@ -148,7 +149,8 @@ gruposCtl.getAllGroups = async (req, res) => {
                     cliente_info: {
                         nombre: safeDecrypt(groupSQL.cliente_nombre),
                         correo_electronico: safeDecrypt(groupSQL.cliente_correo)
-                    }
+                    },
+                    miembros: groupSQL.miembros // <--- Agrega esto
                 };
             })
         );
