@@ -346,7 +346,6 @@ app.use('/contenido_app', require('./router/contenido_app.router'));
 
 
 // ==================== MANEJO DE ERRORES ====================
-
 // Middleware de manejo de errores mejorado para API
 app.use((err, req, res, next) => {
     if (res.headersSent) {
@@ -357,27 +356,36 @@ app.use((err, req, res, next) => {
 
     // Respuestas de error estandarizadas
     if (err.name === 'ValidationError') {
-        return res.apiError('Validation error', 400, err.errors);
+        return res.status(400).json({
+            message: 'Validation error',
+            errors: err.errors,
+            status: 400
+        });
     }
 
     if (err.code === 'EBADCSRFTOKEN') {
-        return res.apiError('CSRF token validation failed', 403);
+        return res.status(403).json({
+            message: 'CSRF token validation failed',
+            status: 403
+        });
     }
 
     // Error no manejado
-    const errorResponse = {
+    res.status(500).json({
         message: 'Internal server error',
         error: process.env.NODE_ENV === 'development' ? err.message : undefined,
-        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
-    };
-
-    res.status(500).json(errorResponse);
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+        status: 500
+    });
 });
 
 // Middleware para rutas no encontradas (API)
-app.use((req, res, next) => {
+app.use((req, res) => {
     logger.warn(`404 Not Found: ${req.originalUrl}`);
-    res.apiError('Endpoint not found', 404);
+    res.status(404).json({
+        message: 'Endpoint not found',
+        status: 404
+    });
 });
 
 // Exportar la aplicación
