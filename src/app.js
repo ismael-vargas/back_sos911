@@ -392,17 +392,6 @@ app.use('/contenido_app', require('./router/contenido_app.router'));
 // ==================== MANEJO DE ERRORES CORREGIDO ====================
 // 1. Manejador principal de errores
 app.use((err, req, res, next) => {
-  // Asegura que res.apiError siempre exista
-  if (!res.apiError) {
-    res.apiError = function (message, status = 500, errors = null) {
-      res.status(status).json({
-        message,
-        errors,
-        status
-      });
-    };
-  }
-
   if (res.headersSent) {
     return next(err);
   }
@@ -410,19 +399,27 @@ app.use((err, req, res, next) => {
   logger.error(`Error: ${err.message}\nStack: ${err.stack}`);
 
   if (err.name === 'ValidationError') {
-    return res.apiError('Validation error', 400, err.errors);
+    return res.status(400).json({
+      message: 'Validation error',
+      errors: err.errors,
+      status: 400
+    });
   }
 
   if (err.code === 'EBADCSRFTOKEN') {
-    return res.apiError('CSRF token validation failed', 403);
+    return res.status(403).json({
+      message: 'CSRF token validation failed',
+      status: 403
+    });
   }
 
   // Error no manejado
-  res.apiError(
-    process.env.NODE_ENV === 'development' ? err.message : 'Internal server error',
-    500,
-    process.env.NODE_ENV === 'development' ? { stack: err.stack } : undefined
-  );
+  res.status(500).json({
+    message: 'Internal server error',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    status: 500
+  });
 });
 
 // 2. Middleware temporal para logging adicional
