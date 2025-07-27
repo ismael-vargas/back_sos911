@@ -56,8 +56,7 @@ app.use(cors({
 }));
 
 // ==================== CONFIGURACIÓN DE LOGS ====================
-
-// Asegura que la carpeta "logs" exista
+// Asegura que la carpeta "logs" exista SOLO UNA VEZ
 const logDir = path.join(__dirname, 'logs');
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir, { recursive: true });
@@ -141,23 +140,23 @@ app.use((req, res, next) => {
     }
 });
 
-//  Configuración de Helmet
+// 3. Ajustar Helmet para desarrollo (comentar en producción si es necesario)
 app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-            "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://maps.googleapis.com"],
-            "img-src": ["'self'", "data:", "blob:", "https://maps.gstatic.com", "https://*.googleapis.com"],
-            "frame-src": ["'self'", "blob:", "https://www.google.com"],
-            "connect-src": ["'self'", "https://maps.googleapis.com"],
-            "object-src": ["'none'"],
-            "default-src": ["'self'"]
-        }
-    },
-    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-    crossOriginEmbedderPolicy: false,
-    crossOriginOpenerPolicy: false,
-    crossOriginResourcePolicy: false,
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://maps.googleapis.com"],
+      "img-src": ["'self'", "data:", "blob:", "https://maps.gstatic.com", "https://*.googleapis.com"],
+      "frame-src": ["'self'", "blob:", "https://www.google.com"],
+      "connect-src": ["'self'", "https://maps.googleapis.com"],
+      "object-src": ["'none'"],
+      "default-src": ["'self'"]
+    }
+  } : false,
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: false,
+  crossOriginResourcePolicy: false,
 }));
 
 //  Protección contra HTTP Parameter Pollution
@@ -230,20 +229,58 @@ app.use(fileUpload({
     preserveExtension: true
 }));
 
-//  Inicializar CSRF protection ANTES de la ruta /csrf-token
+// 2. Configuración segura de CSRF (excluir rutas API)
+const csrfExclude = [
+  '/csrf-token',
+  '/usuarios/login',
+  '/usuarios/registro',
+  '/contactos_clientes',
+  '/contactos_emergencias',
+  '/clientes',
+  '/clientes_numeros',
+  '/clientes_grupos',
+  '/contenido_app',
+  '/dispositivos',
+  '/envio',
+  '/evaluaciones_situaciones',
+  '/grupos',
+  '/informes_estadisticas',
+  '/mensajes_grupo',
+  '/notificaciones',
+  '/pagina',
+  '/presion_boton_panico',
+  '/roles',
+  '/servicios_emergencia',
+  '/ubicaciones_clientes',
+  '/usuarios',
+  '/usuarios_numeros',
+  '/usuarios_roles'
+];
+
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'None' : 'Lax'
+  },
+  ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
+  value: req => {
+    if (csrfExclude.includes(req.path)) return false;
+    return req.headers['x-csrf-token'] || req.body._csrf;
   }
 });
-app.use(csrfProtection); // Aplicar globalmente
+
+// 6. Agregar middleware para proteger contra CSRF solo en rutas relevantes
+app.use((req, res, next) => {
+  if (csrfExclude.includes(req.path) || req.method === 'GET') {
+    return next();
+  }
+  csrfProtection(req, res, next);
+});
 
 //  Ahora sí la ruta /csrf-token tendrá acceso a req.csrfToken()
 app.get('/csrf-token', (req, res) => {
   try {
-    // Verificar que la sesión esté inicializada
     if (!req.session) {
       logger.error('Sesión no inicializada');
       return res.status(500).json({ error: 'Error interno del servidor' });
@@ -261,25 +298,29 @@ app.get('/csrf-token', (req, res) => {
 });
 
 
-// Middleware para minificar HTML SOLO si el tipo de respuesta es HTML
+// 4. Mejorar middleware de minificación (evitar procesar JSON)
 app.use(async (req, res, next) => {
-    const originalSend = res.send.bind(res);
-    res.send = async function (body) {
-        if (typeof body === 'string' && res.get('Content-Type') && res.get('Content-Type').includes('text/html')) {
-            try {
-                body = await minify(body, {
-                    removeComments: true,
-                    collapseWhitespace: true,
-                    minifyCSS: true,
-                    minifyJS: true,
-                });
-            } catch (err) {
-                logger.error('Error minificando HTML', { stack: err.stack });
-            }
-        }
-        return originalSend(body);
-    };
-    next();
+  const originalSend = res.send.bind(res);
+  res.send = async function (body) {
+    if (
+      typeof body === 'string' &&
+      res.get('Content-Type') &&
+      res.get('Content-Type').includes('text/html')
+    ) {
+      try {
+        body = await minify(body, {
+          removeComments: true,
+          collapseWhitespace: true,
+          minifyCSS: true,
+          minifyJS: true,
+        });
+      } catch (err) {
+        logger.error('Error minificando HTML', { stack: err.stack });
+      }
+    }
+    return originalSend(body);
+  };
+  next();
 });
 
 
@@ -311,13 +352,16 @@ app.use('/login', loginLimiter);
 // ==================== MIDDLEWARE GLOBAL PARA res.apiError ====================
 // Debe ir antes de las rutas y del manejo de errores
 app.use((req, res, next) => {
-  res.apiError = function (message, status = 500, errors = null) {
-    res.status(status).json({
-      message,
-      errors,
-      status
-    });
-  };
+  // Solo definir si no existe (para evitar sobreescribir)
+  if (!res.apiError) {
+    res.apiError = function (message, status = 500, errors = null) {
+      res.status(status).json({
+        message,
+        errors,
+        status
+      });
+    };
+  }
   next();
 });
 // ==================== RUTAS API ====================
@@ -345,38 +389,46 @@ app.use('/servicios_emergencia', require('./router/servicios_emergencia.router')
 app.use('/contenido_app', require('./router/contenido_app.router'));
 
 
-// ==================== MANEJO DE ERRORES ====================
-// Middleware de manejo de errores mejorado para API
+// ==================== MANEJO DE ERRORES CORREGIDO ====================
+// 1. Manejador principal de errores
 app.use((err, req, res, next) => {
-    if (res.headersSent) {
-        return next(err);
-    }
+  // Asegura que res.apiError siempre exista
+  if (!res.apiError) {
+    res.apiError = function (message, status = 500, errors = null) {
+      res.status(status).json({
+        message,
+        errors,
+        status
+      });
+    };
+  }
 
-    logger.error(`Error: ${err.message}\nStack: ${err.stack}`);
+  if (res.headersSent) {
+    return next(err);
+  }
 
-    // Respuestas de error estandarizadas
-    if (err.name === 'ValidationError') {
-        return res.status(400).json({
-            message: 'Validation error',
-            errors: err.errors,
-            status: 400
-        });
-    }
+  logger.error(`Error: ${err.message}\nStack: ${err.stack}`);
 
-    if (err.code === 'EBADCSRFTOKEN') {
-        return res.status(403).json({
-            message: 'CSRF token validation failed',
-            status: 403
-        });
-    }
+  if (err.name === 'ValidationError') {
+    return res.apiError('Validation error', 400, err.errors);
+  }
 
-    // Error no manejado
-    res.status(500).json({
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? err.message : undefined,
-        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-        status: 500
-    });
+  if (err.code === 'EBADCSRFTOKEN') {
+    return res.apiError('CSRF token validation failed', 403);
+  }
+
+  // Error no manejado
+  res.apiError(
+    process.env.NODE_ENV === 'development' ? err.message : 'Internal server error',
+    500,
+    process.env.NODE_ENV === 'development' ? { stack: err.stack } : undefined
+  );
+});
+
+// 2. Middleware temporal para logging adicional
+app.use((err, req, res, next) => {
+  console.error("ERROR INTERCEPTADO:", err);
+  next(err);
 });
 
 // Middleware para rutas no encontradas (API)
